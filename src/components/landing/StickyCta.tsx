@@ -10,7 +10,7 @@ export function StickyCta() {
           asChild
           variant="outline"
           size="lg"
-          className="h-12 rounded-full px-4"
+          className="h-12 rounded-md px-4"
         >
           <a href={PHONE_HREF} aria-label="Call RideCheck">
             <Phone className="h-5 w-5" aria-hidden />
@@ -19,12 +19,13 @@ export function StickyCta() {
         <Button
           asChild
           size="lg"
-          className="h-12 flex-1 rounded-full text-base font-semibold"
+          className="h-12 flex-1 rounded-md text-base font-semibold"
         >
           <a href={BOOKING_URL} target="_blank" rel="noopener">
             Book &amp; Pay Online
           </a>
         </Button>
+
       </div>
     </div>
   );
