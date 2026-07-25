@@ -9,7 +9,7 @@ export function WhyRideCheck() {
       <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-ink sm:text-4xl">
-            Why RideCheck
+            Why <span className="text-signal">RideCheck</span>
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
             Independent by design, not by slogan.
@@ -22,11 +22,12 @@ export function WhyRideCheck() {
             return (
               <div
                 key={item.title}
-                className="rounded-3xl border border-border bg-card p-7 shadow-soft"
+                className="rounded-2xl border border-border bg-card p-7 shadow-soft"
               >
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-signal">
                   <Icon className="h-5 w-5 text-signal-foreground" aria-hidden />
                 </span>
+
                 <h3 className="mt-4 text-lg font-bold text-ink">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {item.body}
