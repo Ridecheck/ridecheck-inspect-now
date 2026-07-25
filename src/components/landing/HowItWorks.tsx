@@ -2,18 +2,27 @@ import { steps } from "@/lib/ridecheck";
 
 export function HowItWorks() {
   return (
-    <section className="border-y border-border bg-secondary/60">
+    <section id="how-it-works" className="bg-background">
       <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
-        <p className="label-caps text-signal">How it works</p>
-        <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Four steps, no runaround</h2>
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-ink sm:text-4xl">
+            How it works
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+            Four steps, no runaround.
+          </p>
+        </div>
 
-        <ol className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, i) => (
-            <li key={step.title} className="border-t-2 border-ink pt-4">
-              <span className="font-display text-4xl font-extrabold tracking-tight text-signal">
-                {String(i + 1).padStart(2, "0")}
+            <li
+              key={step.title}
+              className="rounded-3xl border border-border bg-card p-6 shadow-soft"
+            >
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-ink font-display text-base font-extrabold text-ink-foreground">
+                {i + 1}
               </span>
-              <h3 className="mt-2 text-base font-bold">{step.title}</h3>
+              <h3 className="mt-4 text-base font-bold text-ink">{step.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {step.body}
               </p>

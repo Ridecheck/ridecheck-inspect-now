@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   BOOKING_URL,
@@ -11,18 +12,23 @@ export function SiteFooter() {
   return (
     <footer className="bg-ink text-ink-foreground">
       <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
-        <div className="rounded-lg border border-ink-foreground/15 p-6 sm:p-10">
-          <h2 className="max-w-lg text-2xl font-bold sm:text-3xl">
+        <div className="rounded-3xl bg-signal p-8 text-signal-foreground sm:p-12">
+          <h2 className="max-w-lg text-2xl font-extrabold sm:text-3xl">
             Know exactly what you're buying before you pay for it.
           </h2>
-          <Button asChild size="lg" className="mt-6 h-13 px-8 text-base font-semibold">
+          <Button
+            asChild
+            size="lg"
+            className="mt-6 h-13 rounded-full px-8 text-base font-semibold"
+          >
             <a href={BOOKING_URL} target="_blank" rel="noopener">
               Book &amp; Pay Online
+              <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
             </a>
           </Button>
         </div>
 
-        <div className="mt-12 grid gap-8 border-t border-ink-foreground/15 pt-10 sm:grid-cols-3">
+        <div className="mt-14 grid gap-8 border-t border-ink-foreground/15 pt-10 sm:grid-cols-3">
           <div>
             <p className="label-caps text-signal">Service areas</p>
             <p className="mt-3 text-sm text-ink-foreground/75">
@@ -35,7 +41,7 @@ export function SiteFooter() {
           </div>
           <div>
             <p className="label-caps text-signal">Contact</p>
-            <p className="mt-3 space-y-1 text-sm text-ink-foreground/75">
+            <div className="mt-3 space-y-1 text-sm text-ink-foreground/75">
               <a href={PHONE_HREF} className="block hover:text-ink-foreground">
                 {PHONE_DISPLAY}
               </a>
@@ -47,7 +53,7 @@ export function SiteFooter() {
               >
                 WhatsApp
               </a>
-            </p>
+            </div>
           </div>
           <div>
             <p className="label-caps text-signal">RideCheck</p>

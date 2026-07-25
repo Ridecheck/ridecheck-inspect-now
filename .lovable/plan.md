@@ -1,50 +1,39 @@
-I pulled the live content from vehicleinspect.com.au. Real details I'll use: package inclusions, testimonials (with names), FAQ answers, the 5.0 Google rating / 130+ reviews, the sample report link, and the phone number 0424 287 403.
+## Context
 
-One conflict to flag: the pricing cards on the current site show Standard $299 / Premium $349, but the booking form charges Standard $299 / Premium $379. Your brief says $379, so I'll use $299 / $379.
+carassure.com.au is a live third-party competitor site — not something built here. I fetched it as a visual reference. The RideCheck page in your preview is the one I built (charcoal + amber, dark, industrial). You want it to look like the CarAssure reference instead.
 
-## Page: rewrite `src/routes/index.tsx` (single scrolling landing page)
+## Target look (from the reference)
 
-### 1. Hero
-- H1: "Pre-Purchase Car Inspection in Melbourne & Sydney"
-- Subhead: we come to the car, inspect on-site, same-day detailed report with 90+ photos and video, plus free PPSR.
-- Trust strip: 5.0 Google rating · 130+ reviews · No Dealer Associations · 48-Hour Turnaround Guaranteed
-- Primary CTA "Book & Pay Online" (full payment at booking, instant confirmation), secondary "View sample report" → the live sample report URL.
-- Hero image generated to match the direction (clean vehicle/inspection shot).
+- Light, airy layout: white and very pale blue-grey section bands, generous whitespace
+- Deep navy (#0d1b3e-ish) as the primary, bright yellow (#ffc629-ish) as the accent
+- Rounded geometric sans headings, heavy weight, large display sizes
+- Pill-shaped navy buttons with an arrow, plus a secondary text link beside them
+- Split hero: headline + subcopy + CTA pair + review badge cards on the left, product image on the right
+- Review badges as small bordered cards with a coloured left edge (Google / other source)
+- Pricing cards in three colour treatments: navy filled, white outlined, yellow filled, with a "Popular" pill on the middle card
+- Rounded cards everywhere (large radius), soft shadows, no hard industrial edges
 
-### 2. Packages
-- Standard $299 · 45–60 min: visual condition assessment (engine, underbody, exterior, interior, wheels), 19+ photos, diagnostic scan of engine management, road test, free PPSR, instant digital report, phone call with the inspecting mechanic.
-- Premium $379 · 70–90 min, badged "Most Popular": everything in Standard plus 35+ photos, interior/exterior/engine-running video, full body condition report with paint depth readings and prior damage detection, free CarHistory report (valued $41.95 — odometer, damages, stolen/written-off, valuation, registration, prior sale).
-- Afterpay/Zip split line under each price (calculated from the price, 4 instalments), "Book Now" button, and a small note that travel surcharges may apply outside standard suburbs.
+## Changes
 
-### 3. Why RideCheck (4 cards)
-No dealer affiliations (fully independent) · 90+ photos and video walkthrough · Written technician summary plus a direct phone call · Free PPSR with accident and odometer checks.
+**1. Design tokens (`src/styles.css`)**
+Replace charcoal/amber tokens with the navy + yellow palette; raise base border radius; swap heading font to a rounded geometric sans (Poppins or Outfit) loaded via a `<link>` in `__root.tsx`, body stays a clean neutral sans.
 
-### 4. Recently inspected strip
-3 sample vehicles with make/model, condition score, "View Report". These will be placeholders (e.g. 2015 Ford Falcon XR6) pointing to the existing sample report until you give me real ones.
+**2. Header (`SiteHeader`)**
+Light background, navy text, active-link yellow underline, pill navy "Book Inspection" button on the right.
 
-### 5. How it works
-Book & pay online → Our expert connects with you → On-site inspection → Same-day report emailed (2–3 hrs), using the copy from your current site, tightened.
+**3. Hero (`Hero`)**
+Two-column on desktop, stacked on mobile. Large navy headline, two short subcopy lines, primary pill CTA + "View sample report"-style secondary link, then a row of two review badge cards (5.0 Google / 130+ reviews). Right column keeps a product image; I'd regenerate the hero asset as a light-background car-with-callouts illustration to match the reference framing rather than the current dark photo.
 
-### 6. Reviews
-Four real Google reviews verbatim (trimmed): J K, Eleonora Adam, Alex, Beccacino — plus the 5.0 / 130+ reviews badge and a link to your Google listing.
+**4. Packages**
+Centered section heading + subline on a pale band. Three cards: Essential (navy filled), the mid/popular one (white outlined with "Popular" pill), Premium $379 (yellow filled). Same inclusions content as now, just re-skinned. No EV tab — that's their product, not yours.
 
-### 7. FAQ accordion (shadcn Accordion)
-How long it takes (60–90 min) · Same-day report (2–3 hrs, plus follow-up call) · Mechanic qualifications · How mobile booking works · What the inspection covers.
+**5. Remaining sections**
+Re-skin Why RideCheck, Recently Inspected, How It Works, Reviews, FAQ, Footer and the mobile sticky CTA to the light navy/yellow system: white or pale bands alternating, rounded cards, yellow accent icons, navy footer.
 
-### 8. Footer
-Service areas Melbourne & Sydney (Adelaide coming soon), phone 0424 287 403 (tap-to-call) and WhatsApp, terms link, final "Book & Pay Online" CTA.
+**6. Kept as-is**
+All copy, pricing ($299/$379), the "no dealer affiliations" wedge, phone 0424 287 403, booking CTA destination, SEO metadata and JSON-LD.
 
-Plus a sticky mobile bottom bar with "Book & Pay Online" so the CTA is always reachable on a phone.
+## Notes
 
-## Technical
-- Single route at `/` (replaces the placeholder), sections split into components under `src/components/landing/`.
-- Tailwind v4 tokens in `src/styles.css`: a confident, industrial palette (deep charcoal + a single high-contrast signal accent), no purple gradients, no emojis. Typography via `<link>` in `__root.tsx`.
-- shadcn Button, Card, Accordion, Badge.
-- Mobile-first, skimmable; restrained motion only.
-- SEO head() on the index route: title/description/og/twitter targeting "pre-purchase car inspection Melbourne & Sydney", plus LocalBusiness + FAQPage JSON-LD.
-- "Book & Pay Online" points to your existing booking form (`vehicleinspect.com.au/our-packages/#inspectionForm`) unless you want an on-page form instead.
-
-## Still needed from you
-- A contact email for the footer.
-- Whether the booking CTA should link to the existing form or be rebuilt on-page.
-- Real "recently inspected" vehicles and report links, if you want them non-placeholder.
+- I'll match the layout patterns and colour system, not copy their images, logo, or copy text.
+- Still outstanding from before: a contact email for the footer, and real "recently inspected" vehicles/report links (currently placeholders).
