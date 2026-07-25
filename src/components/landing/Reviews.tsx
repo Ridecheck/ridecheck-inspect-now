@@ -30,7 +30,8 @@ export function Reviews() {
           {reviews.map((review) => (
             <figure
               key={review.name}
-              className="flex flex-col rounded-3xl border border-border bg-card p-7 shadow-soft"
+              className="flex flex-col rounded-2xl border border-border bg-card p-7 shadow-soft"
+
             >
               <div className="flex" aria-label="5 out of 5 stars">
                 {Array.from({ length: 5 }).map((_, i) => (
