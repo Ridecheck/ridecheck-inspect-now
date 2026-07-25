@@ -7,7 +7,7 @@ export function RecentlyInspected() {
       <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-ink sm:text-4xl">
-            Recently inspected
+            Recently <span className="text-signal">inspected</span>
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
             A look at what a RideCheck report covers.
@@ -18,16 +18,17 @@ export function RecentlyInspected() {
           {recentInspections.map((car) => (
             <li
               key={car.vehicle}
-              className="rounded-3xl border border-border bg-card p-6 shadow-soft"
+              className="rounded-2xl border border-border bg-card p-6 shadow-soft"
             >
               <p className="text-base font-bold leading-snug text-ink">
                 {car.vehicle}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">{car.location}</p>
-              <p className="mt-5 font-display text-4xl font-extrabold tracking-tight text-ink">
+              <p className="mt-5 font-display text-4xl font-extrabold tracking-tight text-signal">
                 {car.score}
               </p>
               <p className="label-caps text-muted-foreground">Condition score</p>
+
               <a
                 href={SAMPLE_REPORT_URL}
                 target="_blank"
