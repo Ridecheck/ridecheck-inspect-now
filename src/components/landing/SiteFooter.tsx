@@ -7,19 +7,20 @@ import {
   TERMS_URL,
   WHATSAPP_URL,
 } from "@/lib/ridecheck";
+import logoWhite from "@/assets/ridecheck-logo-white.webp.asset.json";
 
 export function SiteFooter() {
   return (
     <footer className="bg-ink text-ink-foreground">
       <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
-        <div className="rounded-3xl bg-signal p-8 text-signal-foreground sm:p-12">
+        <div className="rounded-2xl bg-signal p-8 text-signal-foreground sm:p-12">
           <h2 className="max-w-lg text-2xl font-extrabold sm:text-3xl">
             Know exactly what you're buying before you pay for it.
           </h2>
           <Button
             asChild
             size="lg"
-            className="mt-6 h-13 rounded-full px-8 text-base font-semibold"
+            className="mt-6 h-13 rounded-md bg-ink px-8 text-base font-semibold text-ink-foreground hover:bg-ink/90"
           >
             <a href={BOOKING_URL} target="_blank" rel="noopener">
               Book &amp; Pay Online
@@ -56,7 +57,11 @@ export function SiteFooter() {
             </div>
           </div>
           <div>
-            <p className="label-caps text-signal">RideCheck</p>
+            <img
+              src={logoWhite.url}
+              alt="RideCheck Vehicle Inspections"
+              className="h-10 w-auto"
+            />
             <p className="mt-3 text-sm text-ink-foreground/75">
               Independent mobile pre-purchase vehicle inspections. No dealer
               associations, ever.

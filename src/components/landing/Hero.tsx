@@ -1,20 +1,28 @@
-import { ArrowRight, ExternalLink, Star, ShieldCheck } from "lucide-react";
+import { ArrowRight, ExternalLink, Star, ShieldCheck, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-inspection-light.png";
 import { BOOKING_URL, GOOGLE_REVIEWS_URL, SAMPLE_REPORT_URL } from "@/lib/ridecheck";
+
+const bullets = [
+  "Same-day detailed report",
+  "90+ photos and video",
+  "Free PPSR history check",
+  "We come to the car",
+];
 
 export function Hero() {
   return (
     <section className="overflow-hidden bg-background">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-14 pt-10 sm:px-8 sm:pb-20 sm:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-1.5 text-xs font-semibold text-ink">
+          <span className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground">
             <ShieldCheck className="h-4 w-4 text-signal" aria-hidden />
             No dealer associations, ever
           </span>
 
-          <h1 className="mt-5 text-[2.35rem] font-extrabold leading-[1.05] text-ink sm:text-5xl lg:text-6xl">
-            Mobile Pre-Purchase Car Inspections
+          <h1 className="mt-5 text-[2.35rem] font-extrabold leading-[1.05] text-signal sm:text-5xl lg:text-6xl">
+            Mobile Pre-Purchase{" "}
+            <span className="text-ink">Car Inspections</span>
           </h1>
 
           <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -25,11 +33,27 @@ export function Hero() {
             Melbourne and Sydney. Adelaide coming soon.
           </p>
 
+          <p className="mt-5 font-display text-lg font-bold text-ink">
+            Starting from just <span className="text-signal">$299</span>
+          </p>
+
+          <ul className="mt-5 grid max-w-lg gap-2 sm:grid-cols-2">
+            {bullets.map((item) => (
+              <li
+                key={item}
+                className="flex items-center gap-2 text-sm font-medium text-foreground"
+              >
+                <Check className="h-4 w-4 shrink-0 text-signal" aria-hidden />
+                {item}
+              </li>
+            ))}
+          </ul>
+
           <div className="mt-7 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
             <Button
               asChild
               size="lg"
-              className="h-13 w-full rounded-full px-8 text-base font-semibold shadow-soft sm:w-auto"
+              className="h-13 w-full rounded-md px-8 text-base font-semibold shadow-soft sm:w-auto"
             >
               <a href={BOOKING_URL} target="_blank" rel="noopener">
                 Book &amp; Pay Online
@@ -40,7 +64,7 @@ export function Hero() {
               href={SAMPLE_REPORT_URL}
               target="_blank"
               rel="noopener"
-              className="inline-flex items-center gap-2 text-base font-semibold text-ink underline-offset-4 hover:underline"
+              className="inline-flex items-center gap-2 text-base font-semibold text-ink underline-offset-4 hover:text-signal hover:underline"
             >
               View sample report
               <ExternalLink className="h-4 w-4" aria-hidden />

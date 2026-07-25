@@ -12,7 +12,7 @@ export function Faq() {
       <div className="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-ink sm:text-4xl">
-            Frequently asked questions
+            Frequently asked <span className="text-signal">questions</span>
           </h2>
           <p className="mt-3 text-muted-foreground">Straight answers.</p>
         </div>
@@ -22,8 +22,9 @@ export function Faq() {
             <AccordionItem
               key={faq.q}
               value={faq.q}
-              className="rounded-2xl border border-border bg-card px-5 shadow-soft"
+              className="rounded-xl border border-border bg-card px-5 shadow-soft"
             >
+
               <AccordionTrigger className="text-left text-base font-semibold text-ink">
                 {faq.q}
               </AccordionTrigger>

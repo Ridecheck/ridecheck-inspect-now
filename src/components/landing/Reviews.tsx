@@ -7,7 +7,7 @@ export function Reviews() {
       <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-ink sm:text-4xl">
-            Don't take our word for it
+            Don't take <span className="text-signal">our word</span> for it
           </h2>
           <a
             href={GOOGLE_REVIEWS_URL}
@@ -15,7 +15,8 @@ export function Reviews() {
             rel="noopener"
             className="mt-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold shadow-soft hover:bg-secondary"
           >
-            <span className="font-display text-lg font-extrabold text-ink">5.0</span>
+            <span className="font-display text-lg font-extrabold text-signal">5.0</span>
+
             <span className="flex" aria-hidden>
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star key={i} className="h-4 w-4 fill-signal text-signal" />
@@ -29,7 +30,8 @@ export function Reviews() {
           {reviews.map((review) => (
             <figure
               key={review.name}
-              className="flex flex-col rounded-3xl border border-border bg-card p-7 shadow-soft"
+              className="flex flex-col rounded-2xl border border-border bg-card p-7 shadow-soft"
+
             >
               <div className="flex" aria-label="5 out of 5 stars">
                 {Array.from({ length: 5 }).map((_, i) => (
