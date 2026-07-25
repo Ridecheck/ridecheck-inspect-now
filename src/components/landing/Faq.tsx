@@ -8,15 +8,23 @@ import { faqs } from "@/lib/ridecheck";
 
 export function Faq() {
   return (
-    <section className="border-t border-border bg-secondary/60">
+    <section id="faq" className="bg-background">
       <div className="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
-        <p className="label-caps text-signal">FAQ</p>
-        <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Straight answers</h2>
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-ink sm:text-4xl">
+            Frequently asked questions
+          </h2>
+          <p className="mt-3 text-muted-foreground">Straight answers.</p>
+        </div>
 
-        <Accordion type="single" collapsible className="mt-8">
+        <Accordion type="single" collapsible className="mt-10 space-y-3">
           {faqs.map((faq) => (
-            <AccordionItem key={faq.q} value={faq.q}>
-              <AccordionTrigger className="text-left text-base font-semibold">
+            <AccordionItem
+              key={faq.q}
+              value={faq.q}
+              className="rounded-2xl border border-border bg-card px-5 shadow-soft"
+            >
+              <AccordionTrigger className="text-left text-base font-semibold text-ink">
                 {faq.q}
               </AccordionTrigger>
               <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
