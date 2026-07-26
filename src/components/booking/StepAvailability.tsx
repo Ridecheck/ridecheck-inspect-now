@@ -202,7 +202,7 @@ export function StepAvailability({
               .map((group) => (
                 <div key={group.title}>
                   <p className="text-xs font-bold text-ink">{group.title}</p>
-                  <div className="mt-2 grid gap-3 sm:grid-cols-3">
+                  <div className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
                     {group.slots.map((slot) => (
                       <SlotCard
                         key={slot.label}
