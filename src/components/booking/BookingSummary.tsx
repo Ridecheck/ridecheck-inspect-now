@@ -40,10 +40,11 @@ export function BookingSummary({
         ))}
         {addOnList?.map((a) => (
           <div key={a.id} className="flex justify-between py-1 text-xs">
-            <span className="text-ink-foreground/70">{a.name}</span>
-            <span className="font-semibold">${a.price}</span>
+            <span className="text-ink-foreground/70">{a.summaryLabel ?? a.name}</span>
+            <span className="font-semibold">+${a.price}</span>
           </div>
         ))}
+
       </div>
 
       <div className="mt-4 flex items-baseline justify-between border-t border-ink-foreground/15 pt-4">
