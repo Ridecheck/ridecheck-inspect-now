@@ -83,7 +83,7 @@ function PhotoTile({ tile }: { tile: Tile }) {
       ) : (
         <>
           <div
-            className="absolute inset-0 opacity-[0.55] [background-image:repeating-linear-gradient(135deg,transparent,transparent_9px,hsl(var(--border))_9px,hsl(var(--border))_10px)]"
+            className="absolute inset-0 opacity-[0.55] [background-image:repeating-linear-gradient(135deg,transparent,transparent_9px,var(--border)_9px,var(--border)_10px)]"
             aria-hidden
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-3 text-center">
