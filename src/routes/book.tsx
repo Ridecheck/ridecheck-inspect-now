@@ -267,8 +267,9 @@ function BookPage() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1.6fr_1fr]">
-            <div className="rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-8">
+          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+            <div className="min-w-0 rounded-3xl border border-border bg-card p-5 shadow-soft sm:p-8">
+
               {step === 0 && (
                 <StepBooking
                   value={details}
