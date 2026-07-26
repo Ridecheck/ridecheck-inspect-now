@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { ArrowRight, Check, Zap } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { packages } from "@/lib/ridecheck";
@@ -72,8 +72,33 @@ export function Packages() {
           ))}
         </div>
 
+        <div className="mt-12 rounded-2xl border border-border bg-card p-7 text-center shadow-soft sm:p-9">
+          <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+            <Zap className="h-6 w-6 text-signal" aria-hidden />
+          </span>
+          <h3 className="mt-4 text-2xl font-extrabold text-ink sm:text-3xl">
+            Buying a used <span className="text-signal">EV?</span>
+          </h3>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            The battery is the most expensive part of the car and the one thing you
+            can&rsquo;t judge by looking. Our EV inspections include a certified Aviloo
+            battery health test, so you know exactly what you&rsquo;re buying.
+          </p>
+          <Button
+            asChild
+            size="lg"
+            className="mt-6 h-12 rounded-full px-8 text-base font-semibold shadow-soft"
+          >
+            <Link to="/ev-inspections">
+              See EV inspections
+              <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+            </Link>
+          </Button>
+        </div>
+
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          Travel surcharges may apply for vehicles outside our standard service
+          Standard and Premium cover petrol, diesel and conventional hybrids. Travel
+          surcharges may apply for vehicles outside our standard service
           suburbs. Any surcharge is confirmed with you before the inspection.
         </p>
       </div>
