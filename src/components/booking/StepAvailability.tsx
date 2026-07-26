@@ -77,7 +77,7 @@ export function StepAvailability({
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="text-lg font-bold text-ink">Pick a time that suits</h2>
+        <h2 className="text-base font-bold text-ink sm:text-lg">Pick a time that suits</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Live availability across our {regionLabel} inspectors.
         </p>
@@ -109,29 +109,29 @@ export function StepAvailability({
       </section>
 
       <section>
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+          <p className="min-w-0 truncate text-xs font-bold uppercase tracking-widest text-muted-foreground">
             Choose a day
           </p>
-          <div className="flex gap-2">
+          <div className="flex shrink-0 gap-1.5">
             <button
               type="button"
               onClick={() => setWeek(0)}
-              className={`rounded-full px-3 py-1 text-xs font-bold transition ${week === 0 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
+              className={`rounded-full px-2.5 py-1 text-[11px] font-bold transition sm:px-3 sm:text-xs ${week === 0 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
             >
               This week
             </button>
             <button
               type="button"
               onClick={() => setWeek(1)}
-              className={`rounded-full px-3 py-1 text-xs font-bold transition ${week === 1 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
+              className={`rounded-full px-2.5 py-1 text-[11px] font-bold transition sm:px-3 sm:text-xs ${week === 1 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
             >
               Next week
             </button>
           </div>
         </div>
 
-        <div className="mt-3 -mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
+        <div className="mt-3 -mx-5 flex snap-x snap-mandatory gap-2 overflow-x-auto px-5 pb-2 sm:-mx-1 sm:px-1">
           {visibleDays.map((day) => {
             const active = day.iso === activeDay.iso;
             const sold = day.remaining === 0;
@@ -142,7 +142,7 @@ export function StepAvailability({
                 disabled={sold}
                 onClick={() => onActiveIso(day.iso)}
                 aria-pressed={active}
-                className={`min-w-[86px] shrink-0 rounded-xl border p-3 text-center transition ${
+                className={`w-[74px] shrink-0 snap-start rounded-xl border p-2.5 text-center transition sm:w-[86px] sm:p-3 ${
                   sold
                     ? "cursor-not-allowed border-border bg-secondary/50 opacity-60"
                     : active
@@ -150,7 +150,7 @@ export function StepAvailability({
                       : "border-border bg-card hover:border-signal/50"
                 }`}
               >
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="text-[9px] font-bold uppercase tracking-tight text-muted-foreground sm:text-[10px] sm:tracking-wider">
                   {day.weekdayLabel}
                 </p>
                 <p className="text-lg font-extrabold text-ink">{day.dayNumber}</p>
@@ -202,7 +202,7 @@ export function StepAvailability({
               .map((group) => (
                 <div key={group.title}>
                   <p className="text-xs font-bold text-ink">{group.title}</p>
-                  <div className="mt-2 grid gap-3 sm:grid-cols-3">
+                  <div className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
                     {group.slots.map((slot) => (
                       <SlotCard
                         key={slot.label}
@@ -249,8 +249,8 @@ function SlotCard({
 }) {
   if (!slot.available) {
     return (
-      <div className="rounded-xl border border-border bg-secondary/50 p-4 text-center">
-        <p className="text-sm font-semibold text-muted-foreground line-through">
+      <div className="rounded-xl border border-border bg-secondary/50 p-3 text-center sm:p-4">
+        <p className="text-[13px] font-semibold text-muted-foreground line-through sm:text-sm">
           {slot.label}
         </p>
         <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -265,26 +265,29 @@ function SlotCard({
       type="button"
       onClick={onClick}
       aria-pressed={chosen}
-      className={`rounded-xl border p-4 text-center transition ${
+      className={`rounded-xl border p-3 text-center transition sm:p-4 ${
         chosen
           ? "border-signal bg-accent/40 shadow-soft"
           : "border-border bg-card hover:border-signal/50"
       }`}
     >
-      <p className="text-sm font-bold text-ink">{slot.label}</p>
+      <p className="text-[13px] font-bold text-ink sm:text-sm">{slot.label}</p>
       <p className="mt-1 text-sm font-extrabold text-signal">${price}</p>
       <p
-        className={`mt-1 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider ${
+        className={`mt-1 inline-flex items-center justify-center gap-1 text-[10px] font-bold uppercase leading-tight tracking-wider ${
           slot.remaining === 1 ? "text-signal" : "text-muted-foreground"
         }`}
       >
-        <Users className="h-3 w-3" aria-hidden />
-        {slot.remaining === 1 ? "1 inspector left" : `${slot.remaining} inspectors free`}
+        <Users className="h-3 w-3 shrink-0" aria-hidden />
+        {slot.remaining === 1 ? "1 left" : `${slot.remaining} free`}
       </p>
-      <p className="mt-1 text-[10px] text-muted-foreground">{arrivalWindow(slot)}</p>
+      <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
+        {arrivalWindow(slot)}
+      </p>
     </button>
   );
 }
+
 
 function HighlightCard({
   badge,
@@ -306,18 +309,18 @@ function HighlightCard({
     <button
       type="button"
       onClick={onClick}
-      className="rounded-2xl border border-border bg-card p-5 text-center transition hover:border-signal hover:shadow-soft"
+      className="rounded-2xl border border-border bg-card p-4 text-center transition hover:border-signal hover:shadow-soft sm:p-5"
     >
       <span className="inline-flex items-center gap-1.5 rounded-full bg-signal px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-signal-foreground">
         <Icon className="h-3 w-3" aria-hidden />
         {badge}
       </span>
       <p className="mt-3 font-bold text-ink">{formatDayLong(day)}</p>
-      <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-        <Clock className="h-3.5 w-3.5" aria-hidden />
+      <p className="flex flex-wrap items-center justify-center gap-1.5 text-xs text-muted-foreground">
+        <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden />
         {first?.label ?? "No slots"}
       </p>
-      <p className="mt-2 text-3xl font-extrabold text-signal">
+      <p className="mt-2 text-2xl font-extrabold text-signal sm:text-3xl">
         ${dayPrice(basePrice, day)}
       </p>
       <p className="mt-1 text-xs font-semibold text-muted-foreground">{note}</p>
