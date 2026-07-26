@@ -1,6 +1,6 @@
 import { ArrowRight, ExternalLink, Star, ShieldCheck, Check, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroCar from "@/assets/hero-bmw-m3.jpg";
+import heroCar from "@/assets/hero-red-bmw-m3.jpg";
 import { BOOKING_URL, GOOGLE_REVIEWS_URL, SAMPLE_REPORT_URL } from "@/lib/ridecheck";
 
 const bullets = [
@@ -17,7 +17,7 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] lg:block">
         <img
           src={heroCar}
-          alt="Silver BMW M3 sedan inspected by RideCheck with Melbourne skyline"
+          alt="Red BMW M3 sedan inspected by RideCheck with Melbourne skyline"
           width={1408}
           height={1008}
           className="h-full w-full object-cover object-left"
@@ -123,7 +123,7 @@ export function Hero() {
         <div className="mt-10 overflow-hidden rounded-2xl lg:hidden">
           <img
             src={heroCar}
-            alt="Silver BMW M3 sedan inspected by RideCheck with Melbourne skyline"
+            alt="Red BMW M3 sedan inspected by RideCheck with Melbourne skyline"
             width={1408}
             height={1008}
             className="h-56 w-full object-cover sm:h-72"
