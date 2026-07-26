@@ -227,14 +227,19 @@ export function BookingWizard() {
                 {step === 2 && (
                   <>
                     <h3 className="mt-1 text-xl font-bold text-ink">
-                      Choose the inspection that's right for you
+                      {serviceType === "ev"
+                        ? "Choose your EV inspection"
+                        : "Choose the inspection that's right for you"}
                     </h3>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Both include an instant digital report delivered fast.
+                      {serviceType === "ev"
+                        ? "Both include a certified Aviloo battery health test."
+                        : "Both include an instant digital report delivered fast."}
                     </p>
                     <div className="mt-5 space-y-3">
-                      {[...packages].reverse().map((p) => {
+                      {[...catalogue].reverse().map((p) => {
                         const selected = form.pkg === p.name;
+
                         return (
                           <button
                             key={p.name}
