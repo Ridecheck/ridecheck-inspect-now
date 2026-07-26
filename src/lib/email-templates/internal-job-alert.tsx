@@ -6,12 +6,18 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
   Text,
 } from "@react-email/components";
 import { currency, type BookingEmailData } from "./types";
+import logoAsset from "@/assets/ridecheck-logo-white.webp.asset.json";
+
+const SITE_ORIGIN = "https://project--529efd4a-ab2c-4e2e-b1d6-fb02cbfb637e.lovable.app";
+const LOGO_URL = `${SITE_ORIGIN}${logoAsset.url}`;
+
 
 const RED = "#e11d2e";
 const INK = "#111114";
