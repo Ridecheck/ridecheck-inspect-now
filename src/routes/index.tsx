@@ -72,13 +72,13 @@ function Index() {
         <Hero />
         <BookingWizard />
         <Packages />
+        <div id="how-it-works">
+          <HowItWorks />
+        </div>
         <WhyRideCheck />
         <ServiceArea />
         <RecentlyInspected />
         <InspectionVideos />
-        <div id="how-it-works">
-          <HowItWorks />
-        </div>
         <div id="reviews">
           <Reviews />
         </div>
