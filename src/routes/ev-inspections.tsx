@@ -248,9 +248,13 @@ function EvInspectionsPage() {
             </Button>
           </div>
         </section>
+
+        <ServiceArea />
       </main>
 
       <SiteFooter />
+      <StickyCta />
     </div>
   );
+
 }
