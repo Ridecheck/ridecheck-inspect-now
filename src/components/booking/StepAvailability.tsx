@@ -150,7 +150,7 @@ export function StepAvailability({
                       : "border-border bg-card hover:border-signal/50"
                 }`}
               >
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="text-[9px] font-bold uppercase tracking-tight text-muted-foreground sm:text-[10px] sm:tracking-wider">
                   {day.weekdayLabel}
                 </p>
                 <p className="text-lg font-extrabold text-ink">{day.dayNumber}</p>
