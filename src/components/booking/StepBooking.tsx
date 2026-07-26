@@ -40,13 +40,16 @@ export function StepBooking({
   value,
   onChange,
   serviceType = "standard",
+  onSwitchService,
 }: {
   value: BookingDetails;
   onChange: (patch: Partial<BookingDetails>) => void;
   serviceType?: ServiceType;
+  onSwitchService?: (next: ServiceType, drivetrain: "ev" | "phev") => void;
 }) {
   const isEv = serviceType === "ev";
   const list = isEv ? evPackages : packages;
+
 
 
   return (
