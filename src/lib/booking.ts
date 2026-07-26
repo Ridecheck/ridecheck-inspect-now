@@ -36,6 +36,7 @@ export const addOns: AddOn[] = [
 
 import {
   existingJobs,
+  inspectors,
   getRoster,
   REGION_LABEL,
   regionFromLocation,
@@ -180,4 +181,11 @@ export function formatDayLong(day: Day) {
     day: "numeric",
     month: "short",
   });
+}
+
+/** Deterministically assigns the inspector who will attend a chosen slot. */
+export function assignInspector(slot: Slot | undefined) {
+  if (!slot || slot.inspectorIds.length === 0) return null;
+  const id = slot.inspectorIds[slot.hour % slot.inspectorIds.length];
+  return inspectors.find((i) => i.id === id) ?? null;
 }
