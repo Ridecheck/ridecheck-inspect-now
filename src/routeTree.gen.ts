@@ -13,6 +13,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as FaqsRouteImport } from './routes/faqs'
+import { Route as EvInspectionsRouteImport } from './routes/ev-inspections'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as AboutRouteImport } from './routes/about'
@@ -36,6 +37,11 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
 const FaqsRoute = FaqsRouteImport.update({
   id: '/faqs',
   path: '/faqs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvInspectionsRoute = EvInspectionsRouteImport.update({
+  id: '/ev-inspections',
+  path: '/ev-inspections',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
+  '/ev-inspections': typeof EvInspectionsRoute
   '/faqs': typeof FaqsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/locations': typeof LocationsRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
+  '/ev-inspections': typeof EvInspectionsRoute
   '/faqs': typeof FaqsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/locations': typeof LocationsRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
+  '/ev-inspections': typeof EvInspectionsRoute
   '/faqs': typeof FaqsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/locations': typeof LocationsRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/book'
     | '/contact'
+    | '/ev-inspections'
     | '/faqs'
     | '/how-it-works'
     | '/locations'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/book'
     | '/contact'
+    | '/ev-inspections'
     | '/faqs'
     | '/how-it-works'
     | '/locations'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/book'
     | '/contact'
+    | '/ev-inspections'
     | '/faqs'
     | '/how-it-works'
     | '/locations'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BookRoute: typeof BookRoute
   ContactRoute: typeof ContactRoute
+  EvInspectionsRoute: typeof EvInspectionsRoute
   FaqsRoute: typeof FaqsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   LocationsRoute: typeof LocationsRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/faqs'
       fullPath: '/faqs'
       preLoaderRoute: typeof FaqsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ev-inspections': {
+      id: '/ev-inspections'
+      path: '/ev-inspections'
+      fullPath: '/ev-inspections'
+      preLoaderRoute: typeof EvInspectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BookRoute: BookRoute,
   ContactRoute: ContactRoute,
+  EvInspectionsRoute: EvInspectionsRoute,
   FaqsRoute: FaqsRoute,
   HowItWorksRoute: HowItWorksRoute,
   LocationsRoute: LocationsRoute,
