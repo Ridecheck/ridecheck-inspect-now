@@ -176,37 +176,7 @@ function BookPage() {
             />
           </Link>
 
-          <ol className="hidden items-center gap-3 md:flex">
-            {stepLabels.map((label, i) => {
-              const complete = done || i < step;
-              const active = !done && i === step;
-              return (
-                <li key={label} className="flex items-center gap-3">
-                  {i > 0 && <span className="h-px w-8 bg-border" aria-hidden />}
-                  <span className="flex items-center gap-2">
-                    <span
-                      className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
-                        active
-                          ? "bg-signal text-signal-foreground"
-                          : complete
-                            ? "bg-ink text-ink-foreground"
-                            : "bg-secondary text-muted-foreground"
-                      }`}
-                    >
-                      {complete ? <Check className="h-3.5 w-3.5" aria-hidden /> : i + 1}
-                    </span>
-                    <span
-                      className={`text-xs font-bold uppercase tracking-wider ${
-                        active ? "text-signal" : "text-muted-foreground"
-                      }`}
-                    >
-                      {label}
-                    </span>
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
+          <div className="hidden md:block" />
 
           <a
             href={PHONE_HREF}
