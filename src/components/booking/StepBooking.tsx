@@ -1,7 +1,8 @@
-import { Car, Check, Link2, MapPin } from "lucide-react";
+import { Car, Check, Info, Link2, MapPin, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { AU_STATES } from "@/lib/booking";
-import { packages } from "@/lib/ridecheck";
+import { packages, evPackages } from "@/lib/ridecheck";
+import type { ServiceType } from "@/lib/availability";
 
 
 export type BookingDetails = {
@@ -12,6 +13,8 @@ export type BookingDetails = {
   vehicle: string;
   listing: string;
   pkg: string;
+  /** Only used on the EV path. */
+  drivetrain?: "ev" | "phev";
 };
 
 function Labelled({
@@ -34,10 +37,15 @@ function Labelled({
 export function StepBooking({
   value,
   onChange,
+  serviceType = "standard",
 }: {
   value: BookingDetails;
   onChange: (patch: Partial<BookingDetails>) => void;
+  serviceType?: ServiceType;
 }) {
+  const isEv = serviceType === "ev";
+  const list = isEv ? evPackages : packages;
+
 
   return (
     <div className="space-y-8">
