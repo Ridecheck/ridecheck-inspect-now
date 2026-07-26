@@ -1,7 +1,7 @@
 import { ArrowRight, ExternalLink, Star, ShieldCheck, Check } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import heroCar from "@/assets/hero-red-bmw-m3.jpg";
+import heroCar from "@/assets/hero-inspection-diagram.png.asset.json";
 import { GOOGLE_REVIEWS_URL, SAMPLE_REPORT_URL } from "@/lib/ridecheck";
 
 const bullets = [
