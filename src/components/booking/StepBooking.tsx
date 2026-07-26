@@ -180,7 +180,7 @@ export function StepBooking({
         )}
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
 
-          {packages.map((p) => {
+          {list.map((p) => {
             const selected = value.pkg === p.name;
             return (
               <button
