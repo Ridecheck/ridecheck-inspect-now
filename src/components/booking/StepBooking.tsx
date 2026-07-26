@@ -1,7 +1,8 @@
-import { Car, Check, Link2, MapPin } from "lucide-react";
+import { Car, Check, Link2, MapPin, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { AU_STATES } from "@/lib/booking";
+import { AU_STATES, addOns } from "@/lib/booking";
 import { packages } from "@/lib/ridecheck";
+
 
 export type BookingDetails = {
   suburb: string;
