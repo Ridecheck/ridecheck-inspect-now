@@ -142,7 +142,7 @@ export function StepAvailability({
                 disabled={sold}
                 onClick={() => onActiveIso(day.iso)}
                 aria-pressed={active}
-                className={`min-w-[86px] shrink-0 rounded-xl border p-3 text-center transition ${
+                className={`w-[74px] shrink-0 snap-start rounded-xl border p-2.5 text-center transition sm:w-[86px] sm:p-3 ${
                   sold
                     ? "cursor-not-allowed border-border bg-secondary/50 opacity-60"
                     : active
