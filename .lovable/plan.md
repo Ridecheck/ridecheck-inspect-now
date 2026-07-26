@@ -1,45 +1,52 @@
-## What's worth adopting from ASAP Roadworthys
+Keep everything mocked — no backend, no Lovable Cloud. Restructure the availability step so it behaves like a real multi-mechanic calendar, and define the data shape your existing app can feed in later.
 
-Their funnel works because of four things, all of which we can do without taking payments yet:
+## 1. Model capacity, not a single yes/no slot
 
-1. **Progress header with urgency** — three labelled steps (Your Booking / Availability / Confirm) plus a "2:34 mins to reserve your booking" timer.
-2. **Two headline slot cards** — "Fastest / Selling Fast" (today, premium price) vs "Best Price" (a few days out, cheaper). This is the real upsell: dynamic pricing nudges, "Only 1 slot remaining".
-3. **A 7-day calendar strip + hourly time grid** — each day shows a price, unavailable hours are greyed as "BOOKED NEARBY", the chosen slot is highlighted.
-4. **A persistent "Your booking so far" summary panel** — service, vehicle, location, when, itemised fees, total, promo code — plus add-on upsell tiles and risk-free-cancellation reassurance.
+Today each hour is either available or not. Change the mock data in `src/lib/booking.ts` so each slot carries how many inspectors are free:
 
-## Plan: a `/book` route in the RideCheck theme
+```text
+slot = { label: "9 am – 10 am", capacity: 3, taken: 2, remaining: 1 }
+```
 
-### Step 1 — Your booking
-- Address / suburb + postcode
-- Rego + state selector (VIC / NSW / SA / other)
-- Vehicle make, model, year (or listing link)
-- Service choice: Standard $299 / Premium $379, pulled from `src/lib/ridecheck.ts`
+The UI then shows honest scarcity instead of a flat grid:
+- 2+ free: normal selectable slot
+- exactly 1 free: "1 inspector left" in red
+- 0 free: greyed with "Booked out" (replaces the current "Booked nearby")
 
-### Step 2 — Availability
-- Two hero slot cards: **Fastest** (earliest slot, red badge) and **Best Price** (a later day, "Save $X")
-- 7-day scrollable date strip, each day showing its price
-- Hourly slot grid (8am–4pm), unavailable ones greyed with "Booked nearby"
-- Sticky bottom bar: back arrow + `Review — $299`
+## 2. Region-aware availability
 
-### Step 3 — Review & confirm
-- Contact details (name, phone, email)
-- "Help us prepare for arrival" notes textarea
-- **Add-on upsells** as tiles: PPSR history report, extended road test, cold-start video, post-inspection mechanic call — each with a price and a + button that updates the total
-- Inspector card (name, rating, "verified"), risk-free cancellation banner, T&Cs checkbox
-- Promo code field (visual only for now)
-- Final button: **Request booking** — no card fields, no payment. Confirmation screen mirrors the existing wizard's success state ("we'll confirm within 2 hours, no payment required today").
+A vehicle in a Melbourne suburb should only see Melbourne inspectors. Mock inspectors get a `regions` list (`melbourne`, `sydney`), and the suburb/postcode captured in step 1 picks which pool builds the calendar. If the suburb is outside coverage, the step shows an "Adelaide coming soon — request a callback" state instead of a dead calendar.
 
-### Persistent side panel
-Sticky "Your booking so far" card (dark ink background, red labels) visible on all three steps on desktop, collapsible summary bar on mobile.
+## 3. Better day strip
 
-### Wiring
-- All "Book & Pay Online" CTAs (Hero, Packages, SiteHeader, StickyCta, SiteFooter) relabelled **Book Inspection** and pointed at `/book`.
-- Homepage "Let's check if this car is worth buying" wizard stays as the low-friction lead capture; its final button will hand off into `/book` with the chosen package prefilled.
+- Extend from 7 days to 14, horizontally scrollable, with a "Next week" jump.
+- Each day chip shows price and a capacity dot: green (plenty), amber (filling), grey (full).
+- Full days are dimmed and non-selectable rather than clickable-then-empty.
+- Keep the existing ASAP and weekend surcharges.
 
-### Technical notes
-- New route `src/routes/book.tsx` plus components under `src/components/booking/` (`StepBooking`, `StepAvailability`, `StepReview`, `BookingSummary`, `SlotCalendar`).
-- Availability is generated client-side from a deterministic mock (weekend/today surcharge, some slots marked booked) in `src/lib/booking.ts` — easy to swap for a real backend later.
-- Step and selections held in URL search params so back/forward and refresh work.
-- No database and no payment provider in this pass; the submit handler just shows the confirmation state. Adding Cloud storage + Stripe later slots into the same final step.
+## 4. Slot grid improvements
 
-Prices shown: $299 Standard / $379 Premium. Same-day slots get a small surcharge shown as "ASAP rate" only if you want that — say the word and I'll leave prices flat instead.
+- Group slots under "Morning / Afternoon" headings.
+- Show an arrival window ("9:00–10:00 arrival, ~90 min on site") so buyers understand it's not an exact-minute booking.
+- Keep Fastest / Best price cards, but base them on real remaining capacity in the mock data.
+
+## 5. Assignment shown at review
+
+Auto-assign a mock inspector for the chosen slot and surface it on the review step: name, region, inspections completed, rating. This is the pattern your real app can fill in, and it makes the booking feel concrete.
+
+## 6. A clean seam for your real app
+
+All schedule logic lives in one place so swapping mock for live data is a single-file change.
+
+```text
+src/lib/booking.ts   ->  types + buildDays(...) reading from a provider
+src/lib/schedule.mock.ts  ->  mock inspectors, working hours, existing jobs
+```
+
+`buildDays()` will take `{ region, packageName, days }` and return the same `Day[]` shape it does now, so no component changes are needed when the data becomes real. When your app is ready, the mock provider is replaced with a fetch to your API returning inspectors, their working hours and their booked jobs.
+
+## Technical notes
+
+- Files touched: `src/lib/booking.ts` (capacity/region-aware generator), new `src/lib/schedule.mock.ts` (inspectors, hours, jobs), `src/components/booking/StepAvailability.tsx` (day strip, grouped grid, capacity states), `src/components/booking/StepReview.tsx` (assigned inspector card), `src/routes/book.tsx` (pass region derived from suburb into `buildDays`).
+- Availability stays deterministic (seeded) so the preview doesn't flicker between renders.
+- No database, no auth, no payments — everything stays front-end.

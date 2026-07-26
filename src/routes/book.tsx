@@ -9,7 +9,13 @@ import {
   type SlotSelection,
 } from "@/components/booking/StepAvailability";
 import { StepReview, type ContactDetails } from "@/components/booking/StepReview";
-import { addOns, buildDays, dayPrice, formatDayLong } from "@/lib/booking";
+import {
+  addOns,
+  assignInspector,
+  buildAvailability,
+  findSlot,
+  formatDayLong,
+} from "@/lib/booking";
 import { packages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
 import logoAsset from "@/assets/ridecheck-logo.png.asset.json";
 
@@ -90,9 +96,22 @@ function BookPage() {
 
 
   const pkg = packages.find((p) => p.name === details.pkg) ?? packages[0];
-  const days = useMemo(() => buildDays(pkg.price), [pkg.price]);
-  const currentIso = activeIso || days[0].iso;
+  const availability = useMemo(
+    () =>
+      buildAvailability({
+        basePrice: pkg.price,
+        suburb: details.suburb,
+        postcode: details.postcode,
+        premiumRequired: Boolean(pkg.popular),
+      }),
+    [pkg.price, pkg.popular, details.suburb, details.postcode],
+  );
+  const days = availability.days;
+  const currentIso =
+    activeIso || (days.find((d) => d.remaining > 0) ?? days[0]).iso;
   const chosenDay = days.find((d) => d.iso === selection?.iso);
+  const chosenSlot = selection ? findSlot(days, selection.iso, selection.slot) : undefined;
+  const inspector = assignInspector(chosenSlot);
 
   const chosenAddOns = addOns.filter((a) => selectedAddOns.includes(a.id));
   const surcharge = chosenDay?.surcharge ?? 0;
@@ -264,10 +283,13 @@ function BookPage() {
                   onSelect={setSelection}
                   activeIso={currentIso}
                   onActiveIso={setActiveIso}
+                  regionLabel={availability.regionLabel}
+                  covered={availability.covered}
                 />
               )}
               {step === 2 && (
                 <StepReview
+                  inspector={inspector}
                   value={contact}
                   onChange={(patch) => setContact((c) => ({ ...c, ...patch }))}
                   selectedAddOns={selectedAddOns}

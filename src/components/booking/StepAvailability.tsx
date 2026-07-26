@@ -1,8 +1,16 @@
-import { Clock, Flame, TrendingDown, Zap } from "lucide-react";
-import type { Day } from "@/lib/booking";
-import { dayPrice, formatDayLong } from "@/lib/booking";
+import { useState } from "react";
+import { Clock, Flame, MapPin, TrendingDown, Users, Zap } from "lucide-react";
+import type { Day, Slot } from "@/lib/booking";
+import { arrivalWindow, dayPrice, formatDayLong } from "@/lib/booking";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
 
 export type SlotSelection = { iso: string; slot: string } | null;
+
+function capacityTone(day: Day) {
+  if (day.remaining === 0) return "bg-muted-foreground/40";
+  if (day.remaining <= 3) return "bg-signal";
+  return "bg-emerald-500";
+}
 
 export function StepAvailability({
   days,
@@ -11,6 +19,8 @@ export function StepAvailability({
   onSelect,
   activeIso,
   onActiveIso,
+  regionLabel,
+  covered,
 }: {
   days: Day[];
   basePrice: number;
@@ -18,13 +28,18 @@ export function StepAvailability({
   onSelect: (s: SlotSelection) => void;
   activeIso: string;
   onActiveIso: (iso: string) => void;
+  regionLabel: string;
+  covered: boolean;
 }) {
+  const [week, setWeek] = useState(0);
+  const visibleDays = days.slice(week * 7, week * 7 + 7);
   const activeDay = days.find((d) => d.iso === activeIso) ?? days[0];
 
-  const fastest = days.find((d) => d.slots.some((s) => s.available)) ?? days[0];
-  const cheapest = [...days]
-    .filter((d) => d.slots.some((s) => s.available))
-    .sort((a, b) => a.surcharge - b.surcharge)[0];
+  const openDays = days.filter((d) => d.remaining > 0);
+  const fastest = openDays[0] ?? days[0];
+  const cheapest = [...openDays].sort(
+    (a, b) => a.surcharge - b.surcharge || a.date.getTime() - b.date.getTime(),
+  )[0];
 
   const pick = (day: Day) => {
     const slot = day.slots.find((s) => s.available);
@@ -33,19 +48,49 @@ export function StepAvailability({
     onSelect({ iso: day.iso, slot: slot.label });
   };
 
+  if (!covered) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-8 text-center">
+        <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-accent">
+          <MapPin className="h-7 w-7 text-signal" aria-hidden />
+        </span>
+        <h2 className="mt-5 text-lg font-bold text-ink">
+          We don't have inspectors there yet
+        </h2>
+        <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+          We currently cover Melbourne and Sydney, with Adelaide coming soon. Call us and
+          we'll tell you straight whether we can get someone out to you.
+        </p>
+        <a
+          href={PHONE_HREF}
+          className="mt-5 inline-flex h-12 items-center justify-center rounded-xl bg-signal px-6 text-sm font-bold text-signal-foreground"
+        >
+          Call {PHONE_DISPLAY}
+        </a>
+      </div>
+    );
+  }
+
+  const morning = activeDay.slots.filter((s) => s.period === "morning");
+  const afternoon = activeDay.slots.filter((s) => s.period === "afternoon");
+
   return (
     <div className="space-y-8">
       <section>
         <h2 className="text-lg font-bold text-ink">Pick a time that suits</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Live availability across our Melbourne and Sydney inspectors.
+          Live availability across our {regionLabel} inspectors.
         </p>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <HighlightCard
             badge="Fastest"
             badgeIcon={Zap}
-            note="Only 1 slot remaining"
+            note={
+              fastest.remaining === 1
+                ? "Last inspector free that day"
+                : `${fastest.remaining} slots left`
+            }
             day={fastest}
             basePrice={basePrice}
             onClick={() => pick(fastest)}
@@ -54,7 +99,7 @@ export function StepAvailability({
             <HighlightCard
               badge="Best price"
               badgeIcon={TrendingDown}
-              note={`Save $${dayPrice(basePrice, fastest) - dayPrice(basePrice, cheapest)} vs today`}
+              note={`Save $${dayPrice(basePrice, fastest) - dayPrice(basePrice, cheapest)} vs the earliest slot`}
               day={cheapest}
               basePrice={basePrice}
               onClick={() => pick(cheapest)}
@@ -64,23 +109,45 @@ export function StepAvailability({
       </section>
 
       <section>
-        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          Choose a day
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            Choose a day
+          </p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setWeek(0)}
+              className={`rounded-full px-3 py-1 text-xs font-bold transition ${week === 0 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
+            >
+              This week
+            </button>
+            <button
+              type="button"
+              onClick={() => setWeek(1)}
+              className={`rounded-full px-3 py-1 text-xs font-bold transition ${week === 1 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
+            >
+              Next week
+            </button>
+          </div>
+        </div>
+
         <div className="mt-3 -mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
-          {days.map((day) => {
+          {visibleDays.map((day) => {
             const active = day.iso === activeDay.iso;
-            const sold = !day.slots.some((s) => s.available);
+            const sold = day.remaining === 0;
             return (
               <button
                 key={day.iso}
                 type="button"
+                disabled={sold}
                 onClick={() => onActiveIso(day.iso)}
                 aria-pressed={active}
                 className={`min-w-[86px] shrink-0 rounded-xl border p-3 text-center transition ${
-                  active
-                    ? "border-signal bg-accent/40 shadow-soft"
-                    : "border-border bg-card hover:border-signal/50"
+                  sold
+                    ? "cursor-not-allowed border-border bg-secondary/50 opacity-60"
+                    : active
+                      ? "border-signal bg-accent/40 shadow-soft"
+                      : "border-border bg-card hover:border-signal/50"
                 }`}
               >
                 <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -95,10 +162,19 @@ export function StepAvailability({
                 >
                   ${dayPrice(basePrice, day)}
                 </p>
+                <span
+                  className={`mx-auto mt-1.5 block h-1.5 w-1.5 rounded-full ${capacityTone(day)}`}
+                  aria-hidden
+                />
               </button>
             );
           })}
         </div>
+        <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+          <Legend tone="bg-emerald-500" label="Good availability" />
+          <Legend tone="bg-signal" label="Filling fast" />
+          <Legend tone="bg-muted-foreground/40" label="Fully booked" />
+        </p>
       </section>
 
       <section>
@@ -111,47 +187,102 @@ export function StepAvailability({
             {activeDay.tag} applies — +${activeDay.surcharge}
           </p>
         )}
-        <div className="mt-3 grid gap-3 sm:grid-cols-3">
-          {activeDay.slots.map((slot) => {
-            const chosen =
-              selection?.iso === activeDay.iso && selection.slot === slot.label;
-            if (!slot.available) {
-              return (
-                <div
-                  key={slot.label}
-                  className="rounded-xl border border-border bg-secondary/50 p-4 text-center"
-                >
-                  <p className="text-sm font-semibold text-muted-foreground line-through">
-                    {slot.label}
-                  </p>
-                  <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Booked nearby
-                  </p>
+
+        {activeDay.remaining === 0 ? (
+          <p className="mt-4 rounded-xl border border-border bg-secondary/50 px-4 py-6 text-center text-sm text-muted-foreground">
+            Every inspector is booked out on this day. Try another date.
+          </p>
+        ) : (
+          <div className="mt-4 space-y-6">
+            {[
+              { title: "Morning", slots: morning },
+              { title: "Afternoon", slots: afternoon },
+            ]
+              .filter((g) => g.slots.length > 0)
+              .map((group) => (
+                <div key={group.title}>
+                  <p className="text-xs font-bold text-ink">{group.title}</p>
+                  <div className="mt-2 grid gap-3 sm:grid-cols-3">
+                    {group.slots.map((slot) => (
+                      <SlotCard
+                        key={slot.label}
+                        slot={slot}
+                        price={dayPrice(basePrice, activeDay)}
+                        chosen={
+                          selection?.iso === activeDay.iso &&
+                          selection.slot === slot.label
+                        }
+                        onClick={() =>
+                          onSelect({ iso: activeDay.iso, slot: slot.label })
+                        }
+                      />
+                    ))}
+                  </div>
                 </div>
-              );
-            }
-            return (
-              <button
-                key={slot.label}
-                type="button"
-                onClick={() => onSelect({ iso: activeDay.iso, slot: slot.label })}
-                aria-pressed={chosen}
-                className={`rounded-xl border p-4 text-center transition ${
-                  chosen
-                    ? "border-signal bg-accent/40 shadow-soft"
-                    : "border-border bg-card hover:border-signal/50"
-                }`}
-              >
-                <p className="text-sm font-bold text-ink">{slot.label}</p>
-                <p className="mt-1 text-sm font-extrabold text-signal">
-                  ${dayPrice(basePrice, activeDay)}
-                </p>
-              </button>
-            );
-          })}
-        </div>
+              ))}
+          </div>
+        )}
       </section>
     </div>
+  );
+}
+
+function Legend({ tone, label }: { tone: string; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span className={`h-1.5 w-1.5 rounded-full ${tone}`} aria-hidden />
+      {label}
+    </span>
+  );
+}
+
+function SlotCard({
+  slot,
+  price,
+  chosen,
+  onClick,
+}: {
+  slot: Slot;
+  price: number;
+  chosen: boolean;
+  onClick: () => void;
+}) {
+  if (!slot.available) {
+    return (
+      <div className="rounded-xl border border-border bg-secondary/50 p-4 text-center">
+        <p className="text-sm font-semibold text-muted-foreground line-through">
+          {slot.label}
+        </p>
+        <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          {slot.capacity === 0 ? "No inspector rostered" : "Booked out"}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={chosen}
+      className={`rounded-xl border p-4 text-center transition ${
+        chosen
+          ? "border-signal bg-accent/40 shadow-soft"
+          : "border-border bg-card hover:border-signal/50"
+      }`}
+    >
+      <p className="text-sm font-bold text-ink">{slot.label}</p>
+      <p className="mt-1 text-sm font-extrabold text-signal">${price}</p>
+      <p
+        className={`mt-1 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider ${
+          slot.remaining === 1 ? "text-signal" : "text-muted-foreground"
+        }`}
+      >
+        <Users className="h-3 w-3" aria-hidden />
+        {slot.remaining === 1 ? "1 inspector left" : `${slot.remaining} inspectors free`}
+      </p>
+      <p className="mt-1 text-[10px] text-muted-foreground">{arrivalWindow(slot)}</p>
+    </button>
   );
 }
 

@@ -34,21 +34,35 @@ export const addOns: AddOn[] = [
   },
 ];
 
+import {
+  existingJobs,
+  inspectors,
+  getRoster,
+  REGION_LABEL,
+  regionFromLocation,
+  type Region,
+} from "@/lib/schedule.mock";
+
+export { REGION_LABEL, regionFromLocation };
+export type { Region };
+
 export type Slot = {
   label: string;
+  hour: number;
+  period: "morning" | "afternoon";
+  /** Inspectors rostered on for this hour. */
+  capacity: number;
+  /** Inspectors still free. */
+  remaining: number;
   available: boolean;
+  inspectorIds: string[];
 };
 
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15];
 
 function hourLabel(h: number) {
   const fmt = (n: number) => (n === 12 ? "12 pm" : n > 12 ? `${n - 12} pm` : `${n} am`);
-  return `${fmt(h)} – ${fmt(h + 1)}`;
-}
-
-/** Deterministic pseudo-availability so the UI is stable between renders. */
-function seed(dayIndex: number, hour: number) {
-  return (dayIndex * 7 + hour * 13) % 10;
+  return `${fmt(h)} \u2013 ${fmt(h + 1)}`;
 }
 
 export type Day = {
@@ -60,23 +74,66 @@ export type Day = {
   surcharge: number;
   tag?: string;
   slots: Slot[];
+  /** Total inspector-hours still free across the day. */
+  remaining: number;
+  capacity: number;
 };
 
-export function buildDays(basePrice: number, count = 7): Day[] {
+export type Availability = {
+  region: Region | null;
+  regionLabel: string;
+  covered: boolean;
+  days: Day[];
+};
+
+export function buildAvailability({
+  basePrice,
+  suburb,
+  postcode,
+  premiumRequired = false,
+  count = 14,
+}: {
+  basePrice: number;
+  suburb: string;
+  postcode?: string;
+  premiumRequired?: boolean;
+  count?: number;
+}): Availability {
+  const region = regionFromLocation(suburb ?? "", postcode);
+  const covered = region === "melbourne" || region === "sydney";
+  const roster = covered ? getRoster(region as Region, premiumRequired) : [];
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const nowHour = new Date().getHours();
 
-  return Array.from({ length: count }, (_, i) => {
+  const days = Array.from({ length: count }, (_, i) => {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
-    const weekend = date.getDay() === 0 || date.getDay() === 6;
-
+    const dow = date.getDay();
+    const weekend = dow === 0 || dow === 6;
     const surcharge = i === 0 ? 55 : weekend ? 35 : 0;
 
-    const slots = HOURS.map((h) => ({
-      label: hourLabel(h),
-      available: seed(i, h) > (i === 0 ? 5 : 2),
-    }));
+    const slots: Slot[] = HOURS.map((h) => {
+      const onShift = roster.filter(
+        (ins) => ins.workDays.includes(dow) && h >= ins.startHour && h < ins.endHour,
+      );
+      const free = onShift.filter((ins) => {
+        if (existingJobs(ins.id, i, h) > 0) return false;
+        // Today: no same-hour or past bookings, allow 2h lead time.
+        if (i === 0 && h < nowHour + 2) return false;
+        return true;
+      });
+      return {
+        label: hourLabel(h),
+        hour: h,
+        period: h < 12 ? "morning" : "afternoon",
+        capacity: onShift.length,
+        remaining: free.length,
+        available: free.length > 0,
+        inspectorIds: free.map((ins) => ins.id),
+      };
+    });
 
     return {
       date,
@@ -92,8 +149,26 @@ export function buildDays(basePrice: number, count = 7): Day[] {
       surcharge,
       tag: i === 0 ? "ASAP rate" : weekend ? "Weekend rate" : undefined,
       slots,
+      remaining: slots.reduce((n, s) => n + s.remaining, 0),
+      capacity: slots.reduce((n, s) => n + s.capacity, 0),
     };
   });
+
+  return {
+    region,
+    regionLabel: region ? REGION_LABEL[region] : "your area",
+    covered,
+    days,
+  };
+}
+
+export function findSlot(days: Day[], iso: string, label: string) {
+  return days.find((d) => d.iso === iso)?.slots.find((s) => s.label === label);
+}
+
+export function arrivalWindow(slot: Slot) {
+  const t = (h: number) => `${h > 12 ? h - 12 : h}:00${h >= 12 ? "pm" : "am"}`;
+  return `${t(slot.hour)}\u2013${t(slot.hour + 1)} arrival \u00b7 ~90 min on site`;
 }
 
 export function dayPrice(basePrice: number, day: Day) {
@@ -106,4 +181,11 @@ export function formatDayLong(day: Day) {
     day: "numeric",
     month: "short",
   });
+}
+
+/** Deterministically assigns the inspector who will attend a chosen slot. */
+export function assignInspector(slot: Slot | undefined) {
+  if (!slot || slot.inspectorIds.length === 0) return null;
+  const id = slot.inspectorIds[slot.hour % slot.inspectorIds.length];
+  return inspectors.find((i) => i.id === id) ?? null;
 }
