@@ -117,10 +117,14 @@ export const BookingConfirmationEmail = ({
     <Body style={main}>
       <Container style={container}>
         <Section style={wordmarkWrap}>
-          <Text style={wordmark}>
-            Ride<span style={{ color: RED }}>Check</span>
-          </Text>
+          <Img
+            src={LOGO_URL}
+            alt="RideCheck"
+            width="150"
+            style={{ display: "block", border: 0, outline: "none", textDecoration: "none" }}
+          />
         </Section>
+
         <Section style={bar} />
 
         <Section style={pad}>
