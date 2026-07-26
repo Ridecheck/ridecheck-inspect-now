@@ -107,7 +107,8 @@ function BookPage() {
     [pkg.price, pkg.popular, details.suburb, details.postcode],
   );
   const days = availability.days;
-  const currentIso = activeIso || days[0].iso;
+  const currentIso =
+    activeIso || (days.find((d) => d.remaining > 0) ?? days[0]).iso;
   const chosenDay = days.find((d) => d.iso === selection?.iso);
   const chosenSlot = selection ? findSlot(days, selection.iso, selection.slot) : undefined;
   const inspector = assignInspector(chosenSlot);
