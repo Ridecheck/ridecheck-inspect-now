@@ -116,7 +116,7 @@ export function BookingWizard() {
                 <Clock className="h-4 w-4" aria-hidden /> Takes 60 seconds
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <CreditCard className="h-4 w-4" aria-hidden /> No payment required yet
+                <CreditCard className="h-4 w-4" aria-hidden /> Secure payment at checkout
               </span>
             </div>
           </div>
@@ -334,7 +334,7 @@ export function BookingWizard() {
                     </div>
                     <ul className="mt-4 space-y-2">
                       {[
-                        "No payment required today",
+                        "Pay securely online to lock in your booking",
                         "Usually confirmed within 2 hours",
                         "Speak directly with your mechanic",
                       ].map((t) => (
