@@ -34,10 +34,15 @@ function Labelled({
 export function StepBooking({
   value,
   onChange,
+  selectedAddOns = [],
+  onToggleAddOn,
 }: {
   value: BookingDetails;
   onChange: (patch: Partial<BookingDetails>) => void;
+  selectedAddOns?: string[];
+  onToggleAddOn?: (id: string) => void;
 }) {
+
   return (
     <div className="space-y-8">
       <section>
