@@ -93,7 +93,7 @@ export function buildDays(basePrice: number, count = 7): Day[] {
       tag: i === 0 ? "ASAP rate" : weekend ? "Weekend rate" : undefined,
       slots,
     };
-  }).map((d) => ({ ...d, surcharge: d.surcharge, price: basePrice + d.surcharge }) as Day);
+  });
 }
 
 export function dayPrice(basePrice: number, day: Day) {
