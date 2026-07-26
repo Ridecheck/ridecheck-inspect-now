@@ -64,7 +64,6 @@ export function SiteHeader() {
             aria-expanded={open}
             className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-ink lg:hidden"
           >
-            {open ? <Menu className="hidden" aria-hidden /> : null}
             {open ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
           </button>
         </div>
