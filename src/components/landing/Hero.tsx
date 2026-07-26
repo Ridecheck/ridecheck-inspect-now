@@ -17,8 +17,8 @@ export function Hero() {
       {/* Car image — full bleed on the right */}
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] lg:block">
         <img
-          src={heroCar}
-          alt="Red BMW M3 sedan inspected by RideCheck with Melbourne skyline"
+          src={heroCar.url}
+          alt="Red BMW M3 sedan with RideCheck inspection damage callouts"
           width={1408}
           height={1008}
           className="h-full w-full object-cover object-left"
@@ -108,8 +108,8 @@ export function Hero() {
         {/* Mobile car image */}
         <div className="mt-10 overflow-hidden rounded-2xl lg:hidden">
           <img
-            src={heroCar}
-            alt="Red BMW M3 sedan inspected by RideCheck with Melbourne skyline"
+            src={heroCar.url}
+            alt="Red BMW M3 sedan with RideCheck inspection damage callouts"
             width={1408}
             height={1008}
             className="h-56 w-full object-cover sm:h-72"
