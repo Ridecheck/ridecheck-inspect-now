@@ -1,4 +1,4 @@
-import { ArrowRight, ExternalLink, Star, ShieldCheck, Check, Users } from "lucide-react";
+import { ArrowRight, ExternalLink, Star, ShieldCheck, Check } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import heroCar from "@/assets/hero-red-bmw-m3.jpg";
@@ -27,45 +27,30 @@ export function Hero() {
       </div>
 
       <div className="relative mx-auto max-w-6xl px-5 pb-14 pt-6 sm:px-8 sm:pb-20 lg:pb-24">
-        {/* Top widget row */}
-        <div className="flex flex-wrap items-center justify-end gap-3">
+        {/* Google review badge — sized up for mobile */}
+        <div className="flex justify-center sm:justify-end">
           <a
             href={GOOGLE_REVIEWS_URL}
             target="_blank"
             rel="noopener"
-            className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-2 shadow-soft transition-colors hover:bg-secondary"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-soft transition-colors hover:bg-secondary sm:w-auto sm:py-2"
           >
-            <span className="font-display text-lg font-extrabold text-ink">G</span>
+            <span className="font-display text-xl font-extrabold text-ink sm:text-lg">G</span>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-sm font-bold text-ink">5.0</span>
+                <span className="text-base font-bold text-ink sm:text-sm">5.0</span>
                 <span className="flex" aria-hidden>
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-signal text-signal" />
+                    <Star key={i} className="h-4 w-4 fill-signal text-signal sm:h-3.5 sm:w-3.5" />
                   ))}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">130+ Google reviews</p>
+              <p className="text-sm text-muted-foreground sm:text-xs">350+ Google reviews</p>
             </div>
           </a>
-
-          <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-2 shadow-soft">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent">
-              <Users className="h-4 w-4 text-signal" aria-hidden />
-            </span>
-            <div>
-              <p className="text-sm font-bold text-ink">Trusted by 500+</p>
-              <p className="text-xs text-muted-foreground">Melbourne &amp; Sydney buyers</p>
-            </div>
-          </div>
         </div>
 
         <div className="mt-8 max-w-xl lg:max-w-[46%]">
-          <span className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground">
-            <ShieldCheck className="h-4 w-4 text-signal" aria-hidden />
-            No dealer associations, ever
-          </span>
-
           <h1 className="mt-5 text-[2.35rem] font-extrabold leading-[1.05] text-signal sm:text-5xl lg:text-6xl">
             Mobile Pre-Purchase <span className="text-ink">Car Inspections</span>
           </h1>

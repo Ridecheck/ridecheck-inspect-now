@@ -15,7 +15,7 @@ export const WHATSAPP_URL = "https://wa.me/61424287403";
 
 export const trustPoints = [
   "5.0 Google rating",
-  "130+ reviews",
+  "350+ reviews",
   "No dealer associations",
   "48-hour turnaround guaranteed",
 ];

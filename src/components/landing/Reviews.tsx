@@ -22,7 +22,7 @@ export function Reviews() {
                 <Star key={i} className="h-4 w-4 fill-signal text-signal" />
               ))}
             </span>
-            <span className="text-muted-foreground">130+ Google reviews</span>
+            <span className="text-muted-foreground">350+ Google reviews</span>
           </a>
         </div>
 
