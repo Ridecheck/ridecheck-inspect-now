@@ -17,7 +17,7 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] lg:block">
         <img
           src={heroCar}
-          alt="Silver BMW M3 sedan inspected by RideCheck with Melbourne skyline"
+          alt="Red BMW M3 sedan inspected by RideCheck with Melbourne skyline"
           width={1408}
           height={1008}
           className="h-full w-full object-cover object-left"
