@@ -15,15 +15,15 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden bg-background">
       {/* Car image — full bleed on the right */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] lg:block">
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[54%] items-center lg:flex xl:w-[56%]">
         <img
           src={heroCar.url}
           alt="Red BMW M3 sedan with RideCheck inspection damage callouts"
           width={1408}
           height={1008}
-          className="h-full w-full object-cover object-left"
+          className="h-auto max-h-full w-full object-contain object-right"
         />
-        <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-background to-transparent" />
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background to-transparent" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-5 pb-14 pt-6 sm:px-8 sm:pb-20 lg:pb-24">
