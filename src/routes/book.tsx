@@ -12,8 +12,9 @@ import {
   type Timing,
 } from "@/components/booking/StepTiming";
 import { StepReview, type ContactDetails } from "@/components/booking/StepReview";
-import { addOns, buildAvailability } from "@/lib/booking";
-import { packages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
+import { addOns, buildAvailability, REGION_LABEL } from "@/lib/booking";
+import { packages, evPackages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
+import type { ServiceType } from "@/lib/availability";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 import logoAsset from "@/assets/ridecheck-logo.png.asset.json";
@@ -23,6 +24,7 @@ const DESCRIPTION =
   "Book a mobile pre-purchase car inspection in Melbourne or Sydney. Choose your vehicle, pick a time from live availability, pay securely and we confirm within 2 hours.";
 
 type BookSearch = {
+  type?: ServiceType;
   suburb?: string;
   postcode?: string;
   vehicle?: string;
@@ -38,6 +40,7 @@ const str = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : unde
 
 export const Route = createFileRoute("/book")({
   validateSearch: (search: Record<string, unknown>): BookSearch => ({
+    type: search.type === "ev" ? "ev" : "standard",
     suburb: str(search.suburb),
     postcode: str(search.postcode),
     vehicle: str(search.vehicle),
@@ -65,10 +68,12 @@ const stepLabels = ["Your booking", "Availability", "Confirm"];
 
 function BookPage() {
   const prefill = Route.useSearch();
+  const serviceType: ServiceType = prefill.type === "ev" ? "ev" : "standard";
+  const catalogue = serviceType === "ev" ? evPackages : packages;
   const prefilledPkg =
-    packages.find((p) => p.name.toLowerCase() === prefill.pkg?.toLowerCase())?.name ??
-    packages.find((p) => p.popular)?.name ??
-    packages[0].name;
+    catalogue.find((p) => p.name.toLowerCase() === prefill.pkg?.toLowerCase())?.name ??
+    catalogue.find((p) => p.popular)?.name ??
+    catalogue[0].name;
 
   const [step, setStep] = useState(
     prefill.suburb && prefill.vehicle ? 1 : 0,
@@ -84,6 +89,7 @@ function BookPage() {
     vehicle: prefill.vehicle ?? "",
     listing: prefill.listing ?? "",
     pkg: prefilledPkg,
+    drivetrain: serviceType === "ev" ? "ev" : undefined,
   });
   const [timing, setTiming] = useState<Timing>(null);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
@@ -96,7 +102,7 @@ function BookPage() {
   });
 
 
-  const pkg = packages.find((p) => p.name === details.pkg) ?? packages[0];
+  const pkg = catalogue.find((p) => p.name === details.pkg) ?? catalogue[0];
   const availability = useMemo(
     () =>
       buildAvailability({
@@ -230,7 +236,9 @@ function BookPage() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h1 className="text-2xl font-extrabold text-ink sm:text-3xl">
               {step === 0
-                ? "Book your inspection"
+                ? serviceType === "ev"
+                  ? "Book your EV inspection"
+                  : "Book your inspection"
                 : step === 1
                   ? "Select a time"
                   : "Review and confirm"}
@@ -248,6 +256,7 @@ function BookPage() {
                 <StepBooking
                   value={details}
                   onChange={(patch) => setDetails((d) => ({ ...d, ...patch }))}
+                  serviceType={serviceType}
                 />
 
               )}
@@ -257,6 +266,13 @@ function BookPage() {
                   basePrice={pkg.price}
                   value={timing}
                   onChange={setTiming}
+                  serviceType={serviceType}
+                  region={availability.region}
+                  regionLabel={
+                    availability.region
+                      ? REGION_LABEL[availability.region]
+                      : availability.regionLabel
+                  }
                 />
               )}
               {step === 2 && paying && (
