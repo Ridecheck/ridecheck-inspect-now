@@ -17,7 +17,30 @@ const TITLE = "Book a Pre-Purchase Car Inspection | RideCheck";
 const DESCRIPTION =
   "Book a mobile pre-purchase car inspection in Melbourne or Sydney. Choose your vehicle, pick a time from live availability and we confirm within 2 hours. No payment today.";
 
+type BookSearch = {
+  suburb?: string;
+  postcode?: string;
+  vehicle?: string;
+  listing?: string;
+  pkg?: string;
+  name?: string;
+  phone?: string;
+  email?: string;
+};
+
+const str = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : undefined);
+
 export const Route = createFileRoute("/book")({
+  validateSearch: (search: Record<string, unknown>): BookSearch => ({
+    suburb: str(search.suburb),
+    postcode: str(search.postcode),
+    vehicle: str(search.vehicle),
+    listing: str(search.listing),
+    pkg: str(search.pkg),
+    name: str(search.name),
+    phone: str(search.phone),
+    email: str(search.email),
+  }),
   head: () => ({
     meta: [
       { title: TITLE },
@@ -34,28 +57,37 @@ export const Route = createFileRoute("/book")({
 const stepLabels = ["Your booking", "Availability", "Confirm"];
 
 function BookPage() {
-  const [step, setStep] = useState(0);
+  const prefill = Route.useSearch();
+  const prefilledPkg =
+    packages.find((p) => p.name.toLowerCase() === prefill.pkg?.toLowerCase())?.name ??
+    packages.find((p) => p.popular)?.name ??
+    packages[0].name;
+
+  const [step, setStep] = useState(
+    prefill.suburb && prefill.vehicle ? 1 : 0,
+  );
   const [done, setDone] = useState(false);
 
   const [details, setDetails] = useState<BookingDetails>({
-    suburb: "",
-    postcode: "",
+    suburb: prefill.suburb ?? "",
+    postcode: prefill.postcode ?? "",
     rego: "",
     state: "VIC",
-    vehicle: "",
-    listing: "",
-    pkg: packages.find((p) => p.popular)?.name ?? packages[0].name,
+    vehicle: prefill.vehicle ?? "",
+    listing: prefill.listing ?? "",
+    pkg: prefilledPkg,
   });
   const [selection, setSelection] = useState<SlotSelection>(null);
   const [activeIso, setActiveIso] = useState("");
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [contact, setContact] = useState<ContactDetails>({
-    name: "",
-    phone: "",
-    email: "",
+    name: prefill.name ?? "",
+    phone: prefill.phone ?? "",
+    email: prefill.email ?? "",
     notes: "",
     agreed: false,
   });
+
 
   const pkg = packages.find((p) => p.name === details.pkg) ?? packages[0];
   const days = useMemo(() => buildDays(pkg.price), [pkg.price]);
