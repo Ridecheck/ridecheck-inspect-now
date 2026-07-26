@@ -150,3 +150,64 @@ export const faqs = [
     a: "VIN validation, engine condition, diagnostic scan, road test, body and chassis including paint depth, interior electronics and controls, accident detection, plus a PPSR report and background checks. You receive a minimum of 90 photos and videos with a technician-written summary.",
   },
 ];
+
+export type ServiceArea = {
+  state: string;
+  status: "live" | "soon";
+  blurb: string;
+  suburbs: string[];
+};
+
+export const serviceAreas: ServiceArea[] = [
+  {
+    state: "Victoria",
+    status: "live",
+    blurb: "Melbourne metro and surrounds, same day or next day in most suburbs.",
+    suburbs: [
+      "Melbourne CBD",
+      "Brunswick",
+      "Richmond",
+      "Footscray",
+      "Dandenong",
+      "Frankston",
+      "Ringwood",
+      "Werribee",
+      "Craigieburn",
+      "Geelong",
+      "Ballarat",
+      "Bendigo",
+    ],
+  },
+  {
+    state: "New South Wales",
+    status: "live",
+    blurb: "Sydney metro from the Northern Beaches to the Illawarra.",
+    suburbs: [
+      "Sydney CBD",
+      "Parramatta",
+      "Liverpool",
+      "Blacktown",
+      "Bankstown",
+      "Chatswood",
+      "Penrith",
+      "Sutherland",
+      "Hornsby",
+      "Campbelltown",
+      "Wollongong",
+      "Central Coast",
+    ],
+  },
+  {
+    state: "South Australia",
+    status: "soon",
+    blurb: "Adelaide launching soon. Join the waitlist and we'll call you first.",
+    suburbs: [
+      "Adelaide CBD",
+      "Port Adelaide",
+      "Norwood",
+      "Glenelg",
+      "Elizabeth",
+      "Salisbury",
+    ],
+  },
+];
