@@ -88,6 +88,30 @@ export const inspectors: Inspector[] = [
     rating: 4.8,
     inspections: 180,
   },
+  {
+    id: "elena",
+    name: "Elena",
+    regions: ["adelaide"],
+    workDays: [1, 2, 3, 4, 5],
+    startHour: 8,
+    endHour: 16,
+    dailyCap: 3,
+    premium: true,
+    rating: 4.9,
+    inspections: 310,
+  },
+  {
+    id: "brett",
+    name: "Brett",
+    regions: ["adelaide"],
+    workDays: [2, 3, 4, 5, 6],
+    startHour: 9,
+    endHour: 15,
+    dailyCap: 2,
+    premium: false,
+    rating: 4.8,
+    inspections: 150,
+  },
 ];
 
 export function getRoster(region: Region, premiumRequired: boolean) {
