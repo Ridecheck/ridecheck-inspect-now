@@ -1,0 +1,306 @@
+import { useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft, ArrowRight, Check, Clock, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BookingSummary } from "@/components/booking/BookingSummary";
+import { StepBooking, type BookingDetails } from "@/components/booking/StepBooking";
+import {
+  StepAvailability,
+  type SlotSelection,
+} from "@/components/booking/StepAvailability";
+import { StepReview, type ContactDetails } from "@/components/booking/StepReview";
+import { addOns, buildDays, dayPrice, formatDayLong } from "@/lib/booking";
+import { packages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
+import logoAsset from "@/assets/ridecheck-logo.png.asset.json";
+
+const TITLE = "Book a Pre-Purchase Car Inspection | RideCheck";
+const DESCRIPTION =
+  "Book a mobile pre-purchase car inspection in Melbourne or Sydney. Choose your vehicle, pick a time from live availability and we confirm within 2 hours. No payment today.";
+
+export const Route = createFileRoute("/book")({
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: BookPage,
+});
+
+const stepLabels = ["Your booking", "Availability", "Confirm"];
+
+function BookPage() {
+  const [step, setStep] = useState(0);
+  const [done, setDone] = useState(false);
+
+  const [details, setDetails] = useState<BookingDetails>({
+    suburb: "",
+    postcode: "",
+    rego: "",
+    state: "VIC",
+    vehicle: "",
+    listing: "",
+    pkg: packages.find((p) => p.popular)?.name ?? packages[0].name,
+  });
+  const [selection, setSelection] = useState<SlotSelection>(null);
+  const [activeIso, setActiveIso] = useState("");
+  const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
+  const [contact, setContact] = useState<ContactDetails>({
+    name: "",
+    phone: "",
+    email: "",
+    notes: "",
+    agreed: false,
+  });
+
+  const pkg = packages.find((p) => p.name === details.pkg) ?? packages[0];
+  const days = useMemo(() => buildDays(pkg.price), [pkg.price]);
+  const currentIso = activeIso || days[0].iso;
+  const chosenDay = days.find((d) => d.iso === selection?.iso);
+
+  const chosenAddOns = addOns.filter((a) => selectedAddOns.includes(a.id));
+  const surcharge = chosenDay?.surcharge ?? 0;
+  const total =
+    pkg.price + surcharge + chosenAddOns.reduce((sum, a) => sum + a.price, 0);
+
+  const canContinue =
+    step === 0
+      ? details.suburb.trim() !== "" && details.vehicle.trim() !== ""
+      : step === 1
+        ? selection !== null
+        : contact.name.trim() !== "" &&
+          contact.phone.trim() !== "" &&
+          contact.email.trim() !== "" &&
+          contact.agreed;
+
+  const summary = (
+    <BookingSummary
+      rows={[
+        { label: "Service", value: pkg.name },
+        {
+          label: "Vehicle",
+          value:
+            [details.vehicle, details.rego && `(${details.rego} ${details.state})`]
+              .filter(Boolean)
+              .join(" ") || "Not set yet",
+        },
+        {
+          label: "Location",
+          value:
+            [details.suburb, details.postcode].filter(Boolean).join(" ") ||
+            "Not set yet",
+        },
+        {
+          label: "When",
+          value: chosenDay
+            ? `${formatDayLong(chosenDay)} · ${selection?.slot}`
+            : "Not set yet",
+        },
+      ]}
+      charges={[
+        { label: pkg.name, value: `$${pkg.price}` },
+        ...(surcharge
+          ? [{ label: chosenDay?.tag ?? "Surcharge", value: `$${surcharge}` }]
+          : []),
+      ]}
+      addOnList={chosenAddOns}
+      total={total}
+    />
+  );
+
+  return (
+    <div className="min-h-screen bg-haze pb-28 sm:pb-0">
+      <header className="border-b border-border bg-background">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
+          <Link to="/" aria-label="RideCheck home">
+            <img
+              src={logoAsset.url}
+              alt="RideCheck Vehicle Inspections"
+              width={398}
+              height={101}
+              className="h-9 w-auto sm:h-10"
+            />
+          </Link>
+
+          <ol className="hidden items-center gap-3 md:flex">
+            {stepLabels.map((label, i) => {
+              const complete = done || i < step;
+              const active = !done && i === step;
+              return (
+                <li key={label} className="flex items-center gap-3">
+                  {i > 0 && <span className="h-px w-8 bg-border" aria-hidden />}
+                  <span className="flex items-center gap-2">
+                    <span
+                      className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
+                        active
+                          ? "bg-signal text-signal-foreground"
+                          : complete
+                            ? "bg-ink text-ink-foreground"
+                            : "bg-secondary text-muted-foreground"
+                      }`}
+                    >
+                      {complete ? <Check className="h-3.5 w-3.5" aria-hidden /> : i + 1}
+                    </span>
+                    <span
+                      className={`text-xs font-bold uppercase tracking-wider ${
+                        active ? "text-signal" : "text-muted-foreground"
+                      }`}
+                    >
+                      {label}
+                    </span>
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+
+          <a
+            href={PHONE_HREF}
+            className="flex items-center gap-2 text-sm font-semibold text-ink"
+          >
+            <Phone className="h-4 w-4 text-signal" aria-hidden />
+            <span className="hidden sm:inline">{PHONE_DISPLAY}</span>
+          </a>
+        </div>
+      </header>
+
+      {done ? (
+        <main className="mx-auto max-w-xl px-5 py-16 text-center sm:px-8">
+          <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent">
+            <Check className="h-8 w-8 text-signal" aria-hidden />
+          </span>
+          <h1 className="mt-6 text-3xl font-extrabold text-ink">
+            Booking request received
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            We'll confirm your {pkg.name.toLowerCase()}
+            {chosenDay ? ` for ${formatDayLong(chosenDay)}, ${selection?.slot}` : ""} within
+            2 hours.
+          </p>
+          <ul className="mt-6 space-y-2 text-left">
+            {[
+              "No payment taken today",
+              "Your inspector calls to confirm access with the seller",
+              "Free cancellation up to 24 hours before",
+            ].map((t) => (
+              <li
+                key={t}
+                className="flex items-start gap-2 rounded-xl bg-accent px-4 py-3 text-sm text-accent-foreground"
+              >
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-signal" aria-hidden />
+                {t}
+              </li>
+            ))}
+          </ul>
+          <Button asChild variant="outline" className="mt-8 h-12 w-full rounded-xl">
+            <Link to="/">Back to home</Link>
+          </Button>
+        </main>
+      ) : (
+        <main className="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-12">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-2xl font-extrabold text-ink sm:text-3xl">
+              {step === 0
+                ? "Book your inspection"
+                : step === 1
+                  ? "Select a time"
+                  : "Review and confirm"}
+            </h1>
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+              <Clock className="h-3.5 w-3.5 text-signal" aria-hidden />
+              Takes about 2 minutes · no payment today
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-[1.6fr_1fr]">
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-8">
+              {step === 0 && (
+                <StepBooking
+                  value={details}
+                  onChange={(patch) => setDetails((d) => ({ ...d, ...patch }))}
+                />
+              )}
+              {step === 1 && (
+                <StepAvailability
+                  days={days}
+                  basePrice={pkg.price}
+                  selection={selection}
+                  onSelect={setSelection}
+                  activeIso={currentIso}
+                  onActiveIso={setActiveIso}
+                />
+              )}
+              {step === 2 && (
+                <StepReview
+                  value={contact}
+                  onChange={(patch) => setContact((c) => ({ ...c, ...patch }))}
+                  selectedAddOns={selectedAddOns}
+                  onToggleAddOn={(id) =>
+                    setSelectedAddOns((prev) =>
+                      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+                    )
+                  }
+                />
+              )}
+
+              <div className="mt-8 hidden gap-3 sm:flex">
+                {step > 0 && (
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="h-12 rounded-xl"
+                    onClick={() => setStep((s) => s - 1)}
+                  >
+                    <ArrowLeft className="mr-1 h-4 w-4" aria-hidden />
+                    Back
+                  </Button>
+                )}
+                <Button
+                  size="lg"
+                  disabled={!canContinue}
+                  className="h-12 flex-1 rounded-xl text-base font-semibold shadow-soft"
+                  onClick={() => (step === 2 ? setDone(true) : setStep((s) => s + 1))}
+                >
+                  {step === 2 ? `Request booking — $${total}` : `Continue — $${total}`}
+                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+                </Button>
+              </div>
+            </div>
+
+            <div className="lg:sticky lg:top-8 lg:self-start">{summary}</div>
+          </div>
+        </main>
+      )}
+
+      {!done && (
+        <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 p-3 backdrop-blur sm:hidden">
+          <div className="flex gap-2">
+            {step > 0 && (
+              <Button
+                variant="outline"
+                size="lg"
+                className="h-12 rounded-xl px-4"
+                onClick={() => setStep((s) => s - 1)}
+                aria-label="Back"
+              >
+                <ArrowLeft className="h-5 w-5" aria-hidden />
+              </Button>
+            )}
+            <Button
+              size="lg"
+              disabled={!canContinue}
+              className="h-12 flex-1 rounded-xl text-base font-semibold"
+              onClick={() => (step === 2 ? setDone(true) : setStep((s) => s + 1))}
+            >
+              {step === 2 ? `Request booking — $${total}` : `Continue — $${total}`}
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
