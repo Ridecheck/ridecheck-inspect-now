@@ -6,12 +6,18 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
   Text,
 } from "@react-email/components";
 import { currency, type BookingEmailData } from "./types";
+import logoAsset from "@/assets/ridecheck-logo.png.asset.json";
+
+const SITE_ORIGIN = "https://project--529efd4a-ab2c-4e2e-b1d6-fb02cbfb637e.lovable.app";
+const LOGO_URL = `${SITE_ORIGIN}${logoAsset.url}`;
+
 
 const RED = "#e11d2e";
 const INK = "#111114";
@@ -29,13 +35,6 @@ const container = {
 };
 const pad = { padding: "0 28px" };
 const wordmarkWrap = { padding: "26px 28px 18px" };
-const wordmark = {
-  margin: 0,
-  fontSize: "22px",
-  fontWeight: 700,
-  letterSpacing: "-0.02em",
-  color: INK,
-};
 const bar = { height: "4px", backgroundColor: RED, fontSize: "1px", lineHeight: "4px" };
 const h1 = {
   margin: "26px 0 10px",
@@ -111,10 +110,14 @@ export const BookingConfirmationEmail = ({
     <Body style={main}>
       <Container style={container}>
         <Section style={wordmarkWrap}>
-          <Text style={wordmark}>
-            Ride<span style={{ color: RED }}>Check</span>
-          </Text>
+          <Img
+            src={LOGO_URL}
+            alt="RideCheck"
+            width="150"
+            style={{ display: "block", border: 0, outline: "none", textDecoration: "none" }}
+          />
         </Section>
+
         <Section style={bar} />
 
         <Section style={pad}>

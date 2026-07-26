@@ -6,12 +6,18 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
   Text,
 } from "@react-email/components";
 import { currency, type BookingEmailData } from "./types";
+import logoAsset from "@/assets/ridecheck-logo.png.asset.json";
+
+const SITE_ORIGIN = "https://project--529efd4a-ab2c-4e2e-b1d6-fb02cbfb637e.lovable.app";
+const LOGO_URL = `${SITE_ORIGIN}${logoAsset.url}`;
+
 
 const RED = "#e11d2e";
 const INK = "#111114";
@@ -82,10 +88,19 @@ export const InternalJobAlertEmail = ({
     <Preview>{`New job ${reference} — ${suburb} ${state} — ${timing}`}</Preview>
     <Body style={main}>
       <Container style={container}>
+        <Section style={{ padding: "20px 28px 14px", backgroundColor: "#ffffff" }}>
+          <Img
+            src={LOGO_URL}
+            alt="RideCheck"
+            width="130"
+            style={{ display: "block", border: 0 }}
+          />
+        </Section>
         <Section style={header}>
           <Text style={headerTitle}>New booking — dispatch required</Text>
           <Text style={headerRef}>{reference}</Text>
         </Section>
+
 
         <Section style={{ ...pad, paddingTop: "22px" }}>
           <Text style={sectionTitle}>Job</Text>
