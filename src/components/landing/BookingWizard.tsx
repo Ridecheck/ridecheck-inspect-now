@@ -334,7 +334,7 @@ export function BookingWizard() {
                     </div>
                     <ul className="mt-4 space-y-2">
                       {[
-                        "No payment required today",
+                        "Pay securely online to lock in your booking",
                         "Usually confirmed within 2 hours",
                         "Speak directly with your mechanic",
                       ].map((t) => (
