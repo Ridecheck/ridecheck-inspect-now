@@ -1,8 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BatteryCharging, Check, FileText, Zap } from "lucide-react";
+import { ArrowRight, BatteryCharging, Check, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/landing/SiteHeader";
 import { SiteFooter } from "@/components/landing/SiteFooter";
+import { EvHero } from "@/components/landing/EvHero";
+import { WhyRideCheck } from "@/components/landing/WhyRideCheck";
+import { Reviews } from "@/components/landing/Reviews";
+import { ServiceArea } from "@/components/landing/ServiceArea";
+import { StickyCta } from "@/components/landing/StickyCta";
 import {
   Accordion,
   AccordionContent,
@@ -10,6 +15,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { evPackages, evReasons, evSteps, evFaqs } from "@/lib/ridecheck";
+
 
 const TITLE = "Used EV Inspections with Aviloo Battery Testing | RideCheck";
 const DESCRIPTION =
