@@ -54,8 +54,8 @@ export function BookingSummary({
 
       <p className="mt-5 flex items-start gap-2 text-xs text-ink-foreground/70">
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-signal" aria-hidden />
-        Risk-free booking. Free cancellation up to 24 hours before, and no payment is
-        taken today.
+        Secure payment at checkout. Free cancellation up to 24 hours before your
+        inspection &mdash; full refund, no questions asked.
       </p>
     </aside>
   );
