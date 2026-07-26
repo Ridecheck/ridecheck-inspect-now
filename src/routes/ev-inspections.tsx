@@ -37,43 +37,12 @@ export const Route = createFileRoute("/ev-inspections")({
 
 function EvInspectionsPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 sm:pb-0">
       <SiteHeader />
 
       <main>
-        {/* Hero */}
-        <section className="bg-haze">
-          <div className="mx-auto max-w-4xl px-5 py-16 text-center sm:px-8 sm:py-24">
-            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-accent-foreground">
-              <Zap className="h-3.5 w-3.5 text-signal" aria-hidden />
-              Aviloo certified
-            </span>
-            <h1 className="mt-5 text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
-              Used EV inspections with{" "}
-              <span className="text-signal">certified battery testing</span>
-            </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-              We come to the car, run a full pre-purchase inspection and test the
-              battery&rsquo;s real State of Health with Aviloo. Independent, with no
-              dealer affiliations &mdash; the report is written for you, not the seller.
-            </p>
-            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Button
-                asChild
-                size="lg"
-                className="h-13 w-full rounded-full px-8 text-base font-semibold shadow-soft sm:w-auto"
-              >
-                <Link to="/book" search={{ type: "ev" }}>
-                  Book EV inspection
-                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
-                </Link>
-              </Button>
-              <p className="text-xs font-semibold text-muted-foreground">
-                Melbourne and Sydney &middot; Adelaide coming soon
-              </p>
-            </div>
-          </div>
-        </section>
+        <EvHero />
+
 
         {/* Why battery health matters */}
         <section className="bg-background">
