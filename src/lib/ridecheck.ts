@@ -211,3 +211,108 @@ export const serviceAreas: ServiceArea[] = [
     ],
   },
 ];
+
+/* ------------------------------------------------------------------ */
+/* EV inspections                                                      */
+/* ------------------------------------------------------------------ */
+
+/**
+ * EV packages are a separate tier on purpose — a Standard or Premium booking
+ * never includes battery testing, so EV buyers must pick one of these.
+ */
+export const evPackages: Pkg[] = [
+  {
+    name: "EV Battery Health Test",
+    price: 250,
+    duration: "45–60 minutes",
+    blurb:
+      "Certified Aviloo State of Health test on its own — for buyers who only need the battery verified.",
+    inclusions: [
+      "Certified Aviloo battery State of Health (SoH %) test",
+      "Remaining usable capacity analysis",
+      "Degradation benchmarked against the same model and age",
+      "Current real-world range vs original factory range",
+      "Official Aviloo battery health report (PDF)",
+      "Instant digital summary delivered on completion",
+    ],
+  },
+  {
+    name: "EV Inspection + Aviloo Battery Test",
+    price: 489,
+    duration: "90–120 minutes",
+    popular: true,
+    blurb:
+      "Our full EV pre-purchase inspection combined with the certified Aviloo battery health test.",
+    inclusions: [
+      "Full EV pre-purchase inspection: exterior, interior, brakes, suspension, tyres",
+      "Road test to assess drivetrain, regen braking and ride quality",
+      "Full system fault scan (current and stored codes)",
+      "Charging system and charge port check, plus supplied cable check",
+      "Paint depth spot checks for prior accident repair",
+      "Free PPSR report confirming the car isn't encumbered",
+      "Certified Aviloo battery State of Health test and official PDF report",
+      "Instant digital report plus a phone call with your inspector",
+    ],
+  },
+];
+
+export const evReasons = [
+  {
+    title: "The battery is the car",
+    body: "It's the single most expensive component in the vehicle. A tired pack can wipe out far more than you saved on the purchase price.",
+  },
+  {
+    title: "The dash range readout lies",
+    body: "Guess-o-meter range is calculated from recent driving, not pack condition. It tells you almost nothing about real degradation.",
+  },
+  {
+    title: "Degradation is invisible",
+    body: "A five-year-old EV can look immaculate and still have lost a large slice of usable capacity. Only a proper test shows it.",
+  },
+  {
+    title: "Warranty gaps catch buyers out",
+    body: "Battery warranties have capacity thresholds, transfer rules and service conditions. We tell you where the car actually sits.",
+  },
+];
+
+export const evSteps = [
+  {
+    title: "Request your EV inspection",
+    body: "Choose your package and a day that suits. EV days are limited to when a certified tester is rostered on.",
+  },
+  {
+    title: "We match an Aviloo-certified inspector",
+    body: "Only certified testers can run the Aviloo test, so we confirm your inspector and exact time by SMS.",
+  },
+  {
+    title: "Test performed on site",
+    body: "The tester connects to the vehicle, runs the diagnostics and inspects the car wherever it is — dealer, private seller or home.",
+  },
+  {
+    title: "Report the same day",
+    body: "You get the digital inspection report plus the official Aviloo battery health PDF, and a call to walk through it.",
+  },
+];
+
+export const evFaqs = [
+  {
+    q: "Which vehicles can you test?",
+    a: "Full battery electric vehicles and plug-in hybrids from most major brands. Tell us the make, model and year when you book and we'll confirm compatibility before we take payment.",
+  },
+  {
+    q: "What does State of Health actually mean?",
+    a: "State of Health is the pack's remaining usable capacity as a percentage of its original capacity. It's the number that determines real range and resale value, and it's what the Aviloo test measures.",
+  },
+  {
+    q: "How long does the battery test take?",
+    a: "The battery test itself takes roughly 45 to 60 minutes on site. Combined with a full EV inspection, allow 90 to 120 minutes.",
+  },
+  {
+    q: "Why is EV availability limited?",
+    a: "Only Aviloo-certified inspectors can perform the test, and we have a small certified team across Melbourne and Sydney. That's why EV bookings show fewer available days than standard inspections.",
+  },
+  {
+    q: "Where do you offer EV inspections?",
+    a: "Melbourne and Sydney today. Adelaide is next — join the waitlist in the booking flow and we'll contact you the moment certified testing goes live there.",
+  },
+];
