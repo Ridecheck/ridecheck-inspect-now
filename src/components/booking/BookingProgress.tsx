@@ -42,7 +42,7 @@ export function BookingProgress({ steps, current, complete = false }: BookingPro
                 {isComplete ? <Check className="h-3.5 w-3.5" aria-hidden /> : i + 1}
               </span>
               <span
-                className={`max-w-[5.5rem] text-center text-[10px] font-bold uppercase tracking-wider sm:max-w-none sm:text-xs ${
+                className={`max-w-[6.5rem] text-center text-[10px] font-bold uppercase tracking-wider sm:max-w-none sm:text-xs ${
                   isActive
                     ? "text-signal"
                     : isComplete
