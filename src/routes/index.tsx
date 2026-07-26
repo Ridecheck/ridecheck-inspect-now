@@ -76,7 +76,6 @@ function Index() {
           <HowItWorks />
         </div>
         <WhyRideCheck />
-        <ServiceArea />
         <RecentlyInspected />
         <InspectionVideos />
         <div id="reviews">
@@ -85,6 +84,7 @@ function Index() {
         <div id="faq">
           <Faq />
         </div>
+        <ServiceArea />
       </main>
       <SiteFooter />
       <StickyCta />
