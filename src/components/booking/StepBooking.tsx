@@ -137,12 +137,49 @@ export function StepBooking({
               />
             </div>
           </Labelled>
+          {isEv && (
+            <Labelled label="Drivetrain">
+              <div className="flex gap-2">
+                {(
+                  [
+                    { key: "ev", label: "Full electric (EV)" },
+                    { key: "phev", label: "Plug-in hybrid (PHEV)" },
+                  ] as const
+                ).map((d) => (
+                  <button
+                    key={d.key}
+                    type="button"
+                    onClick={() => onChange({ drivetrain: d.key })}
+                    aria-pressed={value.drivetrain === d.key}
+                    className={`flex-1 rounded-xl border px-3 py-3 text-xs font-bold transition ${
+                      value.drivetrain === d.key
+                        ? "border-signal bg-accent/40 text-ink"
+                        : "border-border text-muted-foreground hover:border-signal/50"
+                    }`}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </Labelled>
+          )}
         </div>
       </section>
 
       <section>
-        <h2 className="text-lg font-bold text-ink">Choose your inspection</h2>
+        <h2 className="flex items-center gap-2 text-lg font-bold text-ink">
+          {isEv && <Zap className="h-5 w-5 text-signal" aria-hidden />}
+          {isEv ? "Choose your EV package" : "Choose your inspection"}
+        </h2>
+        {isEv && (
+          <p className="mt-3 flex items-start gap-2 rounded-xl bg-accent px-4 py-3 text-xs leading-relaxed text-accent-foreground">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-signal" aria-hidden />
+            EV slots are limited — only Aviloo-certified inspectors can perform the
+            battery test, so fewer days are available than for standard inspections.
+          </p>
+        )}
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
+
           {packages.map((p) => {
             const selected = value.pkg === p.name;
             return (
