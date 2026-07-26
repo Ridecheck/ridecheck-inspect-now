@@ -213,7 +213,14 @@ export function BookingWizard() {
                         placeholder="Paste Carsales or marketplace link"
                         aria-label="Listing link"
                       />
+                      <EvDetectionPrompt
+                        vehicle={form.vehicle}
+                        listing={form.listing}
+                        serviceType={serviceType}
+                        onSwitch={(next) => switchService(next)}
+                      />
                     </div>
+
                   </>
                 )}
 
