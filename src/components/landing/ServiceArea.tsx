@@ -8,12 +8,12 @@ import { MapPin } from "lucide-react";
 import { serviceAreas } from "@/lib/ridecheck";
 
 const AUS_PATH =
-  "M432 58 L470 92 L486 132 L500 178 L512 226 L520 274 L512 316 L498 356 L486 396 L466 424 L436 446 L400 452 L364 442 L330 436 L296 442 L258 446 L216 440 L176 424 L142 400 L118 366 L106 322 L102 274 L108 226 L124 182 L146 146 L176 118 L214 96 L256 80 L300 66 L346 56 L390 52 Z";
+  "M140 150 L170 112 L215 88 L260 74 L292 66 L300 96 L316 120 L336 132 L352 108 L372 70 L392 52 L402 84 L414 130 L440 168 L470 212 L494 258 L506 296 L498 332 L486 362 L470 392 L448 416 L430 438 L404 424 L376 412 L344 420 L306 430 L262 424 L214 428 L166 414 L132 392 L114 356 L106 312 L108 268 L118 220 L128 182 Z";
 
 const cities = [
-  { name: "Melbourne", x: 430, y: 424, live: true },
-  { name: "Sydney", x: 490, y: 356, live: true },
-  { name: "Adelaide", x: 366, y: 404, live: false },
+  { name: "Melbourne", x: 432, y: 428, live: true },
+  { name: "Sydney", x: 480, y: 360, live: true },
+  { name: "Adelaide", x: 372, y: 404, live: false },
 ];
 
 export function ServiceArea() {
@@ -51,7 +51,7 @@ export function ServiceArea() {
                 </pattern>
                 <clipPath id="rc-aus">
                   <path d={AUS_PATH} />
-                  <ellipse cx="470" cy="486" rx="26" ry="20" />
+                  <ellipse cx="452" cy="470" rx="22" ry="17" />
                 </clipPath>
               </defs>
 
