@@ -19,14 +19,6 @@ export const addOns: AddOn[] = [
       "A full video tour of the vehicle from our inspector — see and hear everything, ideal if you can't be there in person.",
     price: 50,
   },
-  {
-    id: "aviloo-battery",
-    name: "Aviloo EV Battery Health Test",
-    summaryLabel: "Aviloo Battery Test",
-    blurb:
-      "Certified State of Health test for used EVs and plug-in hybrids — know the real battery condition before you buy.",
-    price: 200,
-  },
 ];
 
 
