@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { AU_STATES } from "@/lib/booking";
 import { packages, evPackages } from "@/lib/ridecheck";
 import type { ServiceType } from "@/lib/availability";
+import { EvDetectionPrompt } from "@/components/booking/EvDetectionPrompt";
+
 
 
 export type BookingDetails = {
