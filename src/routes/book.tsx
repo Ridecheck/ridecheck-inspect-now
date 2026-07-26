@@ -231,7 +231,7 @@ function BookPage() {
             {[
               "Payment complete",
               "Your inspector calls to confirm access with the seller",
-              "Free cancellation up to 24 hours before",
+              "Free cancellation up to 24 hours before — full refund",
             ].map((t) => (
               <li
                 key={t}
