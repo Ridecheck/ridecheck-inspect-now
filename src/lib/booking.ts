@@ -99,9 +99,11 @@ export function buildAvailability({
   premiumRequired?: boolean;
   count?: number;
 }): Availability {
-  const region = regionFromLocation(suburb ?? "", postcode);
-  const covered = region === "melbourne" || region === "sydney";
-  const roster = covered ? getRoster(region as Region, premiumRequired) : [];
+  // Prototype/testing: every location is treated as covered. Unknown suburbs
+  // fall back to the Melbourne pool so the flow is always testable.
+  const region: Region = regionFromLocation(suburb ?? "", postcode) ?? "melbourne";
+  const roster = getRoster(region, premiumRequired);
+  const covered = roster.length > 0;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
