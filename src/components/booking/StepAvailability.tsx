@@ -309,18 +309,18 @@ function HighlightCard({
     <button
       type="button"
       onClick={onClick}
-      className="rounded-2xl border border-border bg-card p-5 text-center transition hover:border-signal hover:shadow-soft"
+      className="rounded-2xl border border-border bg-card p-4 text-center transition hover:border-signal hover:shadow-soft sm:p-5"
     >
       <span className="inline-flex items-center gap-1.5 rounded-full bg-signal px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-signal-foreground">
         <Icon className="h-3 w-3" aria-hidden />
         {badge}
       </span>
       <p className="mt-3 font-bold text-ink">{formatDayLong(day)}</p>
-      <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-        <Clock className="h-3.5 w-3.5" aria-hidden />
+      <p className="flex flex-wrap items-center justify-center gap-1.5 text-xs text-muted-foreground">
+        <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden />
         {first?.label ?? "No slots"}
       </p>
-      <p className="mt-2 text-3xl font-extrabold text-signal">
+      <p className="mt-2 text-2xl font-extrabold text-signal sm:text-3xl">
         ${dayPrice(basePrice, day)}
       </p>
       <p className="mt-1 text-xs font-semibold text-muted-foreground">{note}</p>
