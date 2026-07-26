@@ -14,6 +14,7 @@ import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as FaqsRouteImport } from './routes/faqs'
 import { Route as EvInspectionsRouteImport } from './routes/ev-inspections'
+import { Route as EmailPreviewRouteImport } from './routes/email-preview'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as AboutRouteImport } from './routes/about'
@@ -44,6 +45,11 @@ const EvInspectionsRoute = EvInspectionsRouteImport.update({
   path: '/ev-inspections',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmailPreviewRoute = EmailPreviewRouteImport.update({
+  id: '/email-preview',
+  path: '/email-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
+  '/email-preview': typeof EmailPreviewRoute
   '/ev-inspections': typeof EvInspectionsRoute
   '/faqs': typeof FaqsRoute
   '/how-it-works': typeof HowItWorksRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
+  '/email-preview': typeof EmailPreviewRoute
   '/ev-inspections': typeof EvInspectionsRoute
   '/faqs': typeof FaqsRoute
   '/how-it-works': typeof HowItWorksRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
+  '/email-preview': typeof EmailPreviewRoute
   '/ev-inspections': typeof EvInspectionsRoute
   '/faqs': typeof FaqsRoute
   '/how-it-works': typeof HowItWorksRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/book'
     | '/contact'
+    | '/email-preview'
     | '/ev-inspections'
     | '/faqs'
     | '/how-it-works'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/book'
     | '/contact'
+    | '/email-preview'
     | '/ev-inspections'
     | '/faqs'
     | '/how-it-works'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/book'
     | '/contact'
+    | '/email-preview'
     | '/ev-inspections'
     | '/faqs'
     | '/how-it-works'
@@ -140,6 +152,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BookRoute: typeof BookRoute
   ContactRoute: typeof ContactRoute
+  EmailPreviewRoute: typeof EmailPreviewRoute
   EvInspectionsRoute: typeof EvInspectionsRoute
   FaqsRoute: typeof FaqsRoute
   HowItWorksRoute: typeof HowItWorksRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EvInspectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/email-preview': {
+      id: '/email-preview'
+      path: '/email-preview'
+      fullPath: '/email-preview'
+      preLoaderRoute: typeof EmailPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -220,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BookRoute: BookRoute,
   ContactRoute: ContactRoute,
+  EmailPreviewRoute: EmailPreviewRoute,
   EvInspectionsRoute: EvInspectionsRoute,
   FaqsRoute: FaqsRoute,
   HowItWorksRoute: HowItWorksRoute,
