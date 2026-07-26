@@ -63,6 +63,17 @@ export function BookingWizard() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<Form>(emptyForm);
+  const [serviceType, setServiceType] = useState<ServiceType>("standard");
+  const catalogue = serviceType === "ev" ? evPackages : packages;
+
+  const switchService = (next: ServiceType) => {
+    const nextCatalogue = next === "ev" ? evPackages : packages;
+    setServiceType(next);
+    setForm((f) => ({
+      ...f,
+      pkg: nextCatalogue.find((p) => p.popular)?.name ?? nextCatalogue[0].name,
+    }));
+  };
 
   const goToCheckout = () => {
     const parts = form.location.split(",").map((x) => x.trim());
@@ -71,6 +82,7 @@ export function BookingWizard() {
     navigate({
       to: "/book",
       search: {
+        type: serviceType,
         suburb: suburb || form.location,
         postcode,
         vehicle: form.vehicle || undefined,
@@ -82,6 +94,7 @@ export function BookingWizard() {
       },
     });
   };
+
 
   const set = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
