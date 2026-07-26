@@ -272,7 +272,9 @@ function BookPage() {
                   value={details}
                   onChange={(patch) => setDetails((d) => ({ ...d, ...patch }))}
                   serviceType={serviceType}
+                  onSwitchService={switchService}
                 />
+
 
               )}
               {step === 1 && (
