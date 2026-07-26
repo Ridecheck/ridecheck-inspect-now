@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { addOns } from "@/lib/booking";
+import { REGION_LABEL, type Inspector } from "@/lib/schedule.mock";
 import { TERMS_URL } from "@/lib/ridecheck";
 
 export type ContactDetails = {
@@ -14,11 +15,13 @@ export type ContactDetails = {
 };
 
 export function StepReview({
+  inspector,
   value,
   onChange,
   selectedAddOns,
   onToggleAddOn,
 }: {
+  inspector: Inspector | null;
   value: ContactDetails;
   onChange: (patch: Partial<ContactDetails>) => void;
   selectedAddOns: string[];
@@ -27,13 +30,16 @@ export function StepReview({
   return (
     <div className="space-y-8">
       <section className="rounded-2xl border border-border bg-card p-5">
-        <div className="flex items-center gap-3">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          {inspector ? "Your assigned inspector" : "Your inspector"}
+        </p>
+        <div className="mt-3 flex items-center gap-3">
           <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent text-base font-extrabold text-signal">
-            D
+            {(inspector?.name ?? "R").charAt(0)}
           </span>
           <div>
             <p className="flex items-center gap-2 font-bold text-ink">
-              Dion
+              {inspector?.name ?? "Assigned once you pick a time"}
               <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground">
                 <Check className="h-3 w-3 text-signal" aria-hidden />
                 Verified
@@ -41,7 +47,9 @@ export function StepReview({
             </p>
             <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Star className="h-3.5 w-3.5 fill-signal text-signal" aria-hidden />
-              5.0 · 130+ inspections · Melbourne &amp; Sydney
+              {inspector
+                ? `${inspector.rating.toFixed(1)} \u00b7 ${inspector.inspections}+ inspections \u00b7 ${inspector.regions.map((r) => REGION_LABEL[r]).join(" & ")}`
+                : "5.0 \u00b7 Melbourne & Sydney"}
             </p>
           </div>
         </div>
