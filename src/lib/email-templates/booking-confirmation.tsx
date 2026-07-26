@@ -35,13 +35,6 @@ const container = {
 };
 const pad = { padding: "0 28px" };
 const wordmarkWrap = { padding: "26px 28px 18px" };
-const wordmark = {
-  margin: 0,
-  fontSize: "22px",
-  fontWeight: 700,
-  letterSpacing: "-0.02em",
-  color: INK,
-};
 const bar = { height: "4px", backgroundColor: RED, fontSize: "1px", lineHeight: "4px" };
 const h1 = {
   margin: "26px 0 10px",
