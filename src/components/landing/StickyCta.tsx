@@ -22,9 +22,7 @@ export function StickyCta() {
           size="lg"
           className="h-12 flex-1 rounded-md text-base font-semibold"
         >
-          <Link to="/book">
-            Book Inspection
-          </a>
+          <Link to="/book">Book Inspection</Link>
         </Button>
 
       </div>
