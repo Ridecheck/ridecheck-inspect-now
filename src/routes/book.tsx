@@ -248,14 +248,6 @@ function BookPage() {
                 <StepBooking
                   value={details}
                   onChange={(patch) => setDetails((d) => ({ ...d, ...patch }))}
-                  selectedAddOns={selectedAddOns}
-                  onToggleAddOn={(id) =>
-                    setSelectedAddOns((prev) =>
-                      prev.includes(id)
-                        ? prev.filter((x) => x !== id)
-                        : [...prev, id],
-                    )
-                  }
                 />
 
               )}
