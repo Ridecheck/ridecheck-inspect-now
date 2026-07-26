@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Check, Clock, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BookingSummary } from "@/components/booking/BookingSummary";
+import { BookingProgress } from "@/components/booking/BookingProgress";
 import { StepBooking, type BookingDetails } from "@/components/booking/StepBooking";
 import {
   StepTiming,
@@ -175,37 +176,7 @@ function BookPage() {
             />
           </Link>
 
-          <ol className="hidden items-center gap-3 md:flex">
-            {stepLabels.map((label, i) => {
-              const complete = done || i < step;
-              const active = !done && i === step;
-              return (
-                <li key={label} className="flex items-center gap-3">
-                  {i > 0 && <span className="h-px w-8 bg-border" aria-hidden />}
-                  <span className="flex items-center gap-2">
-                    <span
-                      className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
-                        active
-                          ? "bg-signal text-signal-foreground"
-                          : complete
-                            ? "bg-ink text-ink-foreground"
-                            : "bg-secondary text-muted-foreground"
-                      }`}
-                    >
-                      {complete ? <Check className="h-3.5 w-3.5" aria-hidden /> : i + 1}
-                    </span>
-                    <span
-                      className={`text-xs font-bold uppercase tracking-wider ${
-                        active ? "text-signal" : "text-muted-foreground"
-                      }`}
-                    >
-                      {label}
-                    </span>
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
+          <div className="hidden md:block" />
 
           <a
             href={PHONE_HREF}
@@ -216,6 +187,12 @@ function BookPage() {
           </a>
         </div>
       </header>
+
+      <div className="border-b border-border bg-background">
+        <div className="mx-auto max-w-2xl px-5 py-4 sm:px-8 sm:py-5">
+          <BookingProgress steps={stepLabels} current={step} complete={done} />
+        </div>
+      </div>
 
       {done ? (
         <main className="mx-auto max-w-xl px-5 py-16 text-center sm:px-8">
