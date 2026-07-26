@@ -1,6 +1,7 @@
 import { Check } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { BOOKING_URL, packages } from "@/lib/ridecheck";
+import { packages } from "@/lib/ridecheck";
 
 export function Packages() {
   return (
@@ -63,9 +64,9 @@ export function Packages() {
                 size="lg"
                 className="mt-8 h-12 w-full rounded-md bg-ink text-base font-semibold text-ink-foreground hover:bg-ink/90"
               >
-                <a href={BOOKING_URL} target="_blank" rel="noopener">
+                <Link to="/book">
                   Book Inspection
-                </a>
+                </Link>
               </Button>
             </div>
           ))}

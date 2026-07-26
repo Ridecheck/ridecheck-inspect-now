@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
@@ -146,8 +147,14 @@ export function BookingWizard() {
                 ))}
               </ul>
               <Button
+                asChild
+                className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
+              >
+                <Link to="/book">Pick an inspection time</Link>
+              </Button>
+              <Button
                 variant="outline"
-                className="mt-6 h-12 w-full rounded-xl"
+                className="mt-3 h-12 w-full rounded-xl"
                 onClick={() => {
                   setForm(emptyForm);
                   setStep(0);

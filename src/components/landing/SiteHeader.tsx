@@ -1,6 +1,7 @@
 import { Phone } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { BOOKING_URL, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
 import logoAsset from "@/assets/ridecheck-logo.png.asset.json";
 
 const links = [
@@ -48,9 +49,9 @@ export function SiteHeader() {
             asChild
             className="hidden rounded-md px-6 font-semibold shadow-soft sm:inline-flex"
           >
-            <a href={BOOKING_URL} target="_blank" rel="noopener">
+            <Link to="/book">
               Book Inspection
-            </a>
+            </Link>
           </Button>
         </div>
       </div>
