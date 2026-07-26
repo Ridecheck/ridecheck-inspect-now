@@ -1,6 +1,6 @@
-import { Car, Check, Link2, MapPin, Plus } from "lucide-react";
+import { Car, Check, Link2, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { AU_STATES, addOns } from "@/lib/booking";
+import { AU_STATES } from "@/lib/booking";
 import { packages } from "@/lib/ridecheck";
 
 
@@ -34,13 +34,9 @@ function Labelled({
 export function StepBooking({
   value,
   onChange,
-  selectedAddOns = [],
-  onToggleAddOn,
 }: {
   value: BookingDetails;
   onChange: (patch: Partial<BookingDetails>) => void;
-  selectedAddOns?: string[];
-  onToggleAddOn?: (id: string) => void;
 }) {
 
   return (
@@ -181,57 +177,6 @@ export function StepBooking({
           })}
         </div>
       </section>
-
-      {onToggleAddOn && addOns.length > 0 && (
-        <section>
-          <h2 className="text-lg font-bold text-ink">Optional add-ons</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Add extras to your inspection. Both are optional — you can continue
-            without them.
-          </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {addOns.map((a) => {
-              const on = selectedAddOns.includes(a.id);
-              return (
-                <button
-                  key={a.id}
-                  type="button"
-                  onClick={() => onToggleAddOn(a.id)}
-                  role="checkbox"
-                  aria-checked={on}
-                  className={`flex items-start justify-between gap-3 rounded-2xl border p-4 text-left transition ${
-                    on
-                      ? "border-signal bg-accent/40 shadow-soft"
-                      : "border-border bg-card hover:border-signal/50"
-                  }`}
-                >
-                  <div>
-                    <p className="text-sm font-bold text-ink">{a.name}</p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">{a.blurb}</p>
-                    <p className="mt-1.5 text-sm font-extrabold text-signal">
-                      +${a.price}
-                    </p>
-                  </div>
-                  <span
-                    className={`mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border ${
-                      on
-                        ? "border-signal bg-signal text-signal-foreground"
-                        : "border-border text-muted-foreground"
-                    }`}
-                    aria-hidden
-                  >
-                    {on ? (
-                      <Check className="h-3.5 w-3.5" />
-                    ) : (
-                      <Plus className="h-3.5 w-3.5" />
-                    )}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      )}
 
     </div>
   );
