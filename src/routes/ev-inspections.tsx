@@ -196,7 +196,12 @@ function EvInspectionsPage() {
           </div>
         </section>
 
+        <WhyRideCheck />
+
+        <Reviews />
+
         {/* FAQ */}
+
         <section className="bg-background">
           <div className="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-20">
             <h2 className="text-center text-3xl font-extrabold text-ink sm:text-4xl">
