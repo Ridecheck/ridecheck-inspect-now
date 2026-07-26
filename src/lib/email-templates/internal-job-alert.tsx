@@ -83,9 +83,16 @@ export const InternalJobAlertEmail = ({
     <Body style={main}>
       <Container style={container}>
         <Section style={header}>
+          <Img
+            src={LOGO_URL}
+            alt="RideCheck"
+            width="130"
+            style={{ display: "block", border: 0, marginBottom: "14px" }}
+          />
           <Text style={headerTitle}>New booking — dispatch required</Text>
           <Text style={headerRef}>{reference}</Text>
         </Section>
+
 
         <Section style={{ ...pad, paddingTop: "22px" }}>
           <Text style={sectionTitle}>Job</Text>
