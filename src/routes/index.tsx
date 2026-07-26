@@ -4,6 +4,7 @@ import { Hero } from "@/components/landing/Hero";
 import { BookingWizard } from "@/components/landing/BookingWizard";
 import { Packages } from "@/components/landing/Packages";
 import { WhyRideCheck } from "@/components/landing/WhyRideCheck";
+import { ServiceArea } from "@/components/landing/ServiceArea";
 import { RecentlyInspected } from "@/components/landing/RecentlyInspected";
 import { InspectionVideos } from "@/components/landing/InspectionVideos";
 import { HowItWorks } from "@/components/landing/HowItWorks";
@@ -72,6 +73,7 @@ function Index() {
         <BookingWizard />
         <Packages />
         <WhyRideCheck />
+        <ServiceArea />
         <RecentlyInspected />
         <InspectionVideos />
         <div id="how-it-works">
