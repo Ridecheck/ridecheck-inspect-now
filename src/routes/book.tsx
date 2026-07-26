@@ -68,12 +68,14 @@ const stepLabels = ["Your booking", "Availability", "Confirm"];
 
 function BookPage() {
   const prefill = Route.useSearch();
-  const serviceType: ServiceType = prefill.type === "ev" ? "ev" : "standard";
+  const [serviceType, setServiceType] = useState<ServiceType>(
+    prefill.type === "ev" ? "ev" : "standard",
+  );
   const catalogue = serviceType === "ev" ? evPackages : packages;
+  const defaultPkg = catalogue.find((p) => p.popular)?.name ?? catalogue[0].name;
   const prefilledPkg =
     catalogue.find((p) => p.name.toLowerCase() === prefill.pkg?.toLowerCase())?.name ??
-    catalogue.find((p) => p.popular)?.name ??
-    catalogue[0].name;
+    defaultPkg;
 
   const [step, setStep] = useState(
     prefill.suburb && prefill.vehicle ? 1 : 0,
@@ -91,6 +93,19 @@ function BookPage() {
     pkg: prefilledPkg,
     drivetrain: serviceType === "ev" ? "ev" : undefined,
   });
+
+  /** Detection prompt accepted: swap protocol, packages and timing selection. */
+  const switchService = (next: ServiceType, drivetrain: "ev" | "phev") => {
+    const nextCatalogue = next === "ev" ? evPackages : packages;
+    setServiceType(next);
+    setDetails((d) => ({
+      ...d,
+      pkg: nextCatalogue.find((p) => p.popular)?.name ?? nextCatalogue[0].name,
+      drivetrain: next === "ev" ? drivetrain : undefined,
+    }));
+    setTiming(null);
+  };
+
   const [timing, setTiming] = useState<Timing>(null);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [contact, setContact] = useState<ContactDetails>({
@@ -257,7 +272,9 @@ function BookPage() {
                   value={details}
                   onChange={(patch) => setDetails((d) => ({ ...d, ...patch }))}
                   serviceType={serviceType}
+                  onSwitchService={switchService}
                 />
+
 
               )}
               {step === 1 && (

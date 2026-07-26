@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { AU_STATES } from "@/lib/booking";
 import { packages, evPackages } from "@/lib/ridecheck";
 import type { ServiceType } from "@/lib/availability";
+import { EvDetectionPrompt } from "@/components/booking/EvDetectionPrompt";
+
 
 
 export type BookingDetails = {
@@ -38,13 +40,16 @@ export function StepBooking({
   value,
   onChange,
   serviceType = "standard",
+  onSwitchService,
 }: {
   value: BookingDetails;
   onChange: (patch: Partial<BookingDetails>) => void;
   serviceType?: ServiceType;
+  onSwitchService?: (next: ServiceType, drivetrain: "ev" | "phev") => void;
 }) {
   const isEv = serviceType === "ev";
   const list = isEv ? evPackages : packages;
+
 
 
   return (
@@ -137,6 +142,15 @@ export function StepBooking({
               />
             </div>
           </Labelled>
+          {onSwitchService && (
+            <EvDetectionPrompt
+              vehicle={value.vehicle}
+              listing={value.listing}
+              serviceType={serviceType}
+              onSwitch={onSwitchService}
+            />
+          )}
+
           {isEv && (
             <Labelled label="Drivetrain">
               <div className="flex gap-2">

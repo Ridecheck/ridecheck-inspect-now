@@ -17,7 +17,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { packages } from "@/lib/ridecheck";
+import { packages, evPackages } from "@/lib/ridecheck";
+import { EvDetectionPrompt } from "@/components/booking/EvDetectionPrompt";
+import type { ServiceType } from "@/lib/availability";
+
 
 const wizardSteps = ["Location", "Vehicle", "Inspection", "Your details"];
 
@@ -60,6 +63,17 @@ export function BookingWizard() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<Form>(emptyForm);
+  const [serviceType, setServiceType] = useState<ServiceType>("standard");
+  const catalogue = serviceType === "ev" ? evPackages : packages;
+
+  const switchService = (next: ServiceType) => {
+    const nextCatalogue = next === "ev" ? evPackages : packages;
+    setServiceType(next);
+    setForm((f) => ({
+      ...f,
+      pkg: nextCatalogue.find((p) => p.popular)?.name ?? nextCatalogue[0].name,
+    }));
+  };
 
   const goToCheckout = () => {
     const parts = form.location.split(",").map((x) => x.trim());
@@ -68,6 +82,7 @@ export function BookingWizard() {
     navigate({
       to: "/book",
       search: {
+        type: serviceType,
         suburb: suburb || form.location,
         postcode,
         vehicle: form.vehicle || undefined,
@@ -79,6 +94,7 @@ export function BookingWizard() {
       },
     });
   };
+
 
   const set = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -197,21 +213,33 @@ export function BookingWizard() {
                         placeholder="Paste Carsales or marketplace link"
                         aria-label="Listing link"
                       />
+                      <EvDetectionPrompt
+                        vehicle={form.vehicle}
+                        listing={form.listing}
+                        serviceType={serviceType}
+                        onSwitch={(next) => switchService(next)}
+                      />
                     </div>
+
                   </>
                 )}
 
                 {step === 2 && (
                   <>
                     <h3 className="mt-1 text-xl font-bold text-ink">
-                      Choose the inspection that's right for you
+                      {serviceType === "ev"
+                        ? "Choose your EV inspection"
+                        : "Choose the inspection that's right for you"}
                     </h3>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Both include an instant digital report delivered fast.
+                      {serviceType === "ev"
+                        ? "Both include a certified Aviloo battery health test."
+                        : "Both include an instant digital report delivered fast."}
                     </p>
                     <div className="mt-5 space-y-3">
-                      {[...packages].reverse().map((p) => {
+                      {[...catalogue].reverse().map((p) => {
                         const selected = form.pkg === p.name;
+
                         return (
                           <button
                             key={p.name}
