@@ -249,8 +249,8 @@ function SlotCard({
 }) {
   if (!slot.available) {
     return (
-      <div className="rounded-xl border border-border bg-secondary/50 p-4 text-center">
-        <p className="text-sm font-semibold text-muted-foreground line-through">
+      <div className="rounded-xl border border-border bg-secondary/50 p-3 text-center sm:p-4">
+        <p className="text-[13px] font-semibold text-muted-foreground line-through sm:text-sm">
           {slot.label}
         </p>
         <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -265,26 +265,29 @@ function SlotCard({
       type="button"
       onClick={onClick}
       aria-pressed={chosen}
-      className={`rounded-xl border p-4 text-center transition ${
+      className={`rounded-xl border p-3 text-center transition sm:p-4 ${
         chosen
           ? "border-signal bg-accent/40 shadow-soft"
           : "border-border bg-card hover:border-signal/50"
       }`}
     >
-      <p className="text-sm font-bold text-ink">{slot.label}</p>
+      <p className="text-[13px] font-bold text-ink sm:text-sm">{slot.label}</p>
       <p className="mt-1 text-sm font-extrabold text-signal">${price}</p>
       <p
-        className={`mt-1 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider ${
+        className={`mt-1 inline-flex items-center justify-center gap-1 text-[10px] font-bold uppercase leading-tight tracking-wider ${
           slot.remaining === 1 ? "text-signal" : "text-muted-foreground"
         }`}
       >
-        <Users className="h-3 w-3" aria-hidden />
-        {slot.remaining === 1 ? "1 inspector left" : `${slot.remaining} inspectors free`}
+        <Users className="h-3 w-3 shrink-0" aria-hidden />
+        {slot.remaining === 1 ? "1 left" : `${slot.remaining} free`}
       </p>
-      <p className="mt-1 text-[10px] text-muted-foreground">{arrivalWindow(slot)}</p>
+      <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
+        {arrivalWindow(slot)}
+      </p>
     </button>
   );
 }
+
 
 function HighlightCard({
   badge,
