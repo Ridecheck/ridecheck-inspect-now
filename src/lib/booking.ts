@@ -3,36 +3,32 @@ export const AU_STATES = ["VIC", "NSW", "SA", "QLD", "WA", "TAS", "NT", "ACT"];
 export type AddOn = {
   id: string;
   name: string;
+  /** Short label used in the booking summary. Falls back to `name`. */
+  summaryLabel?: string;
   blurb: string;
   price: number;
 };
 
+/** Optional extras. Add more entries here — the UI renders the list as-is. */
 export const addOns: AddOn[] = [
   {
-    id: "ppsr-plus",
-    name: "CarHistory + valuation report",
-    blurb: "Odometer, written-off, stolen and market valuation data.",
-    price: 39,
+    id: "video-walkthrough",
+    name: "Video Walkthrough",
+    summaryLabel: "Video Walkthrough",
+    blurb:
+      "A full video tour of the vehicle from our inspector — see and hear everything, ideal if you can't be there in person.",
+    price: 50,
   },
   {
-    id: "road-test",
-    name: "Extended road test",
-    blurb: "Additional 20km highway and stop-start loop with notes.",
-    price: 49,
-  },
-  {
-    id: "cold-start",
-    name: "Cold-start video",
-    blurb: "We return at first start of day to capture a true cold start.",
-    price: 59,
-  },
-  {
-    id: "buyer-call",
-    name: "Negotiation call",
-    blurb: "A 20-minute call to help you price the faults we found.",
-    price: 29,
+    id: "aviloo-battery",
+    name: "Aviloo EV Battery Health Test",
+    summaryLabel: "Aviloo Battery Test",
+    blurb:
+      "Certified State of Health test for used EVs and plug-in hybrids — know the real battery condition before you buy.",
+    price: 200,
   },
 ];
+
 
 import {
   existingJobs,
