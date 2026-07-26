@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Check, Clock, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BookingSummary } from "@/components/booking/BookingSummary";
+import { BookingProgress } from "@/components/booking/BookingProgress";
 import { StepBooking, type BookingDetails } from "@/components/booking/StepBooking";
 import {
   StepTiming,
