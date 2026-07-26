@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
@@ -57,9 +57,28 @@ function Field({
 }
 
 export function BookingWizard() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [done, setDone] = useState(false);
   const [form, setForm] = useState<Form>(emptyForm);
+
+  const goToCheckout = () => {
+    const parts = form.location.split(",").map((x) => x.trim());
+    const postcode = parts.find((x) => /^\d{4}$/.test(x));
+    const suburb = parts.filter((x) => !/^\d{4}$/.test(x)).join(", ");
+    navigate({
+      to: "/book",
+      search: {
+        suburb: suburb || form.location,
+        postcode,
+        vehicle: form.vehicle || undefined,
+        listing: form.listing || undefined,
+        pkg: form.pkg,
+        name: form.name || undefined,
+        phone: form.phone || undefined,
+        email: form.email || undefined,
+      },
+    });
+  };
 
   const set = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -89,8 +108,8 @@ export function BookingWizard() {
           {/* Step tracker */}
           <ol className="mx-auto mt-8 flex max-w-2xl items-start justify-between">
             {wizardSteps.map((label, i) => {
-              const complete = done || i < step;
-              const active = !done && i === step;
+              const complete = i < step;
+              const active = i === step;
               return (
                 <li key={label} className="relative flex flex-1 flex-col items-center">
                   {i > 0 && (
@@ -122,49 +141,7 @@ export function BookingWizard() {
             })}
           </ol>
 
-          {done ? (
-            <div className="mx-auto mt-10 max-w-md text-center">
-              <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent">
-                <Check className="h-8 w-8 text-signal" aria-hidden />
-              </span>
-              <h3 className="mt-5 text-2xl font-extrabold text-ink">You're all set</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                We've received your booking request and will be in touch shortly.
-              </p>
-              <ul className="mt-5 space-y-2 text-left">
-                {[
-                  "Booking received",
-                  "We'll contact you within 2 hours to confirm",
-                  "No payment required today",
-                ].map((t) => (
-                  <li
-                    key={t}
-                    className="flex items-start gap-2 rounded-xl bg-accent px-4 py-3 text-sm text-accent-foreground"
-                  >
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-signal" aria-hidden />
-                    {t}
-                  </li>
-                ))}
-              </ul>
-              <Button
-                asChild
-                className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
-              >
-                <Link to="/book">Pick an inspection time</Link>
-              </Button>
-              <Button
-                variant="outline"
-                className="mt-3 h-12 w-full rounded-xl"
-                onClick={() => {
-                  setForm(emptyForm);
-                  setStep(0);
-                  setDone(false);
-                }}
-              >
-                Book another inspection
-              </Button>
-            </div>
-          ) : (
+          {(
             <div className="mt-10 grid gap-8 lg:grid-cols-[1.2fr_1fr]">
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-signal">
@@ -363,9 +340,9 @@ export function BookingWizard() {
                   <Button
                     size="lg"
                     className="h-12 flex-1 rounded-xl text-base font-semibold shadow-soft"
-                    onClick={step === 3 ? () => setDone(true) : next}
+                    onClick={step === 3 ? goToCheckout : next}
                   >
-                    {step === 3 ? "Get my inspection booked" : "Continue"}
+                    {step === 3 ? "Choose my inspection time" : "Continue"}
                     <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
                   </Button>
                 </div>
