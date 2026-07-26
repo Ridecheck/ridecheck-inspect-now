@@ -1,52 +1,51 @@
-Keep everything mocked — no backend, no Lovable Cloud. Restructure the availability step so it behaves like a real multi-mechanic calendar, and define the data shape your existing app can feed in later.
+## Goal
 
-## 1. Model capacity, not a single yes/no slot
+Replace the flat 4-card "How it works" grid with a two-column section: a numbered step rail on the left, and a scroll-reactive photo collage on the right — inspired by the reference, but our own composition and in RideCheck red/ink/white.
 
-Today each hour is either available or not. Change the mock data in `src/lib/booking.ts` so each slot carries how many inspectors are free:
-
-```text
-slot = { label: "9 am – 10 am", capacity: 3, taken: 2, remaining: 1 }
-```
-
-The UI then shows honest scarcity instead of a flat grid:
-- 2+ free: normal selectable slot
-- exactly 1 free: "1 inspector left" in red
-- 0 free: greyed with "Booked out" (replaces the current "Booked nearby")
-
-## 2. Region-aware availability
-
-A vehicle in a Melbourne suburb should only see Melbourne inspectors. Mock inspectors get a `regions` list (`melbourne`, `sydney`), and the suburb/postcode captured in step 1 picks which pool builds the calendar. If the suburb is outside coverage, the step shows an "Adelaide coming soon — request a callback" state instead of a dead calendar.
-
-## 3. Better day strip
-
-- Extend from 7 days to 14, horizontally scrollable, with a "Next week" jump.
-- Each day chip shows price and a capacity dot: green (plenty), amber (filling), grey (full).
-- Full days are dimmed and non-selectable rather than clickable-then-empty.
-- Keep the existing ASAP and weekend surcharges.
-
-## 4. Slot grid improvements
-
-- Group slots under "Morning / Afternoon" headings.
-- Show an arrival window ("9:00–10:00 arrival, ~90 min on site") so buyers understand it's not an exact-minute booking.
-- Keep Fastest / Best price cards, but base them on real remaining capacity in the mock data.
-
-## 5. Assignment shown at review
-
-Auto-assign a mock inspector for the chosen slot and surface it on the review step: name, region, inspections completed, rating. This is the pattern your real app can fill in, and it makes the booking feel concrete.
-
-## 6. A clean seam for your real app
-
-All schedule logic lives in one place so swapping mock for live data is a single-file change.
+## Layout
 
 ```text
-src/lib/booking.ts   ->  types + buildDays(...) reading from a provider
-src/lib/schedule.mock.ts  ->  mock inspectors, working hours, existing jobs
+ ┌───────────────────────────────┬──────────────────────────┐
+ │  How it works                 │   col A   col B   col C  │
+ │  ─────────────────            │   [ ]     [ ]     [ ]    │
+ │  (1) Book and pay online      │   [ ]     [ ]     [ ]    │
+ │  (2) Our expert connects      │   [ ]     [ ]     [ ]    │
+ │  (3) On-site inspection       │   ↑drift  ↓drift  ↑drift │
+ │  (4) Same-day report          │                          │
+ │  [ Book Inspection ]          │                          │
+ └───────────────────────────────┴──────────────────────────┘
 ```
 
-`buildDays()` will take `{ region, packageName, days }` and return the same `Day[]` shape it does now, so no component changes are needed when the data becomes real. When your app is ready, the mock provider is replaced with a fetch to your API returning inspectors, their working hours and their booked jobs.
+- Desktop: left rail ~44% width, sticky while the collage scrolls past. Right side is a 3-column tile mosaic with mixed aspect ratios (not a uniform grid) so it reads as a portfolio, not a table.
+- Mobile: steps stack full width; collage becomes a shorter 2-column mosaic below the CTA, still with a gentler drift.
+
+## Step rail
+
+- Keep the existing 4 steps from `src/lib/ridecheck.ts` (unchanged copy).
+- Each step gets a large outlined numeral, a thin vertical connector line, title, and body.
+- As the section scrolls, the step nearest the viewport centre becomes "active": numeral fills with signal red, connector segment above it fills, body text goes full contrast. Inactive steps sit at muted contrast.
+- A "Book Inspection" CTA sits under the last step, linking to `/book`.
+
+## Photo collage (placeholder tiles)
+
+- Empty placeholder tiles: rounded, bordered, subtle haze fill with a faint diagonal texture, a small camera glyph and a caption slot (e.g. "Engine bay", "Diagnostic scan", "Paint reading", "Undercarriage", "Road test", "Interior", "Tyres", "Report"). No stock imagery.
+- Tiles are driven by a plain array in the component so real photos drop in later by adding a `src` — same pattern already used in `InspectionVideos.tsx` (tile renders the image when `src` exists, placeholder when it doesn't).
+- Column A and C drift up, column B drifts down, each at a different rate, tied to the section's scroll progress.
+
+## Motion
+
+- One `requestAnimationFrame`-throttled scroll listener computes section progress (0→1) via `getBoundingClientRect`, writes a CSS variable per column; transforms are pure CSS `translate3d`, so it stays cheap.
+- Drift range kept small (~40–80px) so nothing clips or leaves gaps; section uses `overflow-hidden`.
+- Respects `prefers-reduced-motion`: drift and active-step transitions disabled, everything renders static.
+- No new dependencies.
 
 ## Technical notes
 
-- Files touched: `src/lib/booking.ts` (capacity/region-aware generator), new `src/lib/schedule.mock.ts` (inspectors, hours, jobs), `src/components/booking/StepAvailability.tsx` (day strip, grouped grid, capacity states), `src/components/booking/StepReview.tsx` (assigned inspector card), `src/routes/book.tsx` (pass region derived from suburb into `buildDays`).
-- Availability stays deterministic (seeded) so the preview doesn't flicker between renders.
-- No database, no auth, no payments — everything stays front-end.
+- Rewrite `src/components/landing/HowItWorks.tsx`; add a small `useScrollProgress` hook (local to the component file or `src/hooks/`).
+- Tile list and captions live in the component; step copy stays in `src/lib/ridecheck.ts`.
+- Colours strictly via existing tokens (`signal`, `ink`, `haze`, `border`, `muted-foreground`) — no hardcoded hex.
+- Homepage wiring in `src/routes/index.tsx` is unchanged; `/how-it-works` placeholder route stays as-is for now (we can reuse this section there later).
+
+## Iteration
+
+This is round one — once it's on screen we can push density, tile shapes, drift intensity and the active-step treatment further.
