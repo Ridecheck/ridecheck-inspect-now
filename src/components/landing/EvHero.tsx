@@ -69,7 +69,7 @@ export function EvHero() {
           </p>
 
           <p className="mt-5 font-display text-lg font-bold text-ink">
-            EV inspections from <span className="text-signal">$449</span>
+            EV inspections from <span className="text-signal">$250</span>
           </p>
 
           <ul className="mt-5 grid gap-2 sm:grid-cols-2">
