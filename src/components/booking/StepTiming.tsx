@@ -2,7 +2,15 @@ import { useState } from "react";
 import { Check, Flame, Sun, Sunset } from "lucide-react";
 import type { Day } from "@/lib/booking";
 import { dayPrice, formatDayLong } from "@/lib/booking";
-import { isDayAvailable, windowsForDay, type Window } from "@/lib/availability";
+import {
+  isDayAvailable,
+  isEvRegionCovered,
+  windowsForDay,
+  type ServiceType,
+  type Window,
+} from "@/lib/availability";
+import type { Region } from "@/lib/schedule.mock";
+import { Zap } from "lucide-react";
 
 export type Timing =
   | { mode: "asap" }
@@ -24,13 +32,21 @@ export function StepTiming({
   basePrice,
   value,
   onChange,
+  serviceType = "standard",
+  region,
+  regionLabel,
 }: {
   days: Day[];
   basePrice: number;
   value: Timing;
   onChange: (t: Timing) => void;
+  serviceType?: ServiceType;
+  region?: Region | null;
+  regionLabel?: string;
 }) {
   const [week, setWeek] = useState(0);
+  const isEv = serviceType === "ev";
+  const opts = { serviceType, region };
   const selectableDays = days.slice(1);
   const visibleDays = selectableDays.slice(week * 7, week * 7 + 7);
 
@@ -38,19 +54,57 @@ export function StepTiming({
   const activeDay = days.find((d) => d.iso === activeIso);
 
   const selectDay = (iso: string) => {
-    const firstOpen = windowsForDay(iso).find((w) => w.available);
+    const firstOpen = windowsForDay(iso, opts).find((w) => w.available);
     onChange({ mode: "day", iso, part: firstOpen?.key ?? "am" });
   };
 
+  if (isEv && !isEvRegionCovered(region)) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-6 text-center shadow-soft">
+        <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+          <Zap className="h-6 w-6 text-signal" aria-hidden />
+        </span>
+        <h2 className="mt-4 text-lg font-bold text-ink">
+          Aviloo testing isn&rsquo;t live in {regionLabel ?? "your area"} yet
+        </h2>
+        <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+          Certified EV testing runs in Melbourne and Sydney today. Leave your details
+          on the next step and we&rsquo;ll contact you the moment it goes live near you
+          &mdash; no payment is taken.
+        </p>
+        <button
+          type="button"
+          onClick={() => onChange({ mode: "asap" })}
+          aria-pressed={value?.mode === "asap"}
+          className={`mt-5 w-full rounded-xl border p-4 text-sm font-bold transition ${
+            value?.mode === "asap"
+              ? "border-signal bg-accent/40 text-ink"
+              : "border-border text-ink hover:border-signal/50"
+          }`}
+        >
+          Join the EV waitlist
+        </button>
+      </div>
+    );
+  }
+
+  const anyOpen = selectableDays.some((d) => isDayAvailable(d.iso, opts));
+
   return (
     <div className="space-y-8">
+      {isEv && (
+        <p className="flex items-start gap-2 rounded-xl bg-accent px-4 py-3 text-xs leading-relaxed text-accent-foreground">
+          <Zap className="mt-0.5 h-4 w-4 shrink-0 text-signal" aria-hidden />
+          Only days with an Aviloo-certified inspector rostered on are selectable.
+        </p>
+      )}
       <section>
         <h2 className="text-base font-bold text-ink sm:text-lg">Pick a time that suits</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Pick a day and rough time — we'll confirm your exact slot by SMS within 2 hours.
         </p>
 
-        <button
+        {!isEv && <button
           type="button"
           onClick={() => onChange({ mode: "asap" })}
           aria-pressed={value?.mode === "asap"}
@@ -80,7 +134,7 @@ export function StepTiming({
               <Check className="ml-auto mt-1 h-4 w-4 text-signal" aria-hidden />
             )}
           </span>
-        </button>
+        </button>}
       </section>
 
       <section>
@@ -109,7 +163,7 @@ export function StepTiming({
         <div className="mt-3 -mx-5 flex snap-x snap-mandatory gap-2 overflow-x-auto px-5 pb-2 sm:-mx-1 sm:px-1">
           {visibleDays.map((day) => {
             const active = day.iso === activeIso;
-            const open = isDayAvailable(day.iso);
+            const open = isDayAvailable(day.iso, opts);
             return (
               <button
                 key={day.iso}
@@ -139,13 +193,19 @@ export function StepTiming({
                 </p>
                 {!open && (
                   <p className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Full
+                    {isEv ? "No EV" : "Full"}
                   </p>
                 )}
               </button>
             );
           })}
         </div>
+        {isEv && !anyOpen && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            No certified EV days in this window &mdash; try next week, or call us and
+            we&rsquo;ll find the next opening.
+          </p>
+        )}
       </section>
 
       {value?.mode === "day" && activeDay && (
@@ -159,7 +219,7 @@ export function StepTiming({
             </p>
           )}
           <div className="mt-3 grid grid-cols-2 gap-3">
-            {windowsForDay(activeDay.iso).map((w) => {
+            {windowsForDay(activeDay.iso, opts).map((w) => {
               const Icon = w.key === "am" ? Sun : Sunset;
               const on = value.part === w.key;
               return (
