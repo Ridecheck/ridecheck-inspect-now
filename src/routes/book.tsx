@@ -188,6 +188,12 @@ function BookPage() {
         </div>
       </header>
 
+      <div className="border-b border-border bg-background">
+        <div className="mx-auto max-w-2xl px-5 py-4 sm:px-8 sm:py-5">
+          <BookingProgress steps={stepLabels} current={step} complete={done} />
+        </div>
+      </div>
+
       {done ? (
         <main className="mx-auto max-w-xl px-5 py-16 text-center sm:px-8">
           <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent">
