@@ -17,11 +17,13 @@ import {
   formatDayLong,
 } from "@/lib/booking";
 import { packages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 import logoAsset from "@/assets/ridecheck-logo.png.asset.json";
 
 const TITLE = "Book a Pre-Purchase Car Inspection | RideCheck";
 const DESCRIPTION =
-  "Book a mobile pre-purchase car inspection in Melbourne or Sydney. Choose your vehicle, pick a time from live availability and we confirm within 2 hours. No payment today.";
+  "Book a mobile pre-purchase car inspection in Melbourne or Sydney. Choose your vehicle, pick a time from live availability, pay securely and we confirm within 2 hours.";
 
 type BookSearch = {
   suburb?: string;
@@ -32,6 +34,7 @@ type BookSearch = {
   name?: string;
   phone?: string;
   email?: string;
+  paid?: string;
 };
 
 const str = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : undefined);
@@ -46,6 +49,7 @@ export const Route = createFileRoute("/book")({
     name: str(search.name),
     phone: str(search.phone),
     email: str(search.email),
+    paid: str(search.paid),
   }),
   head: () => ({
     meta: [
@@ -72,7 +76,8 @@ function BookPage() {
   const [step, setStep] = useState(
     prefill.suburb && prefill.vehicle ? 1 : 0,
   );
-  const [done, setDone] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [done, setDone] = useState(prefill.paid === "1");
 
   const [details, setDetails] = useState<BookingDetails>({
     suburb: prefill.suburb ?? "",
@@ -165,6 +170,7 @@ function BookPage() {
 
   return (
     <div className="min-h-screen bg-haze pb-28 sm:pb-0">
+      <PaymentTestModeBanner />
       <header className="border-b border-border bg-background">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
           <Link to="/" aria-label="RideCheck home">
@@ -225,16 +231,15 @@ function BookPage() {
             <Check className="h-8 w-8 text-signal" aria-hidden />
           </span>
           <h1 className="mt-6 text-3xl font-extrabold text-ink">
-            Booking request received
+            Payment received — booking confirmed
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            We'll confirm your {pkg.name.toLowerCase()}
-            {chosenDay ? ` for ${formatDayLong(chosenDay)}, ${selection?.slot}` : ""} within
-            2 hours.
+            We're matching you with your nearest inspector. You'll get an SMS with your
+            confirmed time within 2 hours.
           </p>
           <ul className="mt-6 space-y-2 text-left">
             {[
-              "No payment taken today",
+              "Payment complete",
               "Your inspector calls to confirm access with the seller",
               "Free cancellation up to 24 hours before",
             ].map((t) => (
@@ -248,7 +253,7 @@ function BookPage() {
             ))}
           </ul>
           <Button asChild variant="outline" className="mt-8 h-12 w-full rounded-xl">
-            <Link to="/">Back to home</Link>
+            <Link to="/">Done</Link>
           </Button>
         </main>
       ) : (
@@ -263,7 +268,7 @@ function BookPage() {
             </h1>
             <p className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
               <Clock className="h-3.5 w-3.5 text-signal" aria-hidden />
-              Takes about 2 minutes · no payment today
+              Takes about 2 minutes · secure payment
             </p>
           </div>
 
@@ -288,7 +293,25 @@ function BookPage() {
                   covered={availability.covered}
                 />
               )}
-              {step === 2 && (
+              {step === 2 && paying && (
+                <div className="space-y-4">
+                  <button
+                    type="button"
+                    onClick={() => setPaying(false)}
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-ink"
+                  >
+                    <ArrowLeft className="h-4 w-4" aria-hidden />
+                    Back to your details
+                  </button>
+                  <StripeEmbeddedCheckout
+                    amountInCents={total * 100}
+                    description={`${pkg.name} — ${details.vehicle || "vehicle"} · ${details.suburb || "Melbourne"}`}
+                    customerEmail={contact.email || undefined}
+                    returnUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/book?paid=1`}
+                  />
+                </div>
+              )}
+              {step === 2 && !paying && (
                 <StepReview
                   inspector={inspector}
                   value={contact}
@@ -302,7 +325,7 @@ function BookPage() {
                 />
               )}
 
-              <div className="mt-8 hidden gap-3 sm:flex">
+              <div className={`mt-8 gap-3 ${paying ? "hidden" : "hidden sm:flex"}`}>
                 {step > 0 && (
                   <Button
                     variant="outline"
@@ -318,9 +341,9 @@ function BookPage() {
                   size="lg"
                   disabled={!canContinue}
                   className="h-12 flex-1 rounded-xl text-base font-semibold shadow-soft"
-                  onClick={() => (step === 2 ? setDone(true) : setStep((s) => s + 1))}
+                  onClick={() => (step === 2 ? setPaying(true) : setStep((s) => s + 1))}
                 >
-                  {step === 2 ? `Request booking — $${total}` : `Continue — $${total}`}
+                  {step === 2 ? `Pay $${total}` : "Continue"}
                   <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
                 </Button>
               </div>
@@ -331,7 +354,7 @@ function BookPage() {
         </main>
       )}
 
-      {!done && (
+      {!done && !paying && (
         <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 p-3 backdrop-blur sm:hidden">
           <div className="flex gap-2">
             {step > 0 && (
@@ -349,9 +372,9 @@ function BookPage() {
               size="lg"
               disabled={!canContinue}
               className="h-12 flex-1 rounded-xl text-base font-semibold"
-              onClick={() => (step === 2 ? setDone(true) : setStep((s) => s + 1))}
+              onClick={() => (step === 2 ? setPaying(true) : setStep((s) => s + 1))}
             >
-              {step === 2 ? `Request booking — $${total}` : `Continue — $${total}`}
+              {step === 2 ? `Pay $${total}` : "Continue"}
             </Button>
           </div>
         </div>
