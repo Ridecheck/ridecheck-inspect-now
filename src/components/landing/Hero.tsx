@@ -123,7 +123,7 @@ export function Hero() {
         <div className="mt-10 overflow-hidden rounded-2xl lg:hidden">
           <img
             src={heroCar}
-            alt="Silver BMW M3 sedan inspected by RideCheck with Melbourne skyline"
+            alt="Red BMW M3 sedan inspected by RideCheck with Melbourne skyline"
             width={1408}
             height={1008}
             className="h-56 w-full object-cover sm:h-72"
