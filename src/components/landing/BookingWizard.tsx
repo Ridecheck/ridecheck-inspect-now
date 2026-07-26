@@ -17,7 +17,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { packages } from "@/lib/ridecheck";
+import { packages, evPackages } from "@/lib/ridecheck";
+import { EvDetectionPrompt } from "@/components/booking/EvDetectionPrompt";
+import type { ServiceType } from "@/lib/availability";
+
 
 const wizardSteps = ["Location", "Vehicle", "Inspection", "Your details"];
 
