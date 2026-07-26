@@ -77,7 +77,7 @@ export function StepAvailability({
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="text-lg font-bold text-ink">Pick a time that suits</h2>
+        <h2 className="text-base font-bold text-ink sm:text-lg">Pick a time that suits</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Live availability across our {regionLabel} inspectors.
         </p>
@@ -109,29 +109,29 @@ export function StepAvailability({
       </section>
 
       <section>
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+          <p className="min-w-0 truncate text-xs font-bold uppercase tracking-widest text-muted-foreground">
             Choose a day
           </p>
-          <div className="flex gap-2">
+          <div className="flex shrink-0 gap-1.5">
             <button
               type="button"
               onClick={() => setWeek(0)}
-              className={`rounded-full px-3 py-1 text-xs font-bold transition ${week === 0 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
+              className={`rounded-full px-2.5 py-1 text-[11px] font-bold transition sm:px-3 sm:text-xs ${week === 0 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
             >
               This week
             </button>
             <button
               type="button"
               onClick={() => setWeek(1)}
-              className={`rounded-full px-3 py-1 text-xs font-bold transition ${week === 1 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
+              className={`rounded-full px-2.5 py-1 text-[11px] font-bold transition sm:px-3 sm:text-xs ${week === 1 ? "bg-ink text-ink-foreground" : "bg-secondary text-muted-foreground hover:text-ink"}`}
             >
               Next week
             </button>
           </div>
         </div>
 
-        <div className="mt-3 -mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
+        <div className="mt-3 -mx-5 flex snap-x snap-mandatory gap-2 overflow-x-auto px-5 pb-2 sm:-mx-1 sm:px-1">
           {visibleDays.map((day) => {
             const active = day.iso === activeDay.iso;
             const sold = day.remaining === 0;
