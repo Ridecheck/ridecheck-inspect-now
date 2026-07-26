@@ -23,7 +23,7 @@ import logoAsset from "@/assets/ridecheck-logo.png.asset.json";
 
 const TITLE = "Book a Pre-Purchase Car Inspection | RideCheck";
 const DESCRIPTION =
-  "Book a mobile pre-purchase car inspection in Melbourne or Sydney. Choose your vehicle, pick a time from live availability and we confirm within 2 hours. No payment today.";
+  "Book a mobile pre-purchase car inspection in Melbourne or Sydney. Choose your vehicle, pick a time from live availability, pay securely and we confirm within 2 hours.";
 
 type BookSearch = {
   suburb?: string;
@@ -268,7 +268,7 @@ function BookPage() {
             </h1>
             <p className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
               <Clock className="h-3.5 w-3.5 text-signal" aria-hidden />
-              Takes about 2 minutes · no payment today
+              Takes about 2 minutes · secure payment
             </p>
           </div>
 
@@ -325,7 +325,7 @@ function BookPage() {
                 />
               )}
 
-              <div className={`mt-8 gap-3 sm:flex ${paying ? "hidden sm:hidden" : "hidden"}`}>
+              <div className={`mt-8 gap-3 ${paying ? "hidden" : "hidden sm:flex"}`}>
                 {step > 0 && (
                   <Button
                     variant="outline"
