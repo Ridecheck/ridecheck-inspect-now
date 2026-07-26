@@ -1,43 +1,62 @@
 ## Goal
 
-When a buyer types an electric or plug-in hybrid vehicle (or pastes a listing link for one), the booking flow should switch itself into the EV protocol — EV packages, drivetrain question, and the Aviloo-certified availability gating — instead of relying on the `?type=ev` link from the EV landing page.
+Two emails fire when a booking is paid:
 
-## Current state
+1. **Customer booking confirmation** — sent to the buyer.
+2. **Internal job alert** — sent to the RideCheck ops inbox with everything needed to dispatch an inspector.
 
-- `src/routes/book.tsx` sets `serviceType` once, from the URL: `prefill.type === "ev" ? "ev" : "standard"`. It's a constant, so nothing can change it mid-flow.
-- `StepBooking` and `StepTiming` already take `serviceType` as a prop and fully handle the EV branch (EV packages, drivetrain selector, certified-day gating, waitlist card). So the detection work is upstream only — the EV machinery already exists.
+Both are built as real, brand-styled templates in the project so they send for real once the sender domain is verified. Until then you can preview them from the Cloud dashboard without sending.
 
-## Approach: two layers, not one
+## Prerequisites (I handle these, no code for you)
 
-**Layer 1 — local rules (instant, free, no network).**
-A small keyword/model matcher in `src/lib/ev-detect.ts`: Tesla (all), Polestar, BYD, Ioniq 5/6, EV6, Kona Electric, MG4, ID.4, i4/iX/i3, EQ*, e-tron, Leaf, plus `phev`, `plug-in`, `hybrid`, `electric`, `kWh`. Returns `{ drivetrain: "ev" | "phev" | "ice" | "unknown", confidence }`. This catches the large majority of real inputs with zero latency.
+The project currently has no backend and no email setup. Two things have to be turned on first:
 
-**Layer 2 — AI fallback (the "wrapper").**
-When the rules return `unknown` and the input looks like a real vehicle (or a listing URL), call a server function that asks a model to classify the vehicle string into `ev | phev | hybrid | ice | unknown`. Debounced, one call per settled input, result cached per string. This runs server-side through Lovable AI so no key is exposed.
+- **Lovable Cloud** — required for any email sending.
+- **A sender domain you own** — e.g. `notify.vehicleinspect.com.au`. I'll open the setup dialog; you add the DNS records it shows. Emails start sending once it verifies. There is no free shared sender domain.
 
-Why both: the AI alone would add a delay to every keystroke and cost a call per booking; the rules alone go stale as new models launch. Rules-first with AI as backstop is the right shape.
+Scaffolding and template work can proceed while DNS is still propagating.
 
-## UX: suggest, never hijack
+## Email 1 — Booking confirmation (customer)
 
-Silently switching packages under someone mid-form is disorienting, and a false positive would push a petrol buyer into a gated calendar with almost no dates. So:
+Subject: `Your RideCheck inspection is booked — [vehicle]`
 
-- On EV/PHEV detection, show an inline prompt under the vehicle field: "Looks like an EV — EV inspections include an Aviloo battery health test. Switch to EV inspection?" with **Switch** / **No, it's petrol/diesel**.
-- Accepting sets `serviceType = "ev"`, swaps the package list to `evPackages`, pre-sets `drivetrain`, and clears any already-chosen standard package.
-- Declining sticks a flag so the prompt doesn't reappear for that session.
-- Arriving with `?type=ev` still forces EV mode as it does now.
-- Reverse case: if the user is in EV mode and the vehicle clearly isn't electric, offer the same prompt back to standard.
+Contents:
+- RideCheck logo, red/black brand styling matching the site.
+- "Booking confirmed" heading and a short line explaining that an inspector is being matched and they'll get an SMS with the inspector's name and ETA.
+- Booking details block: reference number, vehicle, seller/vehicle location, timing (ASAP or the chosen day + AM/PM window), package name, any add-ons, total paid.
+- For EV bookings: an extra line noting the Aviloo battery health test is included and that an Aviloo-certified inspector will be assigned.
+- What happens next — 3 short steps (matched → inspected on site → same-day report).
+- Contact footer with the phone number and a link back to the site.
 
-## Technical changes
+## Email 2 — Internal job alert (ops)
 
-- `src/lib/ev-detect.ts` — rule matcher, pure and unit-testable.
-- `src/lib/ev-detect.functions.ts` — `classifyVehicle` server function (Lovable AI, `google/gemini-3.6-flash`, small structured output), called only on rule miss; degrades to `unknown` on error or missing credits so the form is never blocked.
-- `src/routes/book.tsx` — `serviceType` becomes state seeded from the URL param, with the switch handler and dismissal flag.
-- `src/components/booking/StepBooking.tsx` — render the detection prompt under the vehicle input; no changes to its existing EV branches.
-- `src/components/landing/BookingWizard.tsx` — run the same rule check on its vehicle step so the homepage funnel carries `type=ev` through to `/book`.
+Subject: `New booking — [suburb] — [vehicle] — [ASAP / day + window]`
 
-Listing links: parse the URL text itself for EV hints first; actually fetching and reading the listing page is a bigger job and out of scope here.
+Plain, dense, scannable — no marketing styling:
+- Reference, timestamp, service type (standard / EV).
+- Customer name, phone, email.
+- Vehicle description and listing link if supplied.
+- Vehicle location: address/suburb/postcode, region.
+- Package, add-ons, total paid, payment status.
+- Any notes the customer left.
+
+Recipient is a single configurable ops address so it can be changed without a rebuild.
+
+## Trigger
+
+The send happens server-side after the Stripe payment succeeds, at the same point the flow currently shows the success screen — not from the browser. Each send uses an idempotency key derived from the booking reference so a retry or page refresh can't double-send.
+
+## Mock/preview
+
+Both templates get realistic preview data (a Melbourne Standard booking, and an EV booking with the Aviloo test) so they render fully in the Cloud email preview before any real send. That's how you'll review the design.
+
+## Technical notes
+
+- Templates as React Email `.tsx` components in `src/lib/email-templates/`, registered in the scaffolded registry.
+- Sending via the scaffolded `sendTemplateEmail` helper called from a TanStack server function; no queue, cron, or email tables are created — delivery, retries, suppression and unsubscribe are handled by the platform.
+- A booking reference is generated server-side at payment confirmation and threaded into both emails.
 
 ## Not included
 
-- No change to the EV availability roster or `evCoverage` — detection only decides which mode you're in, not which days are open.
-- No change to EV pricing or packages.
+- No booking records stored in a database yet — the emails are built from the booking payload at payment time. If you want a bookings table and an admin view later, that's a separate piece of work.
+- No SMS. The confirmation email references SMS as the next step, but sending it isn't in scope here.
