@@ -1,6 +1,6 @@
 import { ArrowRight, ExternalLink, Star, ShieldCheck, Check, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroCar from "@/assets/hero-bmw-m3.jpg";
+import heroCar from "@/assets/hero-red-bmw-m3.jpg";
 import { BOOKING_URL, GOOGLE_REVIEWS_URL, SAMPLE_REPORT_URL } from "@/lib/ridecheck";
 
 const bullets = [
