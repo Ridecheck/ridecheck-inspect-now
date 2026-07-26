@@ -198,7 +198,7 @@ export function StepBooking({
                   <div>
                     {p.popular && (
                       <span className="inline-block rounded-full bg-signal px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-signal-foreground">
-                        Most popular
+                        {isEv ? "Best value" : "Most popular"}
                       </span>
                     )}
                     <p className="mt-1 font-bold text-ink">{p.name}</p>
