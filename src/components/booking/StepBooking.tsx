@@ -142,6 +142,15 @@ export function StepBooking({
               />
             </div>
           </Labelled>
+          {onSwitchService && (
+            <EvDetectionPrompt
+              vehicle={value.vehicle}
+              listing={value.listing}
+              serviceType={serviceType}
+              onSwitch={onSwitchService}
+            />
+          )}
+
           {isEv && (
             <Labelled label="Drivetrain">
               <div className="flex gap-2">
