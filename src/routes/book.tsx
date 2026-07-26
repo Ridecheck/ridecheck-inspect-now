@@ -5,17 +5,13 @@ import { Button } from "@/components/ui/button";
 import { BookingSummary } from "@/components/booking/BookingSummary";
 import { StepBooking, type BookingDetails } from "@/components/booking/StepBooking";
 import {
-  StepAvailability,
-  type SlotSelection,
-} from "@/components/booking/StepAvailability";
+  StepTiming,
+  timingLabel,
+  ASAP_SURCHARGE,
+  type Timing,
+} from "@/components/booking/StepTiming";
 import { StepReview, type ContactDetails } from "@/components/booking/StepReview";
-import {
-  addOns,
-  assignInspector,
-  buildAvailability,
-  findSlot,
-  formatDayLong,
-} from "@/lib/booking";
+import { addOns, buildAvailability } from "@/lib/booking";
 import { packages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
@@ -88,8 +84,7 @@ function BookPage() {
     listing: prefill.listing ?? "",
     pkg: prefilledPkg,
   });
-  const [selection, setSelection] = useState<SlotSelection>(null);
-  const [activeIso, setActiveIso] = useState("");
+  const [timing, setTiming] = useState<Timing>(null);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [contact, setContact] = useState<ContactDetails>({
     name: prefill.name ?? "",
@@ -112,14 +107,13 @@ function BookPage() {
     [pkg.price, pkg.popular, details.suburb, details.postcode],
   );
   const days = availability.days;
-  const currentIso =
-    activeIso || (days.find((d) => d.remaining > 0) ?? days[0]).iso;
-  const chosenDay = days.find((d) => d.iso === selection?.iso);
-  const chosenSlot = selection ? findSlot(days, selection.iso, selection.slot) : undefined;
-  const inspector = assignInspector(chosenSlot);
+  const chosenDay = timing?.mode === "day" ? days.find((d) => d.iso === timing.iso) : undefined;
 
   const chosenAddOns = addOns.filter((a) => selectedAddOns.includes(a.id));
-  const surcharge = chosenDay?.surcharge ?? 0;
+  const surcharge =
+    timing?.mode === "asap" ? ASAP_SURCHARGE : (chosenDay?.surcharge ?? 0);
+  const surchargeLabel =
+    timing?.mode === "asap" ? "ASAP priority" : (chosenDay?.tag ?? "Surcharge");
   const total =
     pkg.price + surcharge + chosenAddOns.reduce((sum, a) => sum + a.price, 0);
 
@@ -127,7 +121,7 @@ function BookPage() {
     step === 0
       ? details.suburb.trim() !== "" && details.vehicle.trim() !== ""
       : step === 1
-        ? selection !== null
+        ? timing !== null
         : contact.name.trim() !== "" &&
           contact.phone.trim() !== "" &&
           contact.email.trim() !== "" &&
@@ -152,15 +146,13 @@ function BookPage() {
         },
         {
           label: "When",
-          value: chosenDay
-            ? `${formatDayLong(chosenDay)} · ${selection?.slot}`
-            : "Not set yet",
+          value: timingLabel(timing, days),
         },
       ]}
       charges={[
         { label: pkg.name, value: `$${pkg.price}` },
         ...(surcharge
-          ? [{ label: chosenDay?.tag ?? "Surcharge", value: `$${surcharge}` }]
+          ? [{ label: surchargeLabel, value: `$${surcharge}` }]
           : []),
       ]}
       addOnList={chosenAddOns}
@@ -282,15 +274,11 @@ function BookPage() {
                 />
               )}
               {step === 1 && (
-                <StepAvailability
+                <StepTiming
                   days={days}
                   basePrice={pkg.price}
-                  selection={selection}
-                  onSelect={setSelection}
-                  activeIso={currentIso}
-                  onActiveIso={setActiveIso}
-                  regionLabel={availability.regionLabel}
-                  covered={availability.covered}
+                  value={timing}
+                  onChange={setTiming}
                 />
               )}
               {step === 2 && paying && (
@@ -313,7 +301,7 @@ function BookPage() {
               )}
               {step === 2 && !paying && (
                 <StepReview
-                  inspector={inspector}
+                  inspector={null}
                   value={contact}
                   onChange={(patch) => setContact((c) => ({ ...c, ...patch }))}
                   selectedAddOns={selectedAddOns}
