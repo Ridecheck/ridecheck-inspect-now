@@ -1,7 +1,8 @@
-import { Car, Check, Link2, MapPin } from "lucide-react";
+import { Car, Check, Info, Link2, MapPin, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { AU_STATES } from "@/lib/booking";
-import { packages } from "@/lib/ridecheck";
+import { packages, evPackages } from "@/lib/ridecheck";
+import type { ServiceType } from "@/lib/availability";
 
 
 export type BookingDetails = {
@@ -12,6 +13,8 @@ export type BookingDetails = {
   vehicle: string;
   listing: string;
   pkg: string;
+  /** Only used on the EV path. */
+  drivetrain?: "ev" | "phev";
 };
 
 function Labelled({
@@ -34,10 +37,15 @@ function Labelled({
 export function StepBooking({
   value,
   onChange,
+  serviceType = "standard",
 }: {
   value: BookingDetails;
   onChange: (patch: Partial<BookingDetails>) => void;
+  serviceType?: ServiceType;
 }) {
+  const isEv = serviceType === "ev";
+  const list = isEv ? evPackages : packages;
+
 
   return (
     <div className="space-y-8">
@@ -129,13 +137,50 @@ export function StepBooking({
               />
             </div>
           </Labelled>
+          {isEv && (
+            <Labelled label="Drivetrain">
+              <div className="flex gap-2">
+                {(
+                  [
+                    { key: "ev", label: "Full electric (EV)" },
+                    { key: "phev", label: "Plug-in hybrid (PHEV)" },
+                  ] as const
+                ).map((d) => (
+                  <button
+                    key={d.key}
+                    type="button"
+                    onClick={() => onChange({ drivetrain: d.key })}
+                    aria-pressed={value.drivetrain === d.key}
+                    className={`flex-1 rounded-xl border px-3 py-3 text-xs font-bold transition ${
+                      value.drivetrain === d.key
+                        ? "border-signal bg-accent/40 text-ink"
+                        : "border-border text-muted-foreground hover:border-signal/50"
+                    }`}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </Labelled>
+          )}
         </div>
       </section>
 
       <section>
-        <h2 className="text-lg font-bold text-ink">Choose your inspection</h2>
+        <h2 className="flex items-center gap-2 text-lg font-bold text-ink">
+          {isEv && <Zap className="h-5 w-5 text-signal" aria-hidden />}
+          {isEv ? "Choose your EV package" : "Choose your inspection"}
+        </h2>
+        {isEv && (
+          <p className="mt-3 flex items-start gap-2 rounded-xl bg-accent px-4 py-3 text-xs leading-relaxed text-accent-foreground">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-signal" aria-hidden />
+            EV slots are limited — only Aviloo-certified inspectors can perform the
+            battery test, so fewer days are available than for standard inspections.
+          </p>
+        )}
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          {packages.map((p) => {
+
+          {list.map((p) => {
             const selected = value.pkg === p.name;
             return (
               <button
@@ -153,7 +198,7 @@ export function StepBooking({
                   <div>
                     {p.popular && (
                       <span className="inline-block rounded-full bg-signal px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-signal-foreground">
-                        Most popular
+                        {isEv ? "Best value" : "Most popular"}
                       </span>
                     )}
                     <p className="mt-1 font-bold text-ink">{p.name}</p>
