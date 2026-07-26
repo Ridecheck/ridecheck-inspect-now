@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
-  BOOKING_URL,
   PHONE_DISPLAY,
   PHONE_HREF,
   TERMS_URL,
@@ -22,10 +22,10 @@ export function SiteFooter() {
             size="lg"
             className="mt-6 h-13 rounded-md bg-ink px-8 text-base font-semibold text-ink-foreground hover:bg-ink/90"
           >
-            <a href={BOOKING_URL} target="_blank" rel="noopener">
-              Book &amp; Pay Online
+            <Link to="/book">
+              Book Inspection
               <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
-            </a>
+            </Link>
           </Button>
         </div>
 

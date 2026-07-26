@@ -1,7 +1,8 @@
 import { ArrowRight, ExternalLink, Star, ShieldCheck, Check, Users } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import heroCar from "@/assets/hero-red-bmw-m3.jpg";
-import { BOOKING_URL, GOOGLE_REVIEWS_URL, SAMPLE_REPORT_URL } from "@/lib/ridecheck";
+import { GOOGLE_REVIEWS_URL, SAMPLE_REPORT_URL } from "@/lib/ridecheck";
 
 const bullets = [
   "Same-day detailed report",
@@ -99,10 +100,10 @@ export function Hero() {
               size="lg"
               className="h-13 w-full rounded-md px-8 text-base font-semibold shadow-soft sm:w-auto"
             >
-              <a href={BOOKING_URL} target="_blank" rel="noopener">
-                Book &amp; Pay Online
+              <Link to="/book">
+                Book Inspection
                 <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
-              </a>
+              </Link>
             </Button>
             <a
               href={SAMPLE_REPORT_URL}

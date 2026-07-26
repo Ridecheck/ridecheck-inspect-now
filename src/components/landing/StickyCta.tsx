@@ -1,6 +1,7 @@
 import { Phone } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { BOOKING_URL, PHONE_HREF } from "@/lib/ridecheck";
+import { PHONE_HREF } from "@/lib/ridecheck";
 
 export function StickyCta() {
   return (
@@ -21,8 +22,8 @@ export function StickyCta() {
           size="lg"
           className="h-12 flex-1 rounded-md text-base font-semibold"
         >
-          <a href={BOOKING_URL} target="_blank" rel="noopener">
-            Book &amp; Pay Online
+          <Link to="/book">
+            Book Inspection
           </a>
         </Button>
 
