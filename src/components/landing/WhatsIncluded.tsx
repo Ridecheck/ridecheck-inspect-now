@@ -189,7 +189,7 @@ export function WhatsIncluded({
               viewBox="0 0 100 100"
               preserveAspectRatio="none"
               aria-hidden
-              className="pointer-events-none absolute inset-0 h-full w-full"
+              className="pointer-events-none absolute inset-0 h-full w-full text-signal"
             >
               <defs>
                 <radialGradient id="wi-glow">
