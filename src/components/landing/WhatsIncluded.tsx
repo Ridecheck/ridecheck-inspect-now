@@ -179,69 +179,119 @@ export function WhatsIncluded({
             </ul>
           </div>
           <div className="relative min-w-0">
-            <img
-              src={image}
-              alt={imageAlt}
-              loading="lazy"
-              className="h-auto w-full object-contain"
-            />
-            <svg
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              aria-hidden
-              className="pointer-events-none absolute inset-0 h-full w-full [filter:blur(10px)]"
-            >
+            <div className="relative">
+              <img
+                src={image}
+                alt={imageAlt}
+                loading="lazy"
+                className="h-auto w-full object-contain"
+              />
+
+              {/* X-ray reveal: red-tinted copy of the car, masked to the active region */}
               {categories.map((cat, i) => {
                 const r = regionMap[cat.icon];
                 if (!r) return null;
+                const mask = `radial-gradient(ellipse ${r.rx * 1.5}% ${r.ry * 1.5}% at ${r.x}% ${r.y}%, #000 35%, rgba(0,0,0,0.45) 60%, transparent 78%)`;
                 return (
-                  <ellipse
+                  <img
                     key={cat.name}
-                    cx={r.x}
-                    cy={r.y}
-                    rx={r.rx}
-                    ry={r.ry}
-                    fillOpacity={0.42}
-                    className="fill-signal transition-opacity duration-500 motion-reduce:transition-none"
-                    style={{ opacity: i === active ? 1 : 0 }}
+                    src={image}
+                    alt=""
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 h-full w-full object-contain mix-blend-multiply transition-opacity duration-500 motion-reduce:transition-none [filter:grayscale(1)_brightness(1.15)_sepia(1)_saturate(7)_hue-rotate(-24deg)_contrast(1.1)]"
+                    style={{
+                      opacity: i === active ? 1 : 0,
+                      maskImage: mask,
+                      WebkitMaskImage: mask,
+                    }}
                   />
                 );
               })}
-            </svg>
 
+              {/* Soft glow over the active region */}
+              <svg
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                aria-hidden
+                className="pointer-events-none absolute inset-0 h-full w-full [filter:blur(12px)]"
+              >
+                {categories.map((cat, i) => {
+                  const r = regionMap[cat.icon];
+                  if (!r) return null;
+                  return (
+                    <ellipse
+                      key={cat.name}
+                      cx={r.x}
+                      cy={r.y}
+                      rx={r.rx}
+                      ry={r.ry}
+                      fillOpacity={0.28}
+                      className="fill-signal transition-opacity duration-500 motion-reduce:transition-none"
+                      style={{ opacity: i === active ? 1 : 0 }}
+                    />
+                  );
+                })}
+              </svg>
 
-            {/* Markers */}
-            {categories.map((cat, i) => {
-              const r = regionMap[cat.icon];
-              if (!r) return null;
-              const isActive = i === active;
-              return (
-                <button
-                  key={cat.name}
-                  type="button"
-                  onClick={() => select(i)}
-                  aria-label={`Show ${cat.name} checks`}
-                  style={{ left: `${r.x}%`, top: `${r.y}%` }}
-                  className={`absolute -ml-3 -mt-3 grid h-6 w-6 place-items-center rounded-full border-2 bg-card transition-all ${
-                    isActive
-                      ? "scale-110 border-signal shadow-soft"
-                      : "border-border hover:border-signal/60"
-                  }`}
+              {/* Hotspots */}
+              {categories.map((cat, i) => {
+                const r = regionMap[cat.icon];
+                if (!r) return null;
+                const isActive = i === active;
+                const Icon = iconMap[cat.icon];
+                return (
+                  <button
+                    key={cat.name}
+                    type="button"
+                    onClick={() => select(i)}
+                    aria-label={`Show ${cat.name} checks`}
+                    style={{ left: `${r.x}%`, top: `${r.y}%` }}
+                    className={`absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border bg-card transition-all duration-300 motion-reduce:transition-none ${
+                      isActive
+                        ? "z-10 h-11 w-11 border-signal text-signal shadow-soft"
+                        : "h-7 w-7 border-border text-muted-foreground shadow-sm hover:border-signal/60 hover:text-signal"
+                    }`}
+                  >
+                    {isActive ? (
+                      <Icon className="h-5 w-5 animate-scale-in" aria-hidden />
+                    ) : (
+                      <Plus className="h-3.5 w-3.5" aria-hidden />
+                    )}
+                  </button>
+                );
+              })}
+
+              {/* Label chip near the active hotspot */}
+              {regionMap[current.icon] && (
+                <span
+                  key={current.name}
+                  style={{
+                    left: `${regionMap[current.icon]!.x}%`,
+                    top: `${regionMap[current.icon]!.y}%`,
+                  }}
+                  className="pointer-events-none absolute z-10 -translate-x-1/2 translate-y-6 animate-fade-in whitespace-nowrap rounded-full border border-signal/30 bg-card px-3 py-1 text-[11px] font-bold text-signal shadow-soft"
                 >
-                  <span
-                    className={`h-2 w-2 rounded-full ${isActive ? "bg-signal" : "bg-muted-foreground/50"}`}
-                  />
-                </button>
-              );
-            })}
+                  {current.name}
+                </span>
+              )}
+            </div>
+
+            <div className="mt-4 flex items-start justify-center gap-2 text-center text-xs leading-snug text-muted-foreground">
+              <MousePointerClick className="mt-0.5 h-4 w-4 shrink-0 text-signal" aria-hidden />
+              <span>
+                Click a hotspot to see what we check
+                <br className="hidden sm:block" /> in each area.
+              </span>
+            </div>
 
             {!regionMap[current.icon] && (
-              <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <div className="mt-2 flex items-center justify-center gap-2 text-xs text-muted-foreground">
                 <FileText className="h-4 w-4 shrink-0 text-signal" aria-hidden />
                 Checked off-vehicle against national records.
               </div>
             )}
           </div>
+
 
         </div>
 
