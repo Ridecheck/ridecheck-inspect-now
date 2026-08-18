@@ -201,9 +201,8 @@ export function WhatsIncluded({
                     cy={r.y}
                     rx={r.rx}
                     ry={r.ry}
-                    fill="var(--signal)"
                     fillOpacity={0.42}
-                    className="transition-opacity duration-500 motion-reduce:transition-none"
+                    className="fill-signal transition-opacity duration-500 motion-reduce:transition-none"
                     style={{ opacity: i === active ? 1 : 0 }}
                   />
                 );
