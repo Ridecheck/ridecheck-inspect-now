@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BatteryCharging, Check, FileText } from "lucide-react";
+import { ArrowRight, BatteryCharging, Check, FileText, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/landing/SiteHeader";
 import { SiteFooter } from "@/components/landing/SiteFooter";
 import { EvHero } from "@/components/landing/EvHero";
+import { PackageCards } from "@/components/landing/PackageCards";
 import { WhatsIncluded } from "@/components/landing/WhatsIncluded";
+
 import evCar from "@/assets/ev-inspection-diagram.png.asset.json";
 import { Reviews } from "@/components/landing/Reviews";
 import { ServiceArea } from "@/components/landing/ServiceArea";
