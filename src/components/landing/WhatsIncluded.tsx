@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -51,6 +51,16 @@ export function WhatsIncluded({
   bookSearch,
 }: Props) {
   const [active, setActive] = useState(0);
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const select = (i: number) => {
+    setActive(i);
+    cardRefs.current[i]?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  };
   const current = categories[active];
 
   return (
