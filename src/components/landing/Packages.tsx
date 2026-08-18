@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { PackageCards } from "@/components/landing/PackageCards";
+import { FeatureComparison } from "@/components/landing/FeatureComparison";
 import { packages } from "@/lib/ridecheck";
 
 export function Packages() {
