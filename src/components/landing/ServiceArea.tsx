@@ -53,6 +53,13 @@ export function ServiceArea() {
                   <path d={AUS_PATH} />
                   <ellipse cx="452" cy="470" rx="22" ry="17" />
                 </clipPath>
+                <filter id="rc-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
               </defs>
 
               <g clipPath="url(#rc-aus)">
