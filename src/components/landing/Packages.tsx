@@ -21,6 +21,8 @@ export function Packages() {
           <PackageCards packages={packages} />
         </div>
 
+        <FeatureComparison />
+
         <div className="mt-8 text-center">
           <Link
             to="/ev-inspections"
