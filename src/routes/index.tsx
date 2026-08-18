@@ -4,7 +4,9 @@ import { Hero } from "@/components/landing/Hero";
 import { BookingWizard } from "@/components/landing/BookingWizard";
 import { Packages } from "@/components/landing/Packages";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { WhyRideCheck } from "@/components/landing/WhyRideCheck";
+import { WhatsIncluded } from "@/components/landing/WhatsIncluded";
+import heroCar from "@/assets/hero-inspection-diagram.png.asset.json";
+import { inspectionCategories } from "@/lib/ridecheck";
 import { ServiceArea } from "@/components/landing/ServiceArea";
 import { RecentlyInspected } from "@/components/landing/RecentlyInspected";
 import { InspectionVideos } from "@/components/landing/InspectionVideos";
@@ -75,7 +77,18 @@ function Index() {
         <div id="how-it-works">
           <HowItWorks />
         </div>
-        <WhyRideCheck />
+        <WhatsIncluded
+          categories={inspectionCategories}
+          image={heroCar.url}
+          imageAlt="RideCheck inspection diagram showing the areas covered on a pre-purchase inspection"
+          heading={
+            <>
+              Every <span className="text-signal">RideCheck</span> inspection is
+              thorough. And it shows.
+            </>
+          }
+          intro="We inspect 100+ points across every key area of the vehicle, so you know exactly what you're buying."
+        />
         <RecentlyInspected />
         <InspectionVideos />
         <div id="reviews">
