@@ -34,13 +34,13 @@ const iconMap = {
 
 /** Highlight regions as % of the diagram box. `history` has no on-car region. */
 const regionMap: Record<string, { x: number; y: number; rx: number; ry: number } | undefined> = {
-  engine: { x: 24, y: 50, rx: 17, ry: 18 },
-  wheels: { x: 59, y: 66, rx: 14, ry: 15 },
-  body: { x: 74, y: 44, rx: 18, ry: 17 },
-  diagnostics: { x: 52, y: 30, rx: 15, ry: 12 },
-  road: { x: 91, y: 48, rx: 13, ry: 16 },
-  battery: { x: 30, y: 56, rx: 18, ry: 14 },
-  charging: { x: 90, y: 58, rx: 13, ry: 13 },
+  engine: { x: 22, y: 55, rx: 15, ry: 16 },
+  wheels: { x: 46, y: 72, rx: 14, ry: 12 },
+  body: { x: 62, y: 46, rx: 16, ry: 16 },
+  diagnostics: { x: 36, y: 36, rx: 13, ry: 11 },
+  road: { x: 68, y: 70, rx: 13, ry: 11 },
+  battery: { x: 30, y: 58, rx: 16, ry: 13 },
+  charging: { x: 70, y: 58, rx: 12, ry: 12 },
   history: undefined,
 };
 
@@ -218,7 +218,7 @@ export function WhatsIncluded({
                 className="relative h-auto w-full object-contain"
               />
 
-              {/* Active area: the line work turns brand red */}
+              {/* Active area: brightened, punchier copy of the photo */}
               {categories.map((cat, i) => {
                 const r = regionMap[cat.icon];
                 if (!r) return null;
@@ -230,7 +230,7 @@ export function WhatsIncluded({
                     alt=""
                     aria-hidden
                     loading="lazy"
-                    className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-opacity duration-500 motion-reduce:transition-none [filter:invert(24%)_sepia(96%)_saturate(6000%)_hue-rotate(357deg)_brightness(96%)_contrast(112%)]"
+                    className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-opacity duration-500 motion-reduce:transition-none [filter:brightness(1.18)_saturate(1.5)_contrast(1.1)]"
                     style={{
                       opacity: i === active ? 1 : 0,
                       maskImage: mask,
@@ -239,6 +239,7 @@ export function WhatsIncluded({
                   />
                 );
               })}
+
 
 
               {/* Hotspots */}
