@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/landing/SiteHeader";
 import { SiteFooter } from "@/components/landing/SiteFooter";
 import { EvHero } from "@/components/landing/EvHero";
-import { WhyRideCheck } from "@/components/landing/WhyRideCheck";
+import { WhatsIncluded } from "@/components/landing/WhatsIncluded";
+import evCar from "@/assets/ev-inspection-diagram.png.asset.json";
 import { Reviews } from "@/components/landing/Reviews";
 import { ServiceArea } from "@/components/landing/ServiceArea";
 import { StickyCta } from "@/components/landing/StickyCta";
@@ -14,7 +15,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { evPackages, evReasons, evSteps, evFaqs } from "@/lib/ridecheck";
+import {
+  evPackages,
+  evReasons,
+  evSteps,
+  evFaqs,
+  evInspectionCategories,
+} from "@/lib/ridecheck";
 
 
 const TITLE = "Used EV Inspections with Aviloo Battery Testing | RideCheck";
@@ -196,7 +203,20 @@ function EvInspectionsPage() {
           </div>
         </section>
 
-        <WhyRideCheck />
+        <WhatsIncluded
+          categories={evInspectionCategories}
+          image={evCar.url}
+          imageAlt="Electric vehicle inspection diagram showing battery, high-voltage and charging checks"
+          heading={
+            <>
+              Every EV inspection covers the{" "}
+              <span className="text-signal">battery and the basics</span>.
+            </>
+          }
+          intro="Full pre-purchase inspection plus certified Aviloo battery testing — over 70 EV-specific checks."
+          pointsLabel="70+ EV inspection points."
+          bookSearch={{ type: "ev" }}
+        />
 
         <Reviews />
 
