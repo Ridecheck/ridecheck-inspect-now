@@ -290,15 +290,16 @@ export function WhatsIncluded({
                       style={{ left: `${r.x}%`, top: `${r.y}%` }}
                       className={`absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border bg-card transition-all duration-300 motion-reduce:transition-none ${
                         isActive
-                          ? "z-10 h-11 w-11 border-signal text-signal shadow-soft"
-                          : "hidden h-7 w-7 border-border text-muted-foreground shadow-sm hover:border-signal/60 hover:text-signal lg:grid"
+                          ? "z-10 h-8 w-8 border-signal text-signal shadow-soft sm:h-10 sm:w-10 lg:h-11 lg:w-11"
+                          : "h-5 w-5 border-border text-muted-foreground shadow-sm hover:border-signal/60 hover:text-signal sm:h-6 sm:w-6 lg:h-7 lg:w-7"
                       }`}
                     >
                       {isActive ? (
-                        <Icon className="h-5 w-5 animate-scale-in" aria-hidden />
+                        <Icon className="h-4 w-4 animate-scale-in sm:h-5 sm:w-5" aria-hidden />
                       ) : (
-                        <Plus className="h-3.5 w-3.5" aria-hidden />
+                        <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
                       )}
+
                     </button>
                   );
                 })}
