@@ -124,7 +124,7 @@ export function WhatsIncluded({
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => select(i)}
-                className={`flex min-h-[78px] w-[78%] shrink-0 snap-start items-center gap-3 rounded-xl border bg-card p-4 text-left transition-colors sm:w-[46%] lg:w-auto ${
+                className={`flex w-[168px] shrink-0 snap-start flex-col items-start gap-2 rounded-xl border bg-card p-4 text-left transition-colors lg:min-h-[78px] lg:w-auto lg:flex-row lg:items-center lg:gap-3 ${
                   isActive
                     ? "border-signal shadow-soft"
                     : "border-border hover:border-signal/40"
@@ -150,6 +150,7 @@ export function WhatsIncluded({
             );
           })}
         </div>
+
 
         {/* Dots (mobile / tablet) */}
         <div className="mt-4 flex justify-center gap-2 lg:hidden">
