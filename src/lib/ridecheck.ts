@@ -64,6 +64,9 @@ export const packages: Pkg[] = [
     name: "Premium Inspection",
     price: 379,
     duration: "70–90 minutes",
+    durationShort: "70–90 min",
+    photos: "35+ photos",
+    sampleLabel: "Premium",
     popular: true,
     badge: "Popular",
     blurb:
