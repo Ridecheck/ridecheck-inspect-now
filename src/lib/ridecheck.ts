@@ -29,6 +29,12 @@ export type Pkg = {
   badge?: string;
   inclusions: string[];
   excluded?: string[];
+  /** Short duration shown in the small stat pill, e.g. "45–60 min" */
+  durationShort?: string;
+  /** Photo count shown in the small stat pill, e.g. "19+ photos" */
+  photos?: string;
+  /** Label used for the "View sample … report" link */
+  sampleLabel?: string;
 };
 
 export const packages: Pkg[] = [
