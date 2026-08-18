@@ -46,6 +46,36 @@ const regionMap: Record<string, { x: number; y: number; rx: number; ry: number }
   history: undefined,
 };
 
+/** Report-style visual for off-vehicle checks (History & Documentation). */
+function DocVisual() {
+  return (
+    <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-haze p-6">
+      <div className="relative h-[168px] w-[132px] rounded-lg border border-border bg-card p-3 shadow-soft">
+        <div className="h-1.5 w-full rounded-full bg-signal" />
+        <div className="mt-5 space-y-2.5">
+          {[100, 80, 92, 65, 88, 55].map((w, i) => (
+            <div
+              key={i}
+              className="h-1.5 rounded-full bg-border"
+              style={{ width: `${w}%` }}
+            />
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-wrap justify-center gap-2">
+        {["VIN", "PPSR", "Odometer", "Finance", "Written-off"].map((t) => (
+          <span
+            key={t}
+            className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-bold text-ink"
+          >
+            <Check className="h-3 w-3 text-signal" aria-hidden />
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 
 type Props = {
