@@ -189,16 +189,8 @@ export function WhatsIncluded({
               viewBox="0 0 100 100"
               preserveAspectRatio="none"
               aria-hidden
-              className="pointer-events-none absolute inset-0 h-full w-full text-signal"
+              className="pointer-events-none absolute inset-0 h-full w-full [filter:blur(10px)]"
             >
-              <defs>
-                <radialGradient id="wi-glow">
-                  <stop offset="0%" stopColor="var(--signal)" stopOpacity="0.7" />
-                  <stop offset="55%" stopColor="var(--signal)" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="var(--signal)" stopOpacity="0" />
-                </radialGradient>
-
-              </defs>
               {categories.map((cat, i) => {
                 const r = regionMap[cat.icon];
                 if (!r) return null;
@@ -209,13 +201,15 @@ export function WhatsIncluded({
                     cy={r.y}
                     rx={r.rx}
                     ry={r.ry}
-                    fill="url(#wi-glow)"
-                    className="text-signal transition-opacity duration-500 motion-reduce:transition-none"
+                    fill="var(--signal)"
+                    fillOpacity={0.42}
+                    className="transition-opacity duration-500 motion-reduce:transition-none"
                     style={{ opacity: i === active ? 1 : 0 }}
                   />
                 );
               })}
             </svg>
+
 
             {/* Markers */}
             {categories.map((cat, i) => {
