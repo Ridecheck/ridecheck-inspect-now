@@ -34,15 +34,16 @@ const iconMap = {
 
 /** Highlight regions as % of the diagram box. `history` has no on-car region. */
 const regionMap: Record<string, { x: number; y: number; rx: number; ry: number } | undefined> = {
-  engine: { x: 26, y: 46, rx: 18, ry: 20 },
-  wheels: { x: 49, y: 68, rx: 14, ry: 16 },
-  body: { x: 68, y: 45, rx: 20, ry: 20 },
-  diagnostics: { x: 56, y: 28, rx: 16, ry: 14 },
-  road: { x: 85, y: 45, rx: 16, ry: 18 },
-  battery: { x: 60, y: 70, rx: 22, ry: 14 },
-  charging: { x: 86, y: 52, rx: 14, ry: 14 },
+  engine: { x: 24, y: 50, rx: 17, ry: 18 },
+  wheels: { x: 59, y: 66, rx: 14, ry: 15 },
+  body: { x: 74, y: 44, rx: 18, ry: 17 },
+  diagnostics: { x: 52, y: 30, rx: 15, ry: 12 },
+  road: { x: 91, y: 48, rx: 13, ry: 16 },
+  battery: { x: 30, y: 56, rx: 18, ry: 14 },
+  charging: { x: 90, y: 58, rx: 13, ry: 13 },
   history: undefined,
 };
+
 
 
 type Props = {
