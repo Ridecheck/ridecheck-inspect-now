@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { ArrowDown, Camera, Check, Clock, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import type { Pkg } from "@/lib/ridecheck";
