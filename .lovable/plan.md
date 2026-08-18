@@ -1,41 +1,61 @@
-# "What's included": keep the current pattern, borrow the polish
+# "What's included": a reactive car diagram instead of the reused hero image
 
-## Recommendation
+## The call
 
-Keep the selector + single panel we built. It converts better than the carousel of
-full checklist cards in the reference for three reasons:
+Keep the current selector + panel layout — it converts better than the swipeable
+checklist cards (one thing to read, diagram visible, single CTA in view).
 
-- One thing to read at a time. The carousel shows three partial cards and buries the
-  rest behind swiping — users skim, then leave. Our panel shows a full category with
-  a blurb and the complete list.
-- The car diagram stays on screen. That image is the proof the inspection is thorough;
-  the card carousel has no visual at all.
-- The CTA stays in view. Our section ends with the trust strip and one red
-  "Book your inspection" button. The carousel ends with more cards.
+But the diagram is the weak point. Two problems:
 
-The carousel is better at only one thing: it feels like "there is a LOT here". We can
-get that signal without losing the panel.
+1. It reuses the hero image, so by the time the user scrolls here the picture is
+   already spent — it stops reading as information and starts reading as filler.
+2. Making it a click-to-explore hotspot map (image-19) adds a second way to do the
+   same thing the category cards already do. Two controls for one job means users
+   click the car, nothing they expect happens, and they lose the thread.
 
-## What to change (small, presentation only)
+So: new dedicated diagram, and it responds to the selector rather than being a
+separate thing to click.
 
-1. Show total coverage up front: a "100+ points across 6 areas" line under the intro,
-   so the breadth is stated instead of implied by scroll length.
-2. Make the panel checklist read as two dense columns like the reference — tighter row
-   spacing, smaller check icons, three columns at `lg` when a category has 12+ points.
-3. Card polish from the reference: rounded icon badge in a circle outline on each
-   category card, slightly larger name, point count as a subtle pill.
-4. Keep the reference's "Comprehensive insights report" idea as a final, non-selectable
-   card in the grid that links to the sample report — it gives the PPSR/written-off/
-   valuation proof a home without a new section.
-5. Add a keyboard arrow-key handler on the tablist (accessibility, no visual arrows).
+## What it does
 
-No layout regression: desktop stays a 3-column grid, mobile stays the snap slider with
-dots, and nothing new is added below the fold.
+```text
+[ Engine ] [ Wheels ] [ Body ]        <- user picks here
+[ Diag   ] [ Road   ] [ History ]
++-------------------------+-----------------------+
+| Engine & Mechanical     |   neutral silver car  |
+| blurb                   |   engine bay glowing  |
+| check list (2 cols)     |   red, rest dimmed    |
++-------------------------+-----------------------+
+```
+
+- One neutral silver car illustration, side-on three-quarter, plain background —
+  visually distinct from the red BMW hero.
+- Selecting a category highlights that region of the car: the region tints in the red
+  brand accent with a soft glow, everything else stays muted grey.
+- Small pulsing markers sit on each region. They are clickable as a shortcut, but they
+  are not the primary control and nothing is hidden behind them — the checklist below
+  already shows everything.
+- Smooth crossfade between highlight states, respecting reduced-motion.
+- Categories with no physical location on the car (History & Documentation) show the
+  full car in neutral state with a document/report badge instead of a region glow.
+
+## Alternative if the diagram proves fussy
+
+Drop the image entirely and let the panel run full width as a dense three-column
+checklist with a "100+ points across 6 areas" counter. Less pretty, equally clear,
+zero risk. I'd only fall back to this if the highlight rendering looks cheap.
 
 ## Technical
 
-- All changes contained to `src/components/landing/WhatsIncluded.tsx`.
-- Optional single addition to `src/lib/ridecheck.ts`: an `insightsPoints` array for the
-  final report card (finance owing, written-off status, registration/stolen, market
-  valuation), reused on the EV page.
-- Semantic tokens only (signal / ink / card / haze / border); no hardcoded colours.
+- Generate one base car illustration (neutral silver, transparent background) as a
+  Lovable asset — not the hero image.
+- Highlights are an absolutely positioned SVG overlay over the base image: one `<path>`
+  or ellipse per region using `fill-signal` with opacity transition, so highlighting
+  costs no extra image variants and stays on brand tokens.
+- Add `region` coordinates (marker x/y percentage plus highlight shape) to each entry in
+  `inspectionCategories` / `evInspectionCategories` in `src/lib/ridecheck.ts`; entries
+  without a region render the neutral state.
+- All rendering changes stay in `src/components/landing/WhatsIncluded.tsx`, driven by the
+  existing `active` state — no new state, no new dependencies.
+- EV page reuses the same mechanism with the existing EV diagram as its base.
+- Semantic tokens only (signal / ink / card / haze / border).
