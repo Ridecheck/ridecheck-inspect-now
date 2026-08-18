@@ -100,10 +100,12 @@ export function WhatsIncluded({
   bookSearch,
 }: Props) {
   const [active, setActive] = useState(0);
+  const [expanded, setExpanded] = useState(false);
   const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const select = (i: number) => {
     setActive(i);
+    setExpanded(false);
     cardRefs.current[i]?.scrollIntoView({
       behavior: "smooth",
       block: "nearest",
@@ -111,6 +113,8 @@ export function WhatsIncluded({
     });
   };
   const current = categories[active];
+  const isHistory = !regionMap[current.icon];
+
 
   return (
     <section className="bg-haze">
