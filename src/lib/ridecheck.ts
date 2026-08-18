@@ -56,7 +56,7 @@ export const packages: Pkg[] = [
     price: 379,
     duration: "70–90 minutes",
     popular: true,
-    badge: "Most popular",
+    badge: "Popular",
     blurb:
       "Full accident and body history. Built for interstate and remote buyers.",
     inclusions: [
