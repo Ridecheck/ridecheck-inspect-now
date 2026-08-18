@@ -29,6 +29,19 @@ const iconMap = {
   charging: Plug,
 } as const;
 
+/** Highlight regions as % of the diagram box. `history` has no on-car region. */
+const regionMap: Record<string, { x: number; y: number; rx: number; ry: number } | undefined> = {
+  engine: { x: 26, y: 46, rx: 18, ry: 20 },
+  wheels: { x: 49, y: 68, rx: 14, ry: 16 },
+  body: { x: 68, y: 45, rx: 20, ry: 20 },
+  diagnostics: { x: 56, y: 28, rx: 16, ry: 14 },
+  road: { x: 85, y: 45, rx: 16, ry: 18 },
+  battery: { x: 60, y: 70, rx: 22, ry: 14 },
+  charging: { x: 86, y: 52, rx: 14, ry: 14 },
+  history: undefined,
+};
+
+
 type Props = {
   categories: InspectionCategory[];
   image: string;
@@ -165,12 +178,77 @@ export function WhatsIncluded({
               ))}
             </ul>
           </div>
-          <img
-            src={image}
-            alt={imageAlt}
-            loading="lazy"
-            className="h-auto w-full object-contain"
-          />
+          <div className="relative min-w-0">
+            <img
+              src={image}
+              alt={imageAlt}
+              loading="lazy"
+              className="h-auto w-full object-contain"
+            />
+            <svg
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              aria-hidden
+              className="pointer-events-none absolute inset-0 h-full w-full"
+            >
+              <defs>
+                <radialGradient id="wi-glow">
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="0.55" />
+                  <stop offset="60%" stopColor="currentColor" stopOpacity="0.28" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              {categories.map((cat, i) => {
+                const r = regionMap[cat.icon];
+                if (!r) return null;
+                return (
+                  <ellipse
+                    key={cat.name}
+                    cx={r.x}
+                    cy={r.y}
+                    rx={r.rx}
+                    ry={r.ry}
+                    fill="url(#wi-glow)"
+                    className="text-signal transition-opacity duration-500 motion-reduce:transition-none"
+                    style={{ opacity: i === active ? 1 : 0 }}
+                  />
+                );
+              })}
+            </svg>
+
+            {/* Markers */}
+            {categories.map((cat, i) => {
+              const r = regionMap[cat.icon];
+              if (!r) return null;
+              const isActive = i === active;
+              return (
+                <button
+                  key={cat.name}
+                  type="button"
+                  onClick={() => select(i)}
+                  aria-label={`Show ${cat.name} checks`}
+                  style={{ left: `${r.x}%`, top: `${r.y}%` }}
+                  className={`absolute -ml-3 -mt-3 grid h-6 w-6 place-items-center rounded-full border-2 bg-card transition-all ${
+                    isActive
+                      ? "scale-110 border-signal shadow-soft"
+                      : "border-border hover:border-signal/60"
+                  }`}
+                >
+                  <span
+                    className={`h-2 w-2 rounded-full ${isActive ? "bg-signal" : "bg-muted-foreground/50"}`}
+                  />
+                </button>
+              );
+            })}
+
+            {!regionMap[current.icon] && (
+              <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                <FileText className="h-4 w-4 shrink-0 text-signal" aria-hidden />
+                Checked off-vehicle against national records.
+              </div>
+            )}
+          </div>
+
         </div>
 
         {/* Stat strip */}
