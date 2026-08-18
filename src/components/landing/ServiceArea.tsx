@@ -62,12 +62,21 @@ export function ServiceArea() {
               {cities.map((c) => (
                 <g key={c.name}>
                   {c.live && (
-                    <circle
-                      cx={c.x}
-                      cy={c.y}
-                      r="20"
-                      className="fill-signal/15"
-                    />
+                    <>
+                      <circle
+                        cx={c.x}
+                        cy={c.y}
+                        r="20"
+                        className="fill-signal/15"
+                      />
+                      <circle
+                        cx={c.x}
+                        cy={c.y}
+                        r="20"
+                        className="fill-signal/25 animate-ring-pulse"
+                        style={{ transformOrigin: "center" }}
+                      />
+                    </>
                   )}
                   <circle
                     cx={c.x}
