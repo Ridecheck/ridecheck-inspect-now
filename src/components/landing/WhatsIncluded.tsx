@@ -167,7 +167,7 @@ export function WhatsIncluded({
 
 
         {/* Panel */}
-        <div className="mt-5 grid gap-8 rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:items-stretch">
+        <div className="mt-5 grid gap-8 rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-9 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.6fr)] lg:items-stretch lg:gap-6">
           <div className="min-w-0">
             <h3 className="text-xl font-extrabold text-ink sm:text-2xl">{current.name}</h3>
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
@@ -182,8 +182,8 @@ export function WhatsIncluded({
               ))}
             </ul>
           </div>
-          <div className="relative flex min-w-0 items-center">
-            <div className="relative w-full">
+          <div className="relative flex min-w-0 items-center justify-center lg:overflow-visible">
+            <div className="relative w-full lg:scale-110">
               {/* Soft red wash behind the line art */}
               <svg
                 viewBox="0 0 100 100"
