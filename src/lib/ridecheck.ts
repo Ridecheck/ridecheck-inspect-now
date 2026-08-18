@@ -42,6 +42,9 @@ export const packages: Pkg[] = [
     name: "Standard Inspection",
     price: 299,
     duration: "45–60 minutes",
+    durationShort: "45–60 min",
+    photos: "19+ photos",
+    sampleLabel: "Standard",
     blurb:
       "A thorough mechanical assessment for buyers who can see the car themselves.",
     inclusions: [
