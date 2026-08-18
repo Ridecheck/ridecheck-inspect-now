@@ -16,29 +16,40 @@ export function PackageCards({ packages, ev, ctaLabel = "Book inspection" }: Pro
       {packages.map((pkg) => (
         <div
           key={pkg.name}
-          className={`relative flex flex-col rounded-2xl p-6 sm:p-8 ${
+          className={`relative mt-4 flex flex-col rounded-2xl p-6 pt-9 sm:p-8 sm:pt-10 ${
             pkg.popular
-              ? "border border-signal bg-signal/[0.04] shadow-soft"
+              ? "border-2 border-signal bg-card shadow-soft"
               : "border border-border bg-card"
           }`}
         >
           {pkg.badge && (
-            <span className="mb-4 inline-flex w-fit rounded-full bg-signal px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-signal-foreground">
+            <span className="absolute -top-3.5 left-1/2 inline-flex -translate-x-1/2 whitespace-nowrap rounded-full bg-signal px-4 py-1.5 text-xs font-bold text-signal-foreground">
               {pkg.badge}
             </span>
           )}
 
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h3 className="text-xl font-extrabold leading-tight text-ink sm:text-2xl">
-                {pkg.name}
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">{pkg.duration}</p>
+          <div className="text-center">
+            <h3 className="font-display text-xl font-extrabold leading-tight text-signal sm:text-2xl">
+              {pkg.name}
+            </h3>
+            <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
+              {pkg.blurb}
+            </p>
+
+            <div className="mt-6 inline-flex items-baseline gap-2 rounded-full bg-signal px-7 py-3 text-signal-foreground">
+              <span className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+                ${pkg.price}
+              </span>
+              <span className="text-sm font-medium opacity-90">{pkg.duration}</span>
             </div>
-            <span className="font-display text-3xl font-extrabold tracking-tight text-signal sm:text-4xl">
-              ${pkg.price}
-            </span>
+
+            <p className="mt-3 text-sm text-muted-foreground">
+              or 4 payments of ${(pkg.price / 4).toFixed(2)} with Afterpay or Zip
+            </p>
           </div>
+
+          <div className="mt-6 border-t border-border" />
+
 
           <ul className="mt-6 flex-1 space-y-3">
             {pkg.inclusions.map((item) => (
