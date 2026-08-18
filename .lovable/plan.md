@@ -1,37 +1,47 @@
-## Goal
+# "What's included" section replaces "Why RideCheck"
 
-Let you see exactly what the customer booking confirmation email looks like, before any real sending is switched on.
+Swap the four-card "Why RideCheck" block on the homepage and the EV page for a tabbed
+inspection-coverage section: category tabs across the top, and below them a two-column
+panel with the selected category's checklist on the left and the car diagram on the right.
 
-## What I'll build
+## Layout
 
-**1. The confirmation email design**
+```text
+WHAT'S INCLUDED
+Every RideCheck inspection is thorough. And it shows.
+[ Engine & Mechanical ] [ Wheels & Brakes ] [ Body & Exterior ] [ Diagnostics ] ...
++---------------------------------------------------------------+
+|  Engine & Mechanical            |                              |
+|  short blurb                    |        car diagram           |
+|  check-list in 2 columns        |                              |
++---------------------------------------------------------------+
+   100+ points  |  90+ photos  |  Written report  |  Same-day
+                    [ Book Your Inspection -> ]
+```
 
-A branded RideCheck email (white background, red accent, Poppins-style stack, wordmark at top) containing:
+- Tabs: horizontally scrollable pill/tab row on mobile (snap scroll), full row on desktop,
+  each with an icon, category name and point count. Active tab uses the red brand accent.
+- Panel: checklist in two columns with red check icons on desktop, single column on mobile.
+- Diagram: reuse the existing hero inspection image on the homepage, and the EV diagram on
+  the EV page. Static image, no interactive hotspots.
+- Footer strip of four small stat items, then a single red "Book Your Inspection" CTA
+  linking into the booking flow (EV page passes `type=ev`).
 
-- Heading: "Your inspection is booked"
-- Short line: we're matching you with an inspector; you'll get an SMS with their name and ETA.
-- Booking summary block:
-  - Reference number (e.g. RC-4821)
-  - Vehicle (year / make / model)
-  - Location (suburb, state)
-  - Timing — either "ASAP — next available" or the chosen day + Morning/Afternoon window
-  - Package (Standard / Premium / EV) with price
-  - Any add-ons (Video Walkthrough $50)
-  - Total paid
-- "What happens next" — 3 short steps (inspector assigned → on-site inspection → report within a few hours)
-- Contact strip: 0424 287 403, reply-to email
-- Footer: RideCheck, independent, no dealer affiliations.
+## Content
 
-**2. A preview page you can open**
+Standard categories (homepage): Engine & Mechanical, Wheels/Brakes/Suspension,
+Body & Exterior, Diagnostics & Electronics, Road Test & Drivetrain, History & Documentation.
 
-A `/email-preview` route in the app that renders the email inside a phone-width frame with realistic sample data, plus a toggle between two sample bookings (ASAP standard vs. scheduled EV + add-on) so you can see both states. This is dev-only viewing — nothing gets sent.
+EV categories (EV page): Battery & State of Health, High-Voltage System, Charging & Ports,
+Drive Motor & Inverter, Body/Brakes/Suspension, Diagnostics & History.
 
-**3. Internal job alert (second tab on the same preview page)**
+Each category gets a one-line blurb and 10-16 inspection points.
 
-A plain, scannable version for your ops team: reference, customer name + phone, vehicle, suburb, timing window, package, add-ons, amount paid, and any notes.
+## Technical
 
-## Technical notes
-
-- Templates written as React Email components in `src/lib/email-templates/` so they drop straight into the real send flow later with no rewrite.
-- The preview route renders the same components — what you see is what would send.
-- Actual sending stays off until your sender domain is verified; once it is, I wire these to fire after a successful payment in `src/routes/book.tsx`.
+- Add `inspectionCategories` and `evInspectionCategories` arrays to `src/lib/ridecheck.ts`.
+- New `src/components/landing/WhatsIncluded.tsx` taking `categories`, `image`, and booking
+  search params as props; local `useState` for the active tab, no new dependencies.
+- Replace `<WhyRideCheck />` with `<WhatsIncluded ... />` in `src/routes/index.tsx` and
+  `src/routes/ev-inspections.tsx`; delete `src/components/landing/WhyRideCheck.tsx`.
+- Existing semantic tokens only (signal/ink/card/haze) — no hardcoded colours.
