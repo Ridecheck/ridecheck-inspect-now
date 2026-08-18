@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -51,6 +51,16 @@ export function WhatsIncluded({
   bookSearch,
 }: Props) {
   const [active, setActive] = useState(0);
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const select = (i: number) => {
+    setActive(i);
+    cardRefs.current[i]?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  };
   const current = categories[active];
 
   return (
@@ -79,49 +89,65 @@ export function WhatsIncluded({
           </a>
         </div>
 
-        {/* Tabs */}
-        <div className="mt-10 -mx-5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0">
-          <div
-            role="tablist"
-            aria-label="Inspection categories"
-            className="flex w-max min-w-full gap-3 snap-x snap-mandatory"
-          >
-            {categories.map((cat, i) => {
-              const Icon = iconMap[cat.icon];
-              const isActive = i === active;
-              return (
-                <button
-                  key={cat.name}
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setActive(i)}
-                  className={`flex min-w-[190px] flex-1 snap-start items-center gap-3 rounded-xl border bg-card p-4 text-left transition-colors ${
-                    isActive
-                      ? "border-signal shadow-soft"
-                      : "border-border hover:border-signal/40"
-                  }`}
-                >
-                  <Icon
-                    className={`h-5 w-5 shrink-0 ${isActive ? "text-signal" : "text-muted-foreground"}`}
-                    aria-hidden
-                  />
-                  <span className="min-w-0">
-                    <span
-                      className={`block text-sm font-bold leading-tight ${
-                        isActive ? "text-signal" : "text-ink"
-                      }`}
-                    >
-                      {cat.name}
-                    </span>
-                    <span className="block text-xs text-muted-foreground">
-                      {cat.points.length}+ points
-                    </span>
+        {/* Category selector: slider on mobile, grid on desktop */}
+        <div
+          role="tablist"
+          aria-label="Inspection categories"
+          className="mt-10 -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0 lg:grid lg:grid-cols-3 lg:overflow-visible"
+        >
+          {categories.map((cat, i) => {
+            const Icon = iconMap[cat.icon];
+            const isActive = i === active;
+            return (
+              <button
+                key={cat.name}
+                ref={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => select(i)}
+                className={`flex min-h-[78px] w-[78%] shrink-0 snap-start items-center gap-3 rounded-xl border bg-card p-4 text-left transition-colors sm:w-[46%] lg:w-auto ${
+                  isActive
+                    ? "border-signal shadow-soft"
+                    : "border-border hover:border-signal/40"
+                }`}
+              >
+                <Icon
+                  className={`h-5 w-5 shrink-0 ${isActive ? "text-signal" : "text-muted-foreground"}`}
+                  aria-hidden
+                />
+                <span className="min-w-0">
+                  <span
+                    className={`block text-sm font-bold leading-tight ${
+                      isActive ? "text-signal" : "text-ink"
+                    }`}
+                  >
+                    {cat.name}
                   </span>
-                </button>
-              );
-            })}
-          </div>
+                  <span className="block text-xs text-muted-foreground">
+                    {cat.points.length}+ points
+                  </span>
+                </span>
+              </button>
+            );
+          })}
         </div>
+
+        {/* Dots (mobile / tablet) */}
+        <div className="mt-4 flex justify-center gap-2 lg:hidden">
+          {categories.map((cat, i) => (
+            <button
+              key={cat.name}
+              aria-label={cat.name}
+              onClick={() => select(i)}
+              className={`h-2 rounded-full transition-all ${
+                i === active ? "w-6 bg-signal" : "w-2 bg-border"
+              }`}
+            />
+          ))}
+        </div>
+
 
         {/* Panel */}
         <div className="mt-5 grid gap-8 rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-center">
