@@ -35,7 +35,7 @@ const iconMap = {
 /** Highlight regions as % of the diagram box. `history` has no on-car region. */
 const regionMap: Record<string, { x: number; y: number; rx: number; ry: number } | undefined> = {
   engine: { x: 26, y: 45, rx: 15, ry: 14 },
-  wheels: { x: 55, y: 62, rx: 12, ry: 12 },
+  wheels: { x: 35, y: 68, rx: 12, ry: 11 },
   body: { x: 78, y: 40, rx: 16, ry: 14 },
   diagnostics: { x: 52, y: 29, rx: 13, ry: 10 },
   road: { x: 87, y: 60, rx: 11, ry: 11 },
