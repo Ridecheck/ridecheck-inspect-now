@@ -82,7 +82,7 @@ export function WhatsIncluded({
 
   return (
     <section className="bg-haze">
-      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-widest text-signal">
@@ -167,7 +167,7 @@ export function WhatsIncluded({
 
 
         {/* Panel */}
-        <div className="mt-5 grid gap-8 rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-9 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.65fr)] lg:items-stretch lg:gap-6">
+        <div className="mt-5 grid gap-8 rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-center">
           <div className="min-w-0">
             <h3 className="text-xl font-extrabold text-ink sm:text-2xl">{current.name}</h3>
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
@@ -182,8 +182,8 @@ export function WhatsIncluded({
               ))}
             </ul>
           </div>
-          <div className="relative flex min-w-0 items-center justify-center lg:overflow-visible">
-            <div className="relative w-full lg:scale-[1.22] lg:-mr-6">
+          <div className="relative min-w-0">
+            <div className="relative">
               {/* Soft red wash behind the line art */}
               <svg
                 viewBox="0 0 100 100"
