@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Check, ChevronDown, Minus } from "lucide-react";
 import { comparisonGroups, type ComparisonValue } from "@/lib/ridecheck";
 
@@ -64,8 +64,8 @@ export function FeatureComparison() {
               </thead>
               <tbody>
                 {comparisonGroups.map((group) => (
-                  <>
-                    <tr key={group.label} className="bg-haze/60">
+                  <Fragment key={group.label}>
+                    <tr className="bg-haze/60">
                       <td
                         colSpan={3}
                         className="px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground"
@@ -89,7 +89,7 @@ export function FeatureComparison() {
                         </td>
                       </tr>
                     ))}
-                  </>
+                  </Fragment>
                 ))}
               </tbody>
             </table>
