@@ -5,7 +5,7 @@ import { BookingWizard } from "@/components/landing/BookingWizard";
 import { Packages } from "@/components/landing/Packages";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { WhatsIncluded } from "@/components/landing/WhatsIncluded";
-import inspectionCar from "@/assets/inspection-car-blueprint.png";
+import inspectionCarAsset from "@/assets/hero-inspection-diagram.png.asset.json";
 import { inspectionCategories } from "@/lib/ridecheck";
 import { ServiceArea } from "@/components/landing/ServiceArea";
 import { RecentlyInspected } from "@/components/landing/RecentlyInspected";
@@ -79,7 +79,7 @@ function Index() {
         </div>
         <WhatsIncluded
           categories={inspectionCategories}
-          image={inspectionCar}
+          image={inspectionCarAsset.url}
           imageAlt="Silver BMW M3 sedan diagram highlighting the inspected area"
 
           heading={
