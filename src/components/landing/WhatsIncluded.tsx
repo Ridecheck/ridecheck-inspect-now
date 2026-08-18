@@ -373,7 +373,7 @@ export function WhatsIncluded({
 
 
         {/* Stat strip */}
-        <div className="mt-5 grid gap-5 rounded-2xl border border-border bg-card p-6 shadow-soft sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-5 grid grid-cols-2 gap-4 rounded-2xl border border-border bg-card p-5 shadow-soft sm:gap-5 sm:p-6 lg:grid-cols-4">
           {[
             { Icon: ShieldCheck, title: pointsLabel, body: "One complete report. No guesswork." },
             { Icon: Camera, title: "90+ photos and video", body: "See everything we see." },
