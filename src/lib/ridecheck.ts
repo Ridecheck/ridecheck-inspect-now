@@ -29,6 +29,12 @@ export type Pkg = {
   badge?: string;
   inclusions: string[];
   excluded?: string[];
+  /** Short duration shown in the small stat pill, e.g. "45–60 min" */
+  durationShort?: string;
+  /** Photo count shown in the small stat pill, e.g. "19+ photos" */
+  photos?: string;
+  /** Label used for the "View sample … report" link */
+  sampleLabel?: string;
 };
 
 export const packages: Pkg[] = [
@@ -36,6 +42,9 @@ export const packages: Pkg[] = [
     name: "Standard Inspection",
     price: 299,
     duration: "45–60 minutes",
+    durationShort: "45–60 min",
+    photos: "19+ photos",
+    sampleLabel: "Standard",
     blurb:
       "A thorough mechanical assessment for buyers who can see the car themselves.",
     inclusions: [
@@ -55,6 +64,9 @@ export const packages: Pkg[] = [
     name: "Premium Inspection",
     price: 379,
     duration: "70–90 minutes",
+    durationShort: "70–90 min",
+    photos: "35+ photos",
+    sampleLabel: "Premium",
     popular: true,
     badge: "Popular",
     blurb:

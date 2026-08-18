@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { ArrowDown, Camera, Check, Clock, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import type { Pkg } from "@/lib/ridecheck";
@@ -46,6 +46,33 @@ export function PackageCards({ packages, ev, ctaLabel = "Book inspection" }: Pro
             <p className="mt-3 text-sm text-muted-foreground">
               or 4 payments of ${(pkg.price / 4).toFixed(2)} with Afterpay or Zip
             </p>
+
+            {(pkg.durationShort || pkg.photos) && (
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                {pkg.durationShort && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-signal/25 bg-signal/5 px-3 py-1.5 text-xs font-semibold text-signal">
+                    <Clock className="h-3.5 w-3.5" aria-hidden />
+                    {pkg.durationShort}
+                  </span>
+                )}
+                {pkg.photos && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-signal/25 bg-signal/5 px-3 py-1.5 text-xs font-semibold text-signal">
+                    <Camera className="h-3.5 w-3.5" aria-hidden />
+                    {pkg.photos}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {pkg.sampleLabel && (
+              <a
+                href="#sample-report"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-signal underline-offset-4 hover:underline"
+              >
+                View sample {pkg.sampleLabel} report
+                <ArrowDown className="h-4 w-4" aria-hidden />
+              </a>
+            )}
           </div>
 
           <div className="mt-6 border-t border-border" />
