@@ -80,7 +80,7 @@ function Index() {
         <WhatsIncluded
           categories={inspectionCategories}
           image={inspectionCarAsset.url}
-          imageAlt="Silver BMW M3 sedan diagram highlighting the inspected area"
+          imageAlt="Red BMW M4 inspection diagram highlighting the inspected area"
 
           heading={
             <>
