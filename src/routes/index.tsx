@@ -5,7 +5,7 @@ import { BookingWizard } from "@/components/landing/BookingWizard";
 import { Packages } from "@/components/landing/Packages";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { WhatsIncluded } from "@/components/landing/WhatsIncluded";
-import heroCar from "@/assets/hero-inspection-diagram.png.asset.json";
+import inspectionCar from "@/assets/inspection-car-silver.png";
 import { inspectionCategories } from "@/lib/ridecheck";
 import { ServiceArea } from "@/components/landing/ServiceArea";
 import { RecentlyInspected } from "@/components/landing/RecentlyInspected";
@@ -79,8 +79,9 @@ function Index() {
         </div>
         <WhatsIncluded
           categories={inspectionCategories}
-          image={heroCar.url}
-          imageAlt="RideCheck inspection diagram showing the areas covered on a pre-purchase inspection"
+          image={inspectionCar}
+          imageAlt="Silver BMW M3 sedan diagram highlighting the inspected area"
+
           heading={
             <>
               Every <span className="text-signal">RideCheck</span> inspection is
