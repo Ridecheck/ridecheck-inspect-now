@@ -183,40 +183,12 @@ export function WhatsIncluded({
           </div>
           <div className="relative min-w-0">
             <div className="relative">
-              <img
-                src={image}
-                alt={imageAlt}
-                loading="lazy"
-                className="h-auto w-full object-contain"
-              />
-
-              {/* X-ray reveal: red-tinted copy of the car, masked to the active region */}
-              {categories.map((cat, i) => {
-                const r = regionMap[cat.icon];
-                if (!r) return null;
-                const mask = `radial-gradient(ellipse ${r.rx * 1.5}% ${r.ry * 1.5}% at ${r.x}% ${r.y}%, #000 35%, rgba(0,0,0,0.45) 60%, transparent 78%)`;
-                return (
-                  <img
-                    key={cat.name}
-                    src={image}
-                    alt=""
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 h-full w-full object-contain mix-blend-multiply transition-opacity duration-500 motion-reduce:transition-none [filter:grayscale(1)_brightness(1.15)_sepia(1)_saturate(7)_hue-rotate(-24deg)_contrast(1.1)]"
-                    style={{
-                      opacity: i === active ? 1 : 0,
-                      maskImage: mask,
-                      WebkitMaskImage: mask,
-                    }}
-                  />
-                );
-              })}
-
-              {/* Soft glow over the active region */}
+              {/* Soft red wash behind the line art */}
               <svg
                 viewBox="0 0 100 100"
                 preserveAspectRatio="none"
                 aria-hidden
-                className="pointer-events-none absolute inset-0 h-full w-full [filter:blur(12px)]"
+                className="pointer-events-none absolute inset-0 h-full w-full [filter:blur(14px)]"
               >
                 {categories.map((cat, i) => {
                   const r = regionMap[cat.icon];
@@ -228,13 +200,45 @@ export function WhatsIncluded({
                       cy={r.y}
                       rx={r.rx}
                       ry={r.ry}
-                      fillOpacity={0.28}
+                      fillOpacity={0.22}
                       className="fill-signal transition-opacity duration-500 motion-reduce:transition-none"
                       style={{ opacity: i === active ? 1 : 0 }}
                     />
                   );
                 })}
               </svg>
+
+              <img
+                src={image}
+                alt={imageAlt}
+                loading="lazy"
+                width={1280}
+                height={960}
+                className="relative h-auto w-full object-contain"
+              />
+
+              {/* Active area: the line work turns brand red */}
+              {categories.map((cat, i) => {
+                const r = regionMap[cat.icon];
+                if (!r) return null;
+                const mask = `radial-gradient(ellipse ${r.rx * 1.4}% ${r.ry * 1.4}% at ${r.x}% ${r.y}%, #000 40%, rgba(0,0,0,0.5) 65%, transparent 80%)`;
+                return (
+                  <img
+                    key={cat.name}
+                    src={image}
+                    alt=""
+                    aria-hidden
+                    loading="lazy"
+                    className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-opacity duration-500 motion-reduce:transition-none [filter:invert(24%)_sepia(96%)_saturate(6000%)_hue-rotate(357deg)_brightness(96%)_contrast(112%)]"
+                    style={{
+                      opacity: i === active ? 1 : 0,
+                      maskImage: mask,
+                      WebkitMaskImage: mask,
+                    }}
+                  />
+                );
+              })}
+
 
               {/* Hotspots */}
               {categories.map((cat, i) => {
