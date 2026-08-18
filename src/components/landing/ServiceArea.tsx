@@ -73,14 +73,22 @@ export function ServiceArea() {
                       <circle
                         cx={c.x}
                         cy={c.y}
-                        r="20"
-                        className="fill-signal/15"
+                        r="18"
+                        className="fill-signal/10"
+                        filter="url(#rc-glow)"
                       />
                       <circle
                         cx={c.x}
                         cy={c.y}
-                        r="20"
-                        className="fill-signal/25 animate-ring-pulse"
+                        r="18"
+                        className="fill-signal/20 animate-glow-pulse"
+                        style={{ transformOrigin: "center" }}
+                      />
+                      <circle
+                        cx={c.x}
+                        cy={c.y}
+                        r="12"
+                        className="fill-signal/30 animate-glow-pulse-delayed"
                         style={{ transformOrigin: "center" }}
                       />
                     </>
