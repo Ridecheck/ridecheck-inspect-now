@@ -82,7 +82,7 @@ export function WhatsIncluded({
 
   return (
     <section className="bg-haze">
-      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-widest text-signal">
