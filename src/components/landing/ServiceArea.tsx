@@ -53,6 +53,13 @@ export function ServiceArea() {
                   <path d={AUS_PATH} />
                   <ellipse cx="452" cy="470" rx="22" ry="17" />
                 </clipPath>
+                <filter id="rc-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
               </defs>
 
               <g clipPath="url(#rc-aus)">
@@ -66,14 +73,22 @@ export function ServiceArea() {
                       <circle
                         cx={c.x}
                         cy={c.y}
-                        r="20"
-                        className="fill-signal/15"
+                        r="18"
+                        className="fill-signal/10"
+                        filter="url(#rc-glow)"
                       />
                       <circle
                         cx={c.x}
                         cy={c.y}
-                        r="20"
-                        className="fill-signal/25 animate-ring-pulse"
+                        r="18"
+                        className="fill-signal/20 animate-glow-pulse"
+                        style={{ transformOrigin: "center" }}
+                      />
+                      <circle
+                        cx={c.x}
+                        cy={c.y}
+                        r="12"
+                        className="fill-signal/30 animate-glow-pulse-delayed"
                         style={{ transformOrigin: "center" }}
                       />
                     </>
