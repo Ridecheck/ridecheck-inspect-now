@@ -193,10 +193,11 @@ export function WhatsIncluded({
             >
               <defs>
                 <radialGradient id="wi-glow">
-                  <stop offset="0%" stopColor="currentColor" stopOpacity="0.55" />
-                  <stop offset="60%" stopColor="currentColor" stopOpacity="0.28" />
-                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+                  <stop offset="0%" stopColor="var(--signal)" stopOpacity="0.7" />
+                  <stop offset="55%" stopColor="var(--signal)" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="var(--signal)" stopOpacity="0" />
                 </radialGradient>
+
               </defs>
               {categories.map((cat, i) => {
                 const r = regionMap[cat.icon];
