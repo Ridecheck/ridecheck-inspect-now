@@ -26,7 +26,9 @@ export type Pkg = {
   duration: string;
   blurb: string;
   popular?: boolean;
+  badge?: string;
   inclusions: string[];
+  excluded?: string[];
 };
 
 export const packages: Pkg[] = [
@@ -37,13 +39,16 @@ export const packages: Pkg[] = [
     blurb:
       "A thorough mechanical assessment for buyers who can see the car themselves.",
     inclusions: [
-      "Visual condition assessment of engine, underbody, exterior, interior and wheels",
-      "19+ high-quality photos of key areas",
-      "Diagnostic scan of engine management systems",
-      "Road test to evaluate performance",
+      "Full mechanical inspection — engine, exterior, interior, wheels and underside",
+      "Diagnostic scan and road test",
+      "19+ high-quality photos",
       "Free PPSR report confirming the car isn't encumbered",
-      "Instant digital report delivered on completion",
-      "Phone call with the inspecting mechanic to discuss findings",
+      "Instant digital report plus a call with the inspecting mechanic",
+    ],
+    excluded: [
+      "Paint depth readings on every panel",
+      "Odometer tamper check",
+      "35+ photos + valuation guide",
     ],
   },
   {
@@ -51,19 +56,18 @@ export const packages: Pkg[] = [
     price: 379,
     duration: "70–90 minutes",
     popular: true,
+    badge: "Most popular",
     blurb:
       "Full accident and body history. Built for interstate and remote buyers.",
     inclusions: [
-      "Everything in the Standard Inspection, plus:",
-      "35+ photos covering exterior, interior and underbody",
-      "Video walkthrough of interior, exterior and the engine running",
-      "Full body condition report with paint depth readings and prior damage detection",
-      "Free CarHistory report (valued at $41.95): odometer, damage, stolen and written-off checks, valuation, registration and prior sale data",
-      "Instant digital report delivered on completion",
-      "Advanced paint, damage and repair assessment tooling",
+      "360° photo coverage — 35+ photos from every angle: exterior, interior, engine bay and underside",
+      "Paint & repair check — paint depth readings across all panels to help spot signs of previous repairs, resprays or panel damage",
+      "Odometer check — we look for signs of tampering and compare the reading against any records available on the day",
+      "Everything in the Standard Inspection",
     ],
   },
 ];
+
 
 export const differentiators = [
   {
@@ -224,16 +228,18 @@ export const evPackages: Pkg[] = [
   {
     name: "EV Battery Health Test",
     price: 250,
-    duration: "45–60 minutes",
+    duration: "15–20 minutes",
     blurb:
       "Certified Aviloo State of Health test on its own — for buyers who only need the battery verified.",
     inclusions: [
-      "Certified Aviloo battery State of Health (SoH %) test",
+      "Certified Aviloo battery test — State of Health (SoH %) measured, not estimated",
       "Remaining usable capacity analysis",
-      "Degradation benchmarked against the same model and age",
-      "Current real-world range vs original factory range",
-      "Official Aviloo battery health report (PDF)",
-      "Instant digital summary delivered on completion",
+      "Degradation benchmark — compared against the same model and age",
+    ],
+    excluded: [
+      "Full vehicle inspection & road test",
+      "Charging system and cable check",
+      "Free PPSR check",
     ],
   },
   {
@@ -241,20 +247,19 @@ export const evPackages: Pkg[] = [
     price: 489,
     duration: "90–120 minutes",
     popular: true,
+    badge: "Best value",
     blurb:
       "Our full EV pre-purchase inspection combined with the certified Aviloo battery health test.",
     inclusions: [
-      "Full EV pre-purchase inspection: exterior, interior, brakes, suspension, tyres",
-      "Road test to assess drivetrain, regen braking and ride quality",
-      "Full system fault scan (current and stored codes)",
-      "Charging system and charge port check, plus supplied cable check",
-      "Paint depth spot checks for prior accident repair",
-      "Free PPSR report confirming the car isn't encumbered",
-      "Certified Aviloo battery State of Health test and official PDF report",
-      "Instant digital report plus a phone call with your inspector",
+      "Full EV pre-purchase inspection — exterior, interior, brakes, suspension and tyres",
+      "Road test — drivetrain, regen braking and ride quality",
+      "Full system fault scan — current and stored codes",
+      "Charging system and cable check, plus free PPSR check",
+      "Certified Aviloo battery test and official PDF report",
     ],
   },
 ];
+
 
 export const evReasons = [
   {
