@@ -11,8 +11,11 @@ import {
   ExternalLink,
   FileText,
   Gauge,
+  MousePointerClick,
   Plug,
+  Plus,
   ShieldCheck,
+
   Disc3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
