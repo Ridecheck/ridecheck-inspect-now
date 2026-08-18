@@ -34,7 +34,7 @@ const iconMap = {
   charging: Plug,
 } as const;
 
-/** Highlight regions as % of the diagram box. `history` has no on-car region. */
+/** Highlight regions as % of the diagram box. */
 const regionMap: Record<string, { x: number; y: number; rx: number; ry: number } | undefined> = {
   engine: { x: 26, y: 45, rx: 15, ry: 14 },
   wheels: { x: 35, y: 68, rx: 12, ry: 11 },
@@ -43,40 +43,8 @@ const regionMap: Record<string, { x: number; y: number; rx: number; ry: number }
   road: { x: 87, y: 60, rx: 11, ry: 11 },
   battery: { x: 40, y: 55, rx: 16, ry: 12 },
   charging: { x: 80, y: 52, rx: 12, ry: 11 },
-  history: undefined,
+  history: { x: 62, y: 33, rx: 13, ry: 11 },
 };
-
-/** Report-style visual for off-vehicle checks (History & Documentation). */
-function DocVisual() {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-haze p-6">
-      <div className="relative h-[168px] w-[132px] rounded-lg border border-border bg-card p-3 shadow-soft">
-        <div className="h-1.5 w-full rounded-full bg-signal" />
-        <div className="mt-5 space-y-2.5">
-          {[100, 80, 92, 65, 88, 55].map((w, i) => (
-            <div
-              key={i}
-              className="h-1.5 rounded-full bg-border"
-              style={{ width: `${w}%` }}
-            />
-          ))}
-        </div>
-      </div>
-      <div className="flex flex-wrap justify-center gap-2">
-        {["VIN", "PPSR", "Odometer", "Finance", "Written-off"].map((t) => (
-          <span
-            key={t}
-            className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-bold text-ink"
-          >
-            <Check className="h-3 w-3 text-signal" aria-hidden />
-            {t}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 
 type Props = {
   categories: InspectionCategory[];
@@ -215,9 +183,7 @@ export function WhatsIncluded({
 
           {/* Visual */}
           <div className="relative min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-center">
-            {isHistory ? (
-              <DocVisual />
-            ) : (
+            {(
               <div className="relative">
                 {/* Soft red wash behind the car */}
                 <svg
