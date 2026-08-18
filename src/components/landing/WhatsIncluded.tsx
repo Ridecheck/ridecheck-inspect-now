@@ -218,7 +218,7 @@ export function WhatsIncluded({
                 className="relative h-auto w-full object-contain"
               />
 
-              {/* Active area: the line work turns brand red */}
+              {/* Active area: brightened, punchier copy of the photo */}
               {categories.map((cat, i) => {
                 const r = regionMap[cat.icon];
                 if (!r) return null;
@@ -230,7 +230,7 @@ export function WhatsIncluded({
                     alt=""
                     aria-hidden
                     loading="lazy"
-                    className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-opacity duration-500 motion-reduce:transition-none [filter:invert(24%)_sepia(96%)_saturate(6000%)_hue-rotate(357deg)_brightness(96%)_contrast(112%)]"
+                    className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-opacity duration-500 motion-reduce:transition-none [filter:brightness(1.18)_saturate(1.5)_contrast(1.1)]"
                     style={{
                       opacity: i === active ? 1 : 0,
                       maskImage: mask,
@@ -239,6 +239,7 @@ export function WhatsIncluded({
                   />
                 );
               })}
+
 
 
               {/* Hotspots */}
