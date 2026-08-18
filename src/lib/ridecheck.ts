@@ -68,6 +68,46 @@ export const packages: Pkg[] = [
   },
 ];
 
+export type ComparisonValue = boolean | string;
+
+export type ComparisonRow = {
+  feature: string;
+  standard: ComparisonValue;
+  premium: ComparisonValue;
+};
+
+export type ComparisonGroup = {
+  label: string;
+  rows: ComparisonRow[];
+};
+
+export const comparisonGroups: ComparisonGroup[] = [
+  {
+    label: "Inspection scope",
+    rows: [
+      { feature: "Full mechanical inspection", standard: true, premium: true },
+      { feature: "Diagnostic scan & road test", standard: true, premium: true },
+      { feature: "Road test drivetrain notes", standard: true, premium: true },
+      { feature: "Mechanic phone call", standard: true, premium: true },
+    ],
+  },
+  {
+    label: "Photos & documentation",
+    rows: [
+      { feature: "Photo coverage", standard: "19+", premium: "35+ (360°)" },
+      { feature: "Instant digital report", standard: true, premium: true },
+      { feature: "Free PPSR report", standard: true, premium: true },
+    ],
+  },
+  {
+    label: "Premium-only checks",
+    rows: [
+      { feature: "Paint depth readings — all panels", standard: false, premium: true },
+      { feature: "Odometer tamper check", standard: false, premium: true },
+      { feature: "Valuation guide", standard: false, premium: true },
+    ],
+  },
+];
 
 export const differentiators = [
   {
