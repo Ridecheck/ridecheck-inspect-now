@@ -26,7 +26,9 @@ export type Pkg = {
   duration: string;
   blurb: string;
   popular?: boolean;
+  badge?: string;
   inclusions: string[];
+  excluded?: string[];
 };
 
 export const packages: Pkg[] = [
@@ -37,13 +39,16 @@ export const packages: Pkg[] = [
     blurb:
       "A thorough mechanical assessment for buyers who can see the car themselves.",
     inclusions: [
-      "Visual condition assessment of engine, underbody, exterior, interior and wheels",
-      "19+ high-quality photos of key areas",
-      "Diagnostic scan of engine management systems",
-      "Road test to evaluate performance",
+      "Full mechanical inspection — engine, exterior, interior, wheels and underside",
+      "Diagnostic scan and road test",
+      "19+ high-quality photos",
       "Free PPSR report confirming the car isn't encumbered",
-      "Instant digital report delivered on completion",
-      "Phone call with the inspecting mechanic to discuss findings",
+      "Instant digital report plus a call with the inspecting mechanic",
+    ],
+    excluded: [
+      "Paint depth readings on every panel",
+      "Odometer tamper check",
+      "35+ photos + valuation guide",
     ],
   },
   {
@@ -51,19 +56,18 @@ export const packages: Pkg[] = [
     price: 379,
     duration: "70–90 minutes",
     popular: true,
+    badge: "Most popular",
     blurb:
       "Full accident and body history. Built for interstate and remote buyers.",
     inclusions: [
-      "Everything in the Standard Inspection, plus:",
-      "35+ photos covering exterior, interior and underbody",
-      "Video walkthrough of interior, exterior and the engine running",
-      "Full body condition report with paint depth readings and prior damage detection",
-      "Free CarHistory report (valued at $41.95): odometer, damage, stolen and written-off checks, valuation, registration and prior sale data",
-      "Instant digital report delivered on completion",
-      "Advanced paint, damage and repair assessment tooling",
+      "360° photo coverage — 35+ photos from every angle: exterior, interior, engine bay and underside",
+      "Paint & repair check — paint depth readings across all panels to help spot signs of previous repairs, resprays or panel damage",
+      "Odometer check — we look for signs of tampering and compare the reading against any records available on the day",
+      "Everything in the Standard Inspection",
     ],
   },
 ];
+
 
 export const differentiators = [
   {
