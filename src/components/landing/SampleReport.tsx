@@ -86,7 +86,7 @@ export function SampleReport() {
             From inspection to insights, all in one{" "}
             <span className="text-signal">RideCheck report</span>
           </h2>
-          <p className="mt-4 max-w-md text-sm text-ink-muted sm:text-base">
+          <p className="mt-4 max-w-md text-sm text-white/60 sm:text-base">
             We inspect the car on site and deliver a clear, same-day report so
             you can buy with confidence.
           </p>
@@ -99,7 +99,7 @@ export function SampleReport() {
                 </span>
                 <div>
                   <p className="font-semibold">{b.title}</p>
-                  <p className="text-sm text-ink-muted">{b.body}</p>
+                  <p className="text-sm text-white/60">{b.body}</p>
                 </div>
               </li>
             ))}
