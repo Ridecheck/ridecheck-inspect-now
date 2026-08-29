@@ -46,6 +46,7 @@ function Page() {
           }
           intro="We inspect 100+ points across every key area of the vehicle, so you know exactly what you're buying."
         />
+        <SampleReport />
         <Faq />
         <ServiceArea />
       </main>
