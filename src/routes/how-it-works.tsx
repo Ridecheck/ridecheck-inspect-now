@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/landing/SiteHeader";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { WhatsIncluded } from "@/components/landing/WhatsIncluded";
-import { SampleReport } from "@/components/landing/SampleReport";
 import { Faq } from "@/components/landing/Faq";
 import { ServiceArea } from "@/components/landing/ServiceArea";
 import { SiteFooter } from "@/components/landing/SiteFooter";
@@ -46,7 +45,6 @@ function Page() {
           }
           intro="We inspect 100+ points across every key area of the vehicle, so you know exactly what you're buying."
         />
-        <SampleReport />
         <Faq />
         <ServiceArea />
       </main>
