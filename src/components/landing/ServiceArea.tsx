@@ -16,7 +16,7 @@ const cities = [
   { name: "Adelaide", x: 372, y: 404, live: false },
 ];
 
-export function ServiceArea() {
+export function ServiceArea({ city }: { city?: "sydney" }) {
   return (
     <section id="locations" className="bg-haze">
       <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
@@ -27,8 +27,9 @@ export function ServiceArea() {
           Our coverage across Australia
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-center text-sm text-muted-foreground">
-          We are mobile. We come to the seller, the dealer or the driveway —
-          across Melbourne and Sydney, with Adelaide next.
+          {city === "sydney"
+            ? "We are mobile. We come to the seller, the dealer or the driveway — across Greater Sydney, from the Northern Beaches to the Illawarra."
+            : "We are mobile. We come to the seller, the dealer or the driveway — across Melbourne and Sydney, with Adelaide next."}
         </p>
 
         <div className="mt-10 grid items-start gap-8 lg:grid-cols-2">
@@ -128,7 +129,12 @@ export function ServiceArea() {
           </div>
 
           {/* States */}
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion
+            type="single"
+            collapsible
+            defaultValue={city === "sydney" ? "New South Wales" : undefined}
+            className="space-y-3"
+          >
             {serviceAreas.map((area) => (
               <AccordionItem
                 key={area.state}

@@ -11,7 +11,7 @@ const bullets = [
   "We come to the car",
 ];
 
-export function Hero() {
+export function Hero({ city }: { city?: "sydney" }) {
   return (
     <section className="relative overflow-hidden bg-background">
       {/* Car image — full bleed on the right */}
@@ -60,7 +60,9 @@ export function Hero() {
             detailed report with 90+ photos, video and a free PPSR check.
           </p>
           <p className="mt-3 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Melbourne and Sydney. Adelaide coming soon.
+            {city === "sydney"
+              ? "Across Greater Sydney — Northern Beaches to the Illawarra."
+              : "Melbourne and Sydney. Adelaide coming soon."}
           </p>
 
           <p className="mt-5 font-display text-lg font-bold text-ink">
