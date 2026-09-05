@@ -59,7 +59,7 @@ function Field({
   );
 }
 
-export function BookingWizard() {
+export function BookingWizard({ city }: { city?: "sydney" }) {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<Form>(emptyForm);
@@ -182,7 +182,9 @@ export function BookingWizard() {
                       />
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      e.g. Brunswick, 3056
+                      {city === "sydney"
+                        ? "e.g. Bondi, 2026"
+                        : "e.g. Brunswick, 3056"}
                     </p>
                   </>
                 )}
@@ -407,10 +409,14 @@ export function BookingWizard() {
                       <MapPin className="relative h-9 w-9 text-signal" aria-hidden />
                     </div>
                     <p className="mt-5 text-sm font-bold text-ink">
-                      We service all Melbourne &amp; Sydney suburbs
+                      {city === "sydney"
+                        ? "We service all Greater Sydney suburbs"
+                        : "We service all Melbourne & Sydney suburbs"}
                     </p>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Adelaide coming soon. We travel to the seller, dealer or private.
+                      {city === "sydney"
+                        ? "Northern Beaches to the Illawarra. We travel to the seller, dealer or private."
+                        : "Adelaide coming soon. We travel to the seller, dealer or private."}
                     </p>
                   </>
                 )}
