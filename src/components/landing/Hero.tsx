@@ -6,7 +6,7 @@ import { GOOGLE_REVIEWS_URL, SAMPLE_REPORT_URL } from "@/lib/ridecheck";
 
 const bullets = [
   "Same-day detailed report",
-  "90+ photos and video",
+  "35+ detailed photos providing 360° coverage of the vehicle",
   "Free PPSR history check",
   "We come to the car",
 ];
@@ -66,7 +66,7 @@ export function Hero({ city }: { city?: "sydney" }) {
 
           <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
             We come to the car, inspect it on site, and deliver a same-day
-            detailed report with 90+ photos, video and a free PPSR check.
+            detailed report with 35+ detailed photos providing 360° coverage of the vehicle and a free PPSR check.
           </p>
           <p className="mt-3 text-base leading-relaxed text-muted-foreground sm:text-lg">
             {city === "sydney"
