@@ -52,7 +52,16 @@ export function Hero({ city }: { city?: "sydney" }) {
 
         <div className="mt-8 max-w-xl lg:max-w-[46%]">
           <h1 className="mt-5 text-[2.35rem] font-extrabold leading-[1.05] text-signal sm:text-5xl lg:text-6xl">
-            Mobile Pre-Purchase <span className="text-ink">Car Inspections</span>
+            {city === "sydney" ? (
+              <>
+                Mobile Pre-Purchase <span className="text-ink">Car Inspections</span>{" "}
+                <span className="text-ink">in Sydney</span>
+              </>
+            ) : (
+              <>
+                Mobile Pre-Purchase <span className="text-ink">Car Inspections</span>
+              </>
+            )}
           </h1>
 
           <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
