@@ -530,7 +530,7 @@ export function CheckAvailabilitySheet({
 
           {screen === 2 && !covered && !leadSent && (
             <div className="py-4 text-center">
-              <AvailabilityResultCard />
+              <AvailabilityResultCard settled variant="car" />
               <h2 className="mt-4 text-xl font-extrabold text-ink">
                 We might be able to help.
               </h2>
