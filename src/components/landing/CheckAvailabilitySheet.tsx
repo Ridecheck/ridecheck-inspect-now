@@ -424,6 +424,7 @@ export function CheckAvailabilitySheet({
                 serviceType="standard"
                 region={availability.region}
                 regionLabel={availability.regionLabel}
+                showAsap={false}
               />
 
               <Button
