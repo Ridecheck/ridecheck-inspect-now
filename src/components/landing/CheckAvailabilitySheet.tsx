@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { packages } from "@/lib/ridecheck";
 
+const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
+
 const checkingSteps = [
   "Checking service coverage",
   "Finding nearby inspectors",
