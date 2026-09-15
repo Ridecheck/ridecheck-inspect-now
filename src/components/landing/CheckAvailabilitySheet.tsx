@@ -155,20 +155,23 @@ export function CheckAvailabilitySheet({
   const [leadSent, setLeadSent] = useState(false);
   const [leadNote, setLeadNote] = useState("");
 
-  // Reset the funnel each time the sheet is opened.
-  useEffect(() => {
+  // Reset the funnel each time the sheet is opened. Layout effect so the first
+  // screen is in place before the panel is painted sliding up.
+  useLayoutEffect(() => {
     if (open) {
       setScreen(0);
       setCheckStep(0);
       setRevealPhase("checking");
       setLeadSent(false);
       setLeadNote("");
+      sheetRef.current?.scrollTo({ top: 0 });
     }
   }, [open]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     sheetRef.current?.scrollTo({ top: 0 });
   }, [screen]);
+
 
   const { suburb, postcode } = splitLocation(location);
   // "test" as the suburb forces the outside-coverage flow for easy testing.
