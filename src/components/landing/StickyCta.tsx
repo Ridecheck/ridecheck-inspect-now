@@ -11,15 +11,16 @@ export function StickyCta() {
   return (
     <>
       <div className="fixed inset-x-0 bottom-0 z-50 sm:hidden">
-        <button
+        <Button
           type="button"
+          variant="ghost"
           onClick={() => setOpen(true)}
           aria-expanded={open}
-          className="flex w-full items-center justify-center gap-1.5 rounded-t-xl border-x border-t border-border bg-secondary py-2 text-sm font-semibold text-ink"
+          className="mx-auto flex h-9 w-[78%] items-center justify-center gap-1.5 rounded-b-none rounded-t-2xl border-x border-t border-border bg-background/95 px-5 text-sm font-semibold text-ink shadow-[0_-3px_12px_hsl(var(--border)/0.3)] backdrop-blur hover:bg-background"
         >
           Check Availability
           <ChevronUp className="h-4 w-4 text-signal" aria-hidden />
-        </button>
+        </Button>
 
         <div className="border-t border-border bg-background/95 p-3 backdrop-blur">
           <div className="flex gap-2">
