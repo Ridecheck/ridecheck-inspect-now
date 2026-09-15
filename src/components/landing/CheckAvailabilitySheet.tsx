@@ -22,6 +22,36 @@ const checkingSteps = [
 
 const defaultPkg = packages.find((p) => p.popular)?.name ?? packages[0].name;
 
+type DayOption = {
+  key: string;
+  label: string;
+  sub: string;
+  status: "Available" | "Limited";
+};
+
+function buildDays(): DayOption[] {
+  const out: DayOption[] = [];
+  const now = new Date();
+  for (let i = 0; out.length < 5; i += 1) {
+    const d = new Date(now);
+    d.setDate(now.getDate() + i);
+    if (d.getDay() === 0) continue; // no Sunday inspections
+    const weekday = d.toLocaleDateString("en-AU", { weekday: "long" });
+    const short = d.toLocaleDateString("en-AU", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+    out.push({
+      key: d.toISOString().slice(0, 10),
+      label: i === 0 ? "Today" : i === 1 ? "Tomorrow" : weekday,
+      sub: short,
+      status: out.length % 3 === 2 ? "Limited" : "Available",
+    });
+  }
+  return out;
+}
+
 type RevealPhase = "checking" | "complete" | "burst";
 
 function RideCheckCarMark() {
@@ -100,6 +130,8 @@ export function CheckAvailabilitySheet({
   const [contact, setContact] = useState("");
   const [contactTouched, setContactTouched] = useState(false);
   const [pkg, setPkg] = useState(defaultPkg);
+  const [days] = useState(buildDays);
+  const [day, setDay] = useState(() => buildDays()[0]?.key ?? "");
   const [checkStep, setCheckStep] = useState(0);
   const [revealPhase, setRevealPhase] = useState<RevealPhase>("checking");
 
@@ -158,7 +190,8 @@ export function CheckAvailabilitySheet({
     });
   };
 
-  const canBack = screen === 3 || screen === 4;
+  const canBack = screen >= 3;
+  const selectedDay = days.find((d) => d.key === day) ?? days[0];
 
   return (
     <div
@@ -212,7 +245,7 @@ export function CheckAvailabilitySheet({
             </button>
           </div>
           <div className="mt-3 flex gap-1.5" aria-hidden>
-            {[0, 1, 2, 3, 4].map((i) => (
+            {[0, 1, 2, 3, 4, 5].map((i) => (
               <span
                 key={i}
                 className={`h-1 flex-1 rounded-full ${
@@ -374,13 +407,80 @@ export function CheckAvailabilitySheet({
                 onClick={() => setScreen(3)}
                 className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
               >
-                Continue
+                Show available dates
                 <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
               </Button>
             </div>
           )}
 
           {screen === 3 && (
+            <>
+              <h2 className="text-xl font-extrabold text-ink">
+                When would you like us to inspect it?
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Select a day that works for you.
+              </p>
+
+              <div className="mt-5 space-y-2.5">
+                {days.map((d) => {
+                  const active = day === d.key;
+                  return (
+                    <button
+                      key={d.key}
+                      type="button"
+                      onClick={() => setDay(d.key)}
+                      aria-pressed={active}
+                      className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition ${
+                        active
+                          ? "border-signal bg-accent/40 shadow-soft"
+                          : "border-border bg-background"
+                      }`}
+                    >
+                      <span
+                        className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                          active
+                            ? "border-signal bg-signal text-signal-foreground"
+                            : "border-border"
+                        }`}
+                        aria-hidden
+                      >
+                        {active && <Check className="h-3 w-3" />}
+                      </span>
+                      <span className="flex-1">
+                        <span className="block text-sm font-bold text-ink">
+                          {d.label}
+                        </span>
+                        <span className="block text-xs text-muted-foreground">
+                          {d.sub}
+                        </span>
+                      </span>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                          d.status === "Available"
+                            ? "bg-accent text-ink"
+                            : "bg-secondary text-muted-foreground"
+                        }`}
+                      >
+                        {d.status}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <Button
+                size="lg"
+                onClick={() => setScreen(4)}
+                className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
+              >
+                Continue
+                <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+              </Button>
+            </>
+          )}
+
+          {screen === 4 && (
             <>
               <h2 className="text-xl font-extrabold text-ink">
                 Choose your inspection
@@ -448,7 +548,7 @@ export function CheckAvailabilitySheet({
 
               <Button
                 size="lg"
-                onClick={() => setScreen(4)}
+                onClick={() => setScreen(5)}
                 className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
               >
                 Continue
@@ -457,7 +557,7 @@ export function CheckAvailabilitySheet({
             </>
           )}
 
-          {screen === 4 && (
+          {screen === 5 && (
             <>
               <h2 className="text-xl font-extrabold text-ink">
                 Taking you to booking
@@ -474,6 +574,7 @@ export function CheckAvailabilitySheet({
                 <dl className="mt-3 space-y-2 text-sm">
                   {[
                     ["Location", suburb],
+                    ["Preferred day", selectedDay ? `${selectedDay.label}, ${selectedDay.sub}` : "—"],
                     ["Inspection", `${selected.name} — $${selected.price}`],
                   ].map(([label, value]) => (
                     <div key={label} className="flex justify-between gap-4">
