@@ -11,19 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { packages } from "@/lib/ridecheck";
-
-const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
-
-const vehicleTypes = ["Car", "SUV", "Ute", "Van", "Electric"] as const;
-type VehicleType = (typeof vehicleTypes)[number];
 
 const checkingSteps = [
   "Checking service coverage",
