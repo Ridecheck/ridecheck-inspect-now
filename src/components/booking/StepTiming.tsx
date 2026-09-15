@@ -178,7 +178,7 @@ export function StepTiming({
               open &&
               !asapDay &&
               day.capacity > 0 &&
-              day.remaining / day.capacity <= 0.6;
+              day.remaining / day.capacity <= 0.5;
             return (
               <button
                 key={day.iso}
