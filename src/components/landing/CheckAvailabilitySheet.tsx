@@ -3,7 +3,6 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
-  CarFront,
   Check,
   Loader2,
   MapPin,
@@ -25,6 +24,17 @@ const defaultPkg = packages.find((p) => p.popular)?.name ?? packages[0].name;
 
 type RevealPhase = "checking" | "complete" | "burst";
 
+function RideCheckCarMark() {
+  return (
+    <svg viewBox="0 0 64 64" aria-hidden>
+      <path
+        fill="currentColor"
+        d="M17.2 17.5c1.2-4 4.9-6.7 9.1-6.7h11.4c4.2 0 7.9 2.7 9.1 6.7l2.6 8.4c3.2 1.6 5.3 4.9 5.3 8.6v11.1c0 2.6-2.1 4.7-4.7 4.7h-1.7v3.1c0 2-1.6 3.6-3.6 3.6h-2.1c-2 0-3.6-1.6-3.6-3.6v-3.1H25v3.1c0 2-1.6 3.6-3.6 3.6h-2.1c-2 0-3.6-1.6-3.6-3.6v-3.1H14c-2.6 0-4.7-2.1-4.7-4.7V34.5c0-3.7 2.1-7 5.3-8.6l2.6-8.4Zm5.8 1.8-2 6.4h22l-2-6.4a3.5 3.5 0 0 0-3.3-2.4H26.3a3.5 3.5 0 0 0-3.3 2.4ZM18.7 39.8a4.1 4.1 0 1 0 0-8.2 4.1 4.1 0 0 0 0 8.2Zm26.6 0a4.1 4.1 0 1 0 0-8.2 4.1 4.1 0 0 0 0 8.2ZM26 37.2h12a2.3 2.3 0 0 0 0-4.6H26a2.3 2.3 0 0 0 0 4.6Z"
+      />
+    </svg>
+  );
+}
+
 function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
   return (
     <div
@@ -33,7 +43,7 @@ function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
     >
       <span className="availability-glow" />
       <div className="availability-confetti">
-        {Array.from({ length: 10 }, (_, index) => (
+        {Array.from({ length: 14 }, (_, index) => (
           <span key={index} className={`availability-confetti-piece piece-${index + 1}`} />
         ))}
       </div>
@@ -42,9 +52,11 @@ function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
           <Check strokeWidth={3.6} />
         </div>
         <div className="availability-envelope-back" />
+        <span className="availability-envelope-side availability-envelope-side-left" />
+        <span className="availability-envelope-side availability-envelope-side-right" />
         <div className="availability-envelope-front">
           <span className="availability-brand-badge inline-flex items-center justify-center rounded-full bg-background text-signal">
-            <CarFront strokeWidth={2.8} />
+            <RideCheckCarMark />
           </span>
         </div>
       </div>
@@ -115,8 +127,8 @@ export function CheckAvailabilitySheet({
       }, 2200),
       ...(!reduceMotion
         ? [
-            setTimeout(() => setRevealPhase("burst"), 2920),
-            setTimeout(() => setScreen(2), 3820),
+            setTimeout(() => setRevealPhase("burst"), 2720),
+            setTimeout(() => setScreen(2), 4070),
           ]
         : []),
     ];
