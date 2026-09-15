@@ -190,7 +190,8 @@ export function CheckAvailabilitySheet({
     });
   };
 
-  const canBack = screen === 3 || screen === 4;
+  const canBack = screen >= 3;
+  const selectedDay = days.find((d) => d.key === day) ?? days[0];
 
   return (
     <div
