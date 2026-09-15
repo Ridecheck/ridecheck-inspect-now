@@ -382,7 +382,10 @@ export function CheckAvailabilitySheet({
           {screen === 1 && (
             <div className="min-h-[21rem] py-6">
               <div className={`availability-reveal text-center ${revealPhase === "burst" ? "is-bursting" : ""}`}>
-                <AvailabilityResultCard checking={revealPhase === "checking"} />
+                <AvailabilityResultCard
+                  checking={revealPhase === "checking"}
+                  variant={covered ? "check" : "car"}
+                />
                 <h2 className="mt-1 text-xl font-extrabold text-ink">
                   {revealPhase === "checking"
                     ? `${checkingSteps[Math.min(checkStep, checkingSteps.length - 1)]}…`
