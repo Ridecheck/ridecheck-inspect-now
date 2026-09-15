@@ -324,49 +324,47 @@ export function CheckAvailabilitySheet({
 
           {screen === 1 && (
             <div className="min-h-[21rem] py-6">
-              {revealPhase === "checking" ? (
-                <>
-                  <h2 className="text-xl font-extrabold text-ink">Checking…</h2>
-                  <ul className="mt-6 space-y-3">
-                    {checkingSteps.map((label, i) => {
-                      const done = checkStep > i;
-                      const active = checkStep === i;
-                      return (
-                        <li
-                          key={label}
-                          className={`flex items-center gap-3 rounded-xl border border-border px-4 py-3 text-sm ${
-                            done || active ? "text-ink" : "text-muted-foreground"
-                          }`}
-                        >
-                          {done ? (
-                            <Check className="h-4 w-4 shrink-0 text-signal" aria-hidden />
-                          ) : (
-                            <Loader2
-                              className={`h-4 w-4 shrink-0 ${
-                                active ? "animate-spin text-signal" : "text-border"
-                              }`}
-                              aria-hidden
-                            />
-                          )}
-                          {label}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </>
-              ) : (
-                <div className={`availability-reveal text-center ${revealPhase === "burst" ? "is-bursting" : ""}`}>
-                  <AvailabilityResultCard />
-                  <h2 className="mt-5 text-xl font-extrabold text-ink">
-                    {revealPhase === "complete" ? "Checking complete" : "Great news!"}
-                  </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {revealPhase === "complete"
-                      ? "Preparing your result…"
+              <div className={`availability-reveal text-center ${revealPhase === "burst" ? "is-bursting" : ""}`}>
+                <AvailabilityResultCard />
+                <h2 className="mt-1 text-xl font-extrabold text-ink">
+                  {revealPhase === "checking" ? "Checking your area…" : revealPhase === "complete" ? "Checking complete" : "Great news!"}
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {revealPhase === "checking"
+                    ? "Making sure we can get to you."
+                    : revealPhase === "complete"
+                      ? "Your result is ready."
                       : "We can inspect your area."}
-                  </p>
-                </div>
-              )}
+                </p>
+                <ul className="mt-5 space-y-3 text-left">
+                  {checkingSteps.map((label, i) => {
+                    const done = checkStep > i;
+                    const active = checkStep === i;
+                    return (
+                      <li
+                        key={label}
+                        className={`flex items-center gap-3 rounded-xl border border-border px-4 py-3 text-sm ${
+                          done || active ? "text-ink" : "text-muted-foreground"
+                        }`}
+                      >
+                        {done ? (
+                          <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-signal text-signal-foreground">
+                            <Check className="h-3 w-3" aria-hidden />
+                          </span>
+                        ) : (
+                          <Loader2
+                            className={`h-5 w-5 shrink-0 ${
+                              active ? "animate-spin text-signal" : "text-border"
+                            }`}
+                            aria-hidden
+                          />
+                        )}
+                        {label}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           )}
 
