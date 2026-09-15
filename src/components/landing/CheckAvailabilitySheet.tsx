@@ -11,6 +11,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { packages } from "@/lib/ridecheck";
 
 const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
@@ -33,6 +40,18 @@ function splitLocation(value: string) {
   return { suburb: suburb || value.trim(), postcode };
 }
 
+function parseContact(value: string) {
+  const contact = value.trim();
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+  const digits = contact.replace(/\D/g, "");
+  const isPhone = /^[+()\d\s-]+$/.test(contact) && digits.length >= 8 && digits.length <= 15;
+  return {
+    isValid: contact.length <= 254 && (isEmail || isPhone),
+    email: isEmail ? contact : undefined,
+    phone: isPhone ? contact : undefined,
+  };
+}
+
 export function CheckAvailabilitySheet({
   open,
   onClose,
@@ -44,6 +63,8 @@ export function CheckAvailabilitySheet({
   const [screen, setScreen] = useState(0);
   const [location, setLocation] = useState("");
   const [vehicleType, setVehicleType] = useState<VehicleType>("Car");
+  const [contact, setContact] = useState("");
+  const [contactTouched, setContactTouched] = useState(false);
   const [pkg, setPkg] = useState(defaultPkg);
   const [checkStep, setCheckStep] = useState(0);
 
@@ -70,6 +91,7 @@ export function CheckAvailabilitySheet({
 
   const { suburb, postcode } = splitLocation(location);
   const selected = packages.find((p) => p.name === pkg) ?? packages[0];
+  const contactDetails = parseContact(contact);
 
   const goToBooking = () => {
     onClose();
@@ -81,6 +103,8 @@ export function CheckAvailabilitySheet({
         postcode,
         vehicle: vehicleType,
         pkg: selected.name,
+        email: contactDetails.email,
+        phone: contactDetails.phone,
       },
     });
   };
@@ -180,30 +204,65 @@ export function CheckAvailabilitySheet({
                 />
               </div>
 
-              <p className="mt-5 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <label
+                className="mt-5 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                htmlFor="ca-vehicle-type"
+              >
                 Vehicle type
-              </p>
-              <div className="mt-2 flex flex-wrap gap-2">
+              </label>
+              <Select
+                value={vehicleType}
+                onValueChange={(value) => setVehicleType(value as VehicleType)}
+              >
+                <SelectTrigger
+                  id="ca-vehicle-type"
+                  className="mt-2 h-12 rounded-xl bg-background"
+                >
+                  <SelectValue placeholder="Select vehicle type" />
+                </SelectTrigger>
+                <SelectContent>
                 {vehicleTypes.map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setVehicleType(t)}
-                    aria-pressed={vehicleType === t}
-                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                      vehicleType === t
-                        ? "border-signal bg-signal text-signal-foreground"
-                        : "border-border bg-background text-muted-foreground"
-                    }`}
-                  >
+                  <SelectItem key={t} value={t}>
                     {t}
-                  </button>
+                  </SelectItem>
                 ))}
-              </div>
+                </SelectContent>
+              </Select>
+
+              <label
+                className="mt-5 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                htmlFor="ca-contact"
+              >
+                Email or mobile number
+              </label>
+              <Input
+                id="ca-contact"
+                name="contact"
+                value={contact}
+                onChange={(e) => setContact(e.target.value.slice(0, 254))}
+                onBlur={() => setContactTouched(true)}
+                placeholder="you@example.com or 04xx xxx xxx"
+                maxLength={254}
+                aria-invalid={contactTouched && !contactDetails.isValid}
+                aria-describedby="ca-contact-help"
+                className="mt-2 h-12 rounded-xl"
+              />
+              <p
+                id="ca-contact-help"
+                className={`mt-1.5 text-xs ${
+                  contactTouched && !contactDetails.isValid
+                    ? "font-semibold text-signal"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {contactTouched && !contactDetails.isValid
+                  ? "Enter a valid email address or mobile number."
+                  : "We'll use this to follow up on availability."}
+              </p>
 
               <Button
                 size="lg"
-                disabled={location.trim() === ""}
+                disabled={location.trim() === "" || !contactDetails.isValid}
                 onClick={() => setScreen(1)}
                 className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
               >
