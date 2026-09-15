@@ -3,7 +3,6 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
-  CarFront,
   Check,
   Loader2,
   MapPin,
@@ -12,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { packages } from "@/lib/ridecheck";
+import logoAsset from "@/assets/ridecheck-logo.png.asset.json";
 
 const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
 
@@ -39,12 +39,15 @@ function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
       </div>
       <div className="availability-envelope">
         <div className="availability-result-slip">
-          <Check className="h-9 w-9" strokeWidth={3.5} />
+          <span className="availability-check-ring">
+            <Check strokeWidth={3.5} />
+          </span>
+          <span className="availability-result-label">Area available</span>
         </div>
         <div className="availability-envelope-back" />
         <div className="availability-envelope-front">
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-background text-signal">
-            <CarFront className="h-6 w-6" strokeWidth={2.4} />
+          <span className="availability-brand-badge inline-flex items-center justify-center rounded-full bg-background">
+            <img src={logoAsset.url} alt="" />
           </span>
         </div>
       </div>
