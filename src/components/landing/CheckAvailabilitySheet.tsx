@@ -172,6 +172,12 @@ export function CheckAvailabilitySheet({
     [selected.price, selected.popular, suburb, postcode],
   );
 
+  const chosenDay =
+    timing?.mode === "day"
+      ? availability.days.find((d) => d.iso === timing.iso)
+      : undefined;
+  const handoffPrice = selected.price + (chosenDay?.surcharge ?? 0);
+
   const goToBooking = () => {
     onClose();
     navigate({
@@ -536,7 +542,7 @@ export function CheckAvailabilitySheet({
                   {[
                     ["Location", suburb],
                     ["Preferred time", timingLabel(timing, availability.days)],
-                    ["Inspection", `${selected.name} — $${selected.price}`],
+                    ["Inspection", `${selected.name} — $${handoffPrice}`],
                   ].map(([label, value]) => (
                     <div key={label} className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">{label}</dt>
