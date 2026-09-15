@@ -23,7 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { buildAvailability } from "@/lib/booking";
 import { packages } from "@/lib/ridecheck";
-import { regionFromLocation } from "@/lib/schedule.mock";
+
 
 const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
 
@@ -173,7 +173,10 @@ export function CheckAvailabilitySheet({
   const { suburb, postcode } = splitLocation(location);
   // "test" as the suburb forces the outside-coverage flow for easy testing.
   const isTestTrigger = location.trim().toLowerCase() === "test";
-  const covered = isTestTrigger ? false : regionFromLocation(suburb, postcode) !== null;
+  // Prototype: only the literal word "test" (or a clearly interstate postcode)
+  // falls outside coverage. Any other suburb is treated as serviceable.
+  const outOfAreaPostcode = /\b[0146789]\d{3}\b/.test(`${suburb} ${postcode ?? ""}`);
+  const covered = isTestTrigger ? false : !outOfAreaPostcode;
 
   // Run the fake coverage check.
   useEffect(() => {
