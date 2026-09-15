@@ -4,8 +4,12 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  Clock,
+  DollarSign,
   Loader2,
+  Mail,
   MapPin,
+  MessageCircle,
   ShieldCheck,
   X,
 } from "lucide-react";
@@ -353,13 +357,17 @@ export function CheckAvailabilitySheet({
               <div className={`availability-reveal text-center ${revealPhase === "burst" ? "is-bursting" : ""}`}>
                 <AvailabilityResultCard checking={revealPhase === "checking"} />
                 <h2 className="mt-1 text-xl font-extrabold text-ink">
-                  {revealPhase === "checking" ? "Checking your area…" : revealPhase === "complete" ? "Checking complete" : "Great news!"}
+                  {revealPhase === "checking"
+                    ? `${checkingSteps[Math.min(checkStep, checkingSteps.length - 1)]}…`
+                    : revealPhase === "complete"
+                      ? "Just a moment…"
+                      : "Great news!"}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {revealPhase === "checking"
                     ? "Making sure we can get to you."
                     : revealPhase === "complete"
-                      ? "Your result is ready."
+                      ? "We're finalising your result."
                       : "We can inspect your area."}
                 </p>
                 <ul className="mt-5 space-y-3 text-left">
@@ -433,92 +441,137 @@ export function CheckAvailabilitySheet({
             </div>
           )}
 
-          {screen === 2 && !covered && (
+          {screen === 2 && !covered && leadSent && (
+            <div className="py-6 text-center">
+              <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-protected-soft">
+                <Check
+                  className="availability-success-check h-10 w-10 text-protected"
+                  strokeWidth={3}
+                  aria-hidden
+                />
+              </span>
+              <h2 className="mt-5 text-2xl font-extrabold text-ink">Thanks!</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                We've received your enquiry.
+              </p>
+
+              <div className="mt-6 flex items-start gap-3 rounded-2xl border border-border bg-haze p-4 text-left">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-protected-soft text-protected">
+                  <Mail className="h-4 w-4" aria-hidden />
+                </span>
+                <div>
+                  <p className="text-sm font-bold text-ink">
+                    We'll be in touch soon
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Our team will review your request and get back to you with
+                    availability and any applicable travel fees.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 gap-3 border-t border-border pt-5">
+                {[
+                  { icon: MessageCircle, label: "Usually within a few hours" },
+                  { icon: Clock, label: "We'll confirm availability" },
+                  { icon: DollarSign, label: "Transparent pricing" },
+                ].map(({ icon: Icon, label }) => (
+                  <div key={label} className="flex flex-col items-center gap-2">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-haze text-ink">
+                      <Icon className="h-4 w-4" aria-hidden />
+                    </span>
+                    <p className="text-[11px] leading-tight text-muted-foreground">
+                      {label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                size="lg"
+                variant="secondary"
+                onClick={onClose}
+                className="mt-7 h-12 w-full rounded-xl text-base font-semibold"
+              >
+                Back to home
+              </Button>
+            </div>
+          )}
+
+          {screen === 2 && !covered && !leadSent && (
             <div className="py-4 text-center">
               <AvailabilityResultCard />
               <h2 className="mt-4 text-xl font-extrabold text-ink">
                 We might be able to help.
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                We don't currently inspect in {suburb || "your area"}, but we're
-                adding areas. Leave your details and we'll get in touch when we
-                cover you.
+                We don't currently have a local inspector in{" "}
+                {suburb || "your area"}, but we may still be able to assist.
+                This area may require a travel fee depending on the location.
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Leave your details below and we'll get in touch with options and
+                a quote.
               </p>
 
-              {leadSent ? (
-                <>
-                  <div className="mx-auto mt-6 max-w-sm rounded-2xl border border-protected/30 bg-protected-soft p-6">
-                    <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-protected text-protected-foreground">
-                      <Check className="h-5 w-5" strokeWidth={3} aria-hidden />
-                    </span>
-                    <p className="mt-3 font-extrabold text-ink">
-                      Thanks — we'll be in touch.
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      We'll let you know as soon as we cover{" "}
-                      {suburb || "your area"}.
-                    </p>
-                  </div>
-                  <Button
-                    size="lg"
-                    onClick={onClose}
-                    className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
-                  >
-                    Done
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <div className="mt-5 rounded-2xl border border-border bg-haze p-4 text-left">
-                    <p className="flex items-center gap-2 text-sm font-bold text-ink">
-                      <MapPin className="h-4 w-4 text-signal" aria-hidden />
-                      {suburb}
-                    </p>
-                    <div className="mt-2 flex items-center justify-between gap-3 border-t border-border pt-2">
-                      <p className="truncate text-sm text-muted-foreground">
-                        {contact}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setScreen(0)}
-                        className="shrink-0 text-xs font-bold uppercase tracking-wider text-signal"
-                      >
-                        Edit
-                      </button>
-                    </div>
-                    <label
-                      htmlFor="ca-lead-note"
-                      className="mt-4 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
-                    >
-                      Anything we should know? (optional)
-                    </label>
-                    <Textarea
-                      id="ca-lead-note"
-                      value={leadNote}
-                      onChange={(e) => setLeadNote(e.target.value.slice(0, 500))}
-                      placeholder="Where the car is, when you need it…"
-                      maxLength={500}
-                      className="mt-2 min-h-[76px] rounded-xl"
-                    />
-                  </div>
-
-                  <Button
-                    size="lg"
-                    onClick={() => setLeadSent(true)}
-                    className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
-                  >
-                    Get in touch
-                    <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
-                  </Button>
+              <div className="mt-5 rounded-2xl border border-border bg-haze p-4 text-left">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="flex min-w-0 items-center gap-2 text-sm font-semibold text-ink">
+                    <MapPin className="h-4 w-4 shrink-0 text-signal" aria-hidden />
+                    <span className="truncate">{suburb}</span>
+                  </p>
                   <button
                     type="button"
                     onClick={() => setScreen(0)}
-                    className="mt-3 w-full text-sm font-semibold text-muted-foreground"
+                    className="shrink-0 text-xs font-bold uppercase tracking-wider text-signal"
                   >
-                    Try a different suburb
+                    Edit
                   </button>
-                </>
-              )}
+                </div>
+                <div className="mt-2 flex items-center justify-between gap-3 border-t border-border pt-2">
+                  <p className="flex min-w-0 items-center gap-2 text-sm text-ink">
+                    <Mail className="h-4 w-4 shrink-0 text-signal" aria-hidden />
+                    <span className="truncate">{contact}</span>
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setScreen(0)}
+                    className="shrink-0 text-xs font-bold uppercase tracking-wider text-signal"
+                  >
+                    Edit
+                  </button>
+                </div>
+                <label
+                  htmlFor="ca-lead-note"
+                  className="mt-4 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
+                  Anything we should know? (optional)
+                </label>
+                <Textarea
+                  id="ca-lead-note"
+                  value={leadNote}
+                  onChange={(e) => setLeadNote(e.target.value.slice(0, 500))}
+                  placeholder="e.g. where the car is, when you need it, or any other details…"
+                  maxLength={500}
+                  className="mt-2 min-h-[76px] rounded-xl"
+                />
+              </div>
+
+              <Button
+                size="lg"
+                onClick={() => setLeadSent(true)}
+                className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
+              >
+                Send enquiry
+                <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+              </Button>
+              <button
+                type="button"
+                onClick={() => setScreen(0)}
+                className="mt-3 w-full text-sm font-semibold text-muted-foreground"
+              >
+                Try a different suburb
+              </button>
             </div>
           )}
 
