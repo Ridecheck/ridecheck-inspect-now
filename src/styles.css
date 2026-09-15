@@ -299,14 +299,19 @@
 }
 
 .availability-envelope.is-checking {
-  animation: availability-card-struggle 1.65s ease-in-out infinite;
+  /* 420ms entrance, then exactly 2 x 890ms cycles = 2200ms, so the loop
+     always ends on its neutral frame right as the burst takes over. */
+  animation: availability-card-struggle 890ms ease-in-out 420ms 2 both;
   transform-origin: center bottom;
+  will-change: transform;
 }
 
 .availability-envelope.is-checking .availability-envelope-front {
-  animation: availability-front-push 1.65s ease-in-out infinite;
+  animation: availability-front-push 890ms ease-in-out 420ms 2 both;
   transform-origin: center 70%;
+  will-change: transform;
 }
+
 
 .availability-envelope-back {
   position: absolute;
