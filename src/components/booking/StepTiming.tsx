@@ -223,7 +223,7 @@ export function StepTiming({
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
             Morning or afternoon — {formatDayLong(activeDay)}
           </p>
-          {activeDay.tag === "Weekend rate" && (
+          {!hidePrices && activeDay.tag === "Weekend rate" && (
             <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
               Weekend rate applies — +${activeDay.surcharge}
             </p>
