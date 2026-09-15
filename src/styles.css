@@ -43,6 +43,9 @@
   --color-signal: var(--signal);
   --color-signal-foreground: var(--signal-foreground);
   --color-haze: var(--haze);
+  --color-protected: var(--protected);
+  --color-protected-foreground: var(--protected-foreground);
+  --color-protected-soft: var(--protected-soft);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -89,6 +92,9 @@
   --signal: oklch(0.57 0.235 28);
   --signal-foreground: oklch(1 0 0);
   --haze: oklch(0.968 0.002 260);
+  --protected: oklch(0.55 0.16 155);
+  --protected-foreground: oklch(1 0 0);
+  --protected-soft: oklch(0.97 0.025 155);
   --chart-1: oklch(0.57 0.235 28);
   --chart-2: oklch(0.17 0.004 260);
   --chart-3: oklch(0.6 0.118 184.704);
@@ -118,6 +124,9 @@
   --secondary-foreground: oklch(0.98 0 0);
   --muted: oklch(0.25 0.004 260);
   --muted-foreground: oklch(0.74 0.004 260);
+  --protected: oklch(0.72 0.16 155);
+  --protected-foreground: oklch(0.16 0.03 155);
+  --protected-soft: oklch(0.25 0.035 155);
   --accent: oklch(0.3 0.05 28);
   --accent-foreground: oklch(0.96 0.02 28);
   --destructive: oklch(0.62 0.225 28);
