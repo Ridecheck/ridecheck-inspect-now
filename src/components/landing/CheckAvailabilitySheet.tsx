@@ -3,10 +3,10 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
+  CarFront,
   Check,
   Loader2,
   MapPin,
-  PartyPopper,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,35 @@ const checkingSteps = [
 ];
 
 const defaultPkg = packages.find((p) => p.popular)?.name ?? packages[0].name;
+
+type RevealPhase = "checking" | "complete" | "burst";
+
+function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
+  return (
+    <div
+      className={`availability-result ${settled ? "is-settled" : ""}`}
+      aria-hidden
+    >
+      <span className="availability-glow" />
+      <div className="availability-confetti">
+        {Array.from({ length: 10 }, (_, index) => (
+          <span key={index} className={`availability-confetti-piece piece-${index + 1}`} />
+        ))}
+      </div>
+      <div className="availability-envelope">
+        <div className="availability-result-slip">
+          <Check className="h-9 w-9" strokeWidth={3.5} />
+        </div>
+        <div className="availability-envelope-back" />
+        <div className="availability-envelope-front">
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-background text-signal">
+            <CarFront className="h-6 w-6" strokeWidth={2.4} />
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function splitLocation(value: string) {
   const parts = value.split(",").map((x) => x.trim()).filter(Boolean);
@@ -56,12 +85,14 @@ export function CheckAvailabilitySheet({
   const [contactTouched, setContactTouched] = useState(false);
   const [pkg, setPkg] = useState(defaultPkg);
   const [checkStep, setCheckStep] = useState(0);
+  const [revealPhase, setRevealPhase] = useState<RevealPhase>("checking");
 
   // Reset the funnel each time the sheet is opened.
   useEffect(() => {
     if (open) {
       setScreen(0);
       setCheckStep(0);
+      setRevealPhase("checking");
     }
   }, [open]);
 
@@ -69,11 +100,25 @@ export function CheckAvailabilitySheet({
   useEffect(() => {
     if (screen !== 1) return;
     setCheckStep(0);
+    setRevealPhase("checking");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timers = [
       setTimeout(() => setCheckStep(1), 650),
       setTimeout(() => setCheckStep(2), 1300),
       setTimeout(() => setCheckStep(3), 1900),
-      setTimeout(() => setScreen(2), 2200),
+      setTimeout(() => {
+        if (reduceMotion) {
+          setScreen(2);
+          return;
+        }
+        setRevealPhase("complete");
+      }, 2200),
+      ...(!reduceMotion
+        ? [
+            setTimeout(() => setRevealPhase("burst"), 2920),
+            setTimeout(() => setScreen(2), 3820),
+          ]
+        : []),
     ];
     return () => timers.forEach(clearTimeout);
   }, [screen]);
@@ -236,42 +281,56 @@ export function CheckAvailabilitySheet({
           )}
 
           {screen === 1 && (
-            <div className="py-6">
-              <h2 className="text-xl font-extrabold text-ink">Checking…</h2>
-              <ul className="mt-6 space-y-3">
-                {checkingSteps.map((label, i) => {
-                  const done = checkStep > i;
-                  const active = checkStep === i;
-                  return (
-                    <li
-                      key={label}
-                      className={`flex items-center gap-3 rounded-xl border border-border px-4 py-3 text-sm ${
-                        done || active ? "text-ink" : "text-muted-foreground"
-                      }`}
-                    >
-                      {done ? (
-                        <Check className="h-4 w-4 shrink-0 text-signal" aria-hidden />
-                      ) : (
-                        <Loader2
-                          className={`h-4 w-4 shrink-0 ${
-                            active ? "animate-spin text-signal" : "text-border"
+            <div className="min-h-[21rem] py-6">
+              {revealPhase === "checking" ? (
+                <>
+                  <h2 className="text-xl font-extrabold text-ink">Checking…</h2>
+                  <ul className="mt-6 space-y-3">
+                    {checkingSteps.map((label, i) => {
+                      const done = checkStep > i;
+                      const active = checkStep === i;
+                      return (
+                        <li
+                          key={label}
+                          className={`flex items-center gap-3 rounded-xl border border-border px-4 py-3 text-sm ${
+                            done || active ? "text-ink" : "text-muted-foreground"
                           }`}
-                          aria-hidden
-                        />
-                      )}
-                      {label}
-                    </li>
-                  );
-                })}
-              </ul>
+                        >
+                          {done ? (
+                            <Check className="h-4 w-4 shrink-0 text-signal" aria-hidden />
+                          ) : (
+                            <Loader2
+                              className={`h-4 w-4 shrink-0 ${
+                                active ? "animate-spin text-signal" : "text-border"
+                              }`}
+                              aria-hidden
+                            />
+                          )}
+                          {label}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              ) : (
+                <div className={`availability-reveal text-center ${revealPhase === "burst" ? "is-bursting" : ""}`}>
+                  <AvailabilityResultCard />
+                  <h2 className="mt-5 text-xl font-extrabold text-ink">
+                    {revealPhase === "complete" ? "Checking complete" : "Great news!"}
+                  </h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {revealPhase === "complete"
+                      ? "Preparing your result…"
+                      : "We can inspect your area."}
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
           {screen === 2 && (
             <div className="py-4 text-center">
-              <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-accent">
-                <PartyPopper className="h-7 w-7 text-signal" aria-hidden />
-              </span>
+              <AvailabilityResultCard settled />
               <h2 className="mt-4 text-xl font-extrabold text-ink">
                 Great news!
               </h2>
