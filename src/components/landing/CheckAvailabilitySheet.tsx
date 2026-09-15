@@ -394,14 +394,18 @@ export function CheckAvailabilitySheet({
                     ? `${checkingSteps[Math.min(checkStep, checkingSteps.length - 1)]}…`
                     : revealPhase === "complete"
                       ? "Just a moment…"
-                      : "Great news!"}
+                      : covered
+                        ? "Great news!"
+                        : "Got your answer."}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {revealPhase === "checking"
                     ? "Making sure we can get to you."
                     : revealPhase === "complete"
                       ? "We're finalising your result."
-                      : "We can inspect your area."}
+                      : covered
+                        ? "We can inspect your area."
+                        : "Here's what we found."}
                 </p>
                 <ul className="mt-5 space-y-3 text-left">
                   {checkingSteps.map((label, i) => {
