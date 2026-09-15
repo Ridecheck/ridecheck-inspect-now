@@ -392,7 +392,7 @@ export function CheckAvailabilitySheet({
             </div>
           )}
 
-          {screen === 2 && (
+          {screen === 2 && covered && (
             <div className="py-4 text-center">
               <AvailabilityResultCard settled />
               <h2 className="mt-4 text-xl font-extrabold text-ink">
@@ -428,6 +428,95 @@ export function CheckAvailabilitySheet({
                 Show available dates
                 <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
               </Button>
+            </div>
+          )}
+
+          {screen === 2 && !covered && (
+            <div className="py-4 text-center">
+              <AvailabilityResultCard />
+              <h2 className="mt-4 text-xl font-extrabold text-ink">
+                We might be able to help.
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                We don't currently inspect in {suburb || "your area"}, but we're
+                adding areas. Leave your details and we'll get in touch when we
+                cover you.
+              </p>
+
+              {leadSent ? (
+                <>
+                  <div className="mx-auto mt-6 max-w-sm rounded-2xl border border-protected/30 bg-protected-soft p-6">
+                    <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-protected text-protected-foreground">
+                      <Check className="h-5 w-5" strokeWidth={3} aria-hidden />
+                    </span>
+                    <p className="mt-3 font-extrabold text-ink">
+                      Thanks — we'll be in touch.
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      We'll let you know as soon as we cover{" "}
+                      {suburb || "your area"}.
+                    </p>
+                  </div>
+                  <Button
+                    size="lg"
+                    onClick={onClose}
+                    className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
+                  >
+                    Done
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="mt-5 rounded-2xl border border-border bg-haze p-4 text-left">
+                    <p className="flex items-center gap-2 text-sm font-bold text-ink">
+                      <MapPin className="h-4 w-4 text-signal" aria-hidden />
+                      {suburb}
+                    </p>
+                    <div className="mt-2 flex items-center justify-between gap-3 border-t border-border pt-2">
+                      <p className="truncate text-sm text-muted-foreground">
+                        {contact}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setScreen(0)}
+                        className="shrink-0 text-xs font-bold uppercase tracking-wider text-signal"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    <label
+                      htmlFor="ca-lead-note"
+                      className="mt-4 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                    >
+                      Anything we should know? (optional)
+                    </label>
+                    <Textarea
+                      id="ca-lead-note"
+                      value={leadNote}
+                      onChange={(e) => setLeadNote(e.target.value.slice(0, 500))}
+                      placeholder="Where the car is, when you need it…"
+                      maxLength={500}
+                      className="mt-2 min-h-[76px] rounded-xl"
+                    />
+                  </div>
+
+                  <Button
+                    size="lg"
+                    onClick={() => setLeadSent(true)}
+                    className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
+                  >
+                    Get in touch
+                    <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => setScreen(0)}
+                    className="mt-3 w-full text-sm font-semibold text-muted-foreground"
+                  >
+                    Try a different suburb
+                  </button>
+                </>
+              )}
             </div>
           )}
 
