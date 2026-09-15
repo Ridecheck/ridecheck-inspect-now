@@ -280,6 +280,16 @@
   filter: drop-shadow(0 16px 12px color-mix(in oklab, var(--signal) 25%, transparent));
 }
 
+.availability-envelope.is-checking {
+  animation: availability-card-struggle 1.65s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.availability-envelope.is-checking .availability-envelope-front {
+  animation: availability-front-push 1.65s ease-in-out infinite;
+  transform-origin: center 70%;
+}
+
 .availability-envelope-back {
   position: absolute;
   inset: 1.45rem 0.35rem 0.15rem;
