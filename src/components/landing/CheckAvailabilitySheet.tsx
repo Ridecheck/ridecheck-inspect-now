@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -10,6 +10,12 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  StepTiming,
+  timingLabel,
+  type Timing,
+} from "@/components/booking/StepTiming";
+import { buildAvailability } from "@/lib/booking";
 import { packages } from "@/lib/ridecheck";
 
 const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
@@ -21,36 +27,6 @@ const checkingSteps = [
 ];
 
 const defaultPkg = packages.find((p) => p.popular)?.name ?? packages[0].name;
-
-type DayOption = {
-  key: string;
-  label: string;
-  sub: string;
-  status: "Available" | "Limited";
-};
-
-function buildDays(): DayOption[] {
-  const out: DayOption[] = [];
-  const now = new Date();
-  for (let i = 0; out.length < 5; i += 1) {
-    const d = new Date(now);
-    d.setDate(now.getDate() + i);
-    if (d.getDay() === 0) continue; // no Sunday inspections
-    const weekday = d.toLocaleDateString("en-AU", { weekday: "long" });
-    const short = d.toLocaleDateString("en-AU", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-    });
-    out.push({
-      key: d.toISOString().slice(0, 10),
-      label: i === 0 ? "Today" : i === 1 ? "Tomorrow" : weekday,
-      sub: short,
-      status: out.length % 3 === 2 ? "Limited" : "Available",
-    });
-  }
-  return out;
-}
 
 type RevealPhase = "checking" | "complete" | "burst";
 
@@ -125,13 +101,13 @@ export function CheckAvailabilitySheet({
   onClose: () => void;
 }) {
   const navigate = useNavigate();
+  const sheetRef = useRef<HTMLDivElement>(null);
   const [screen, setScreen] = useState(0);
   const [location, setLocation] = useState("");
   const [contact, setContact] = useState("");
   const [contactTouched, setContactTouched] = useState(false);
   const [pkg, setPkg] = useState(defaultPkg);
-  const [days] = useState(buildDays);
-  const [day, setDay] = useState(() => buildDays()[0]?.key ?? "");
+  const [timing, setTiming] = useState<Timing>(null);
   const [checkStep, setCheckStep] = useState(0);
   const [revealPhase, setRevealPhase] = useState<RevealPhase>("checking");
 
@@ -143,6 +119,10 @@ export function CheckAvailabilitySheet({
       setRevealPhase("checking");
     }
   }, [open]);
+
+  useEffect(() => {
+    sheetRef.current?.scrollTo({ top: 0 });
+  }, [screen]);
 
   // Run the fake coverage check.
   useEffect(() => {
@@ -174,6 +154,16 @@ export function CheckAvailabilitySheet({
   const { suburb, postcode } = splitLocation(location);
   const selected = packages.find((p) => p.name === pkg) ?? packages[0];
   const contactDetails = parseContact(contact);
+  const availability = useMemo(
+    () =>
+      buildAvailability({
+        basePrice: selected.price,
+        suburb,
+        postcode,
+        premiumRequired: Boolean(selected.popular),
+      }),
+    [selected.price, selected.popular, suburb, postcode],
+  );
 
   const goToBooking = () => {
     onClose();
@@ -186,12 +176,14 @@ export function CheckAvailabilitySheet({
         pkg: selected.name,
         email: contactDetails.email,
         phone: contactDetails.phone,
+        timingMode: timing?.mode,
+        timingDay: timing?.mode === "day" ? timing.iso : undefined,
+        timingPart: timing?.mode === "day" ? timing.part : undefined,
       },
     });
   };
 
   const canBack = screen >= 3;
-  const selectedDay = days.find((d) => d.key === day) ?? days[0];
 
   return (
     <div
@@ -208,6 +200,7 @@ export function CheckAvailabilitySheet({
       />
 
       <div
+        ref={sheetRef}
         role="dialog"
         aria-modal="true"
         aria-label="Check availability"
@@ -415,62 +408,19 @@ export function CheckAvailabilitySheet({
 
           {screen === 3 && (
             <>
-              <h2 className="text-xl font-extrabold text-ink">
-                When would you like us to inspect it?
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Select a day that works for you.
-              </p>
-
-              <div className="mt-5 space-y-2.5">
-                {days.map((d) => {
-                  const active = day === d.key;
-                  return (
-                    <button
-                      key={d.key}
-                      type="button"
-                      onClick={() => setDay(d.key)}
-                      aria-pressed={active}
-                      className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition ${
-                        active
-                          ? "border-signal bg-accent/40 shadow-soft"
-                          : "border-border bg-background"
-                      }`}
-                    >
-                      <span
-                        className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-                          active
-                            ? "border-signal bg-signal text-signal-foreground"
-                            : "border-border"
-                        }`}
-                        aria-hidden
-                      >
-                        {active && <Check className="h-3 w-3" />}
-                      </span>
-                      <span className="flex-1">
-                        <span className="block text-sm font-bold text-ink">
-                          {d.label}
-                        </span>
-                        <span className="block text-xs text-muted-foreground">
-                          {d.sub}
-                        </span>
-                      </span>
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
-                          d.status === "Available"
-                            ? "bg-accent text-ink"
-                            : "bg-secondary text-muted-foreground"
-                        }`}
-                      >
-                        {d.status}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+              <StepTiming
+                days={availability.days}
+                basePrice={selected.price}
+                value={timing}
+                onChange={setTiming}
+                serviceType="standard"
+                region={availability.region}
+                regionLabel={availability.regionLabel}
+              />
 
               <Button
                 size="lg"
+                disabled={timing === null}
                 onClick={() => setScreen(4)}
                 className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
               >
@@ -574,7 +524,7 @@ export function CheckAvailabilitySheet({
                 <dl className="mt-3 space-y-2 text-sm">
                   {[
                     ["Location", suburb],
-                    ["Preferred day", selectedDay ? `${selectedDay.label}, ${selectedDay.sub}` : "—"],
+                    ["Preferred time", timingLabel(timing, availability.days)],
                     ["Inspection", `${selected.name} — $${selected.price}`],
                   ].map(([label, value]) => (
                     <div key={label} className="flex justify-between gap-4">
