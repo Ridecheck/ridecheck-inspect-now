@@ -223,8 +223,12 @@ export function StepTiming({
                   </p>
                 )}
                 {hidePrices && highlightAvailability && open && (
-                  <p className="mt-1 text-[9px] font-extrabold uppercase tracking-wider text-protected">
-                    Available
+                  <p
+                    className={`mt-1 text-[9px] font-extrabold uppercase tracking-wider ${
+                      limited ? "text-limited" : "text-protected"
+                    }`}
+                  >
+                    {limited ? "Limited" : "Available"}
                   </p>
                 )}
                 {!open && (
