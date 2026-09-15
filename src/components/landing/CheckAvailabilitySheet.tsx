@@ -117,8 +117,8 @@ export function CheckAvailabilitySheet({
       }, 2200),
       ...(!reduceMotion
         ? [
-            setTimeout(() => setRevealPhase("burst"), 2920),
-            setTimeout(() => setScreen(2), 3820),
+            setTimeout(() => setRevealPhase("burst"), 2720),
+            setTimeout(() => setScreen(2), 4070),
           ]
         : []),
     ];
