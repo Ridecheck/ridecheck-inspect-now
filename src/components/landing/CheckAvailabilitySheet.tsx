@@ -11,19 +11,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { packages } from "@/lib/ridecheck";
 
 const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
-
-const vehicleTypes = ["Car", "SUV", "Ute", "Van", "Electric"] as const;
-type VehicleType = (typeof vehicleTypes)[number];
 
 const checkingSteps = [
   "Checking service coverage",
@@ -62,7 +52,6 @@ export function CheckAvailabilitySheet({
   const navigate = useNavigate();
   const [screen, setScreen] = useState(0);
   const [location, setLocation] = useState("");
-  const [vehicleType, setVehicleType] = useState<VehicleType>("Car");
   const [contact, setContact] = useState("");
   const [contactTouched, setContactTouched] = useState(false);
   const [pkg, setPkg] = useState(defaultPkg);
@@ -98,10 +87,9 @@ export function CheckAvailabilitySheet({
     navigate({
       to: "/book",
       search: {
-        type: vehicleType === "Electric" ? "ev" : "standard",
+        type: "standard",
         suburb,
         postcode,
-        vehicle: vehicleType,
         pkg: selected.name,
         email: contactDetails.email,
         phone: contactDetails.phone,
@@ -203,31 +191,6 @@ export function CheckAvailabilitySheet({
                   className="h-12 rounded-xl pl-10"
                 />
               </div>
-
-              <label
-                className="mt-5 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
-                htmlFor="ca-vehicle-type"
-              >
-                Vehicle type
-              </label>
-              <Select
-                value={vehicleType}
-                onValueChange={(value) => setVehicleType(value as VehicleType)}
-              >
-                <SelectTrigger
-                  id="ca-vehicle-type"
-                  className="mt-2 h-12 rounded-xl bg-background"
-                >
-                  <SelectValue placeholder="Select vehicle type" />
-                </SelectTrigger>
-                <SelectContent>
-                {vehicleTypes.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t}
-                  </SelectItem>
-                ))}
-                </SelectContent>
-              </Select>
 
               <label
                 className="mt-5 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
@@ -436,7 +399,6 @@ export function CheckAvailabilitySheet({
                 <dl className="mt-3 space-y-2 text-sm">
                   {[
                     ["Location", suburb],
-                    ["Vehicle type", vehicleType],
                     ["Inspection", `${selected.name} — $${selected.price}`],
                   ].map(([label, value]) => (
                     <div key={label} className="flex justify-between gap-4">
