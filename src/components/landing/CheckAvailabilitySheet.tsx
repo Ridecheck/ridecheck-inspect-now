@@ -6,6 +6,7 @@ import {
   Check,
   Loader2,
   MapPin,
+  ShieldCheck,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -539,6 +540,32 @@ export function CheckAvailabilitySheet({
                     </div>
                   ))}
                 </dl>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-protected/25 bg-protected-soft p-4">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-protected/10 text-protected">
+                    <ShieldCheck className="h-7 w-7" strokeWidth={2.5} aria-hidden />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-extrabold text-protected">You’re protected</h3>
+                    <ul className="mt-2 space-y-2">
+                      {[
+                        "Full refund if you cancel 24+ hours before",
+                        "Secure payment with Stripe",
+                        "5.0★ from 350+ customers",
+                        "No hidden fees — what you see is what you pay",
+                      ].map((item) => (
+                        <li key={item} className="flex items-start gap-2 text-xs font-medium text-ink">
+                          <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-protected text-protected-foreground">
+                            <Check className="h-2.5 w-2.5" strokeWidth={3.5} aria-hidden />
+                          </span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </div>
 
               <p className="mt-4 text-xs text-muted-foreground">
