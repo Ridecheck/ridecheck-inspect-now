@@ -187,10 +187,14 @@ export function StepTiming({
                     ? "cursor-not-allowed border-border bg-secondary/50 opacity-50"
                     : active
                       ? highlightAvailability
-                        ? `border-${highlightColor} bg-${highlightColor}-soft shadow-[0_8px_22px_color-mix(in_oklab,var(--${highlightColor})_28%,transparent)] ring-1 ring-${highlightColor}/25`
+                        ? limited
+                          ? "border-limited bg-limited-soft shadow-[0_8px_22px_color-mix(in_oklab,var(--limited)_28%,transparent)] ring-1 ring-limited/25"
+                          : "border-protected bg-protected-soft shadow-[0_8px_22px_color-mix(in_oklab,var(--protected)_28%,transparent)] ring-1 ring-protected/25"
                         : "border-signal bg-accent/40 shadow-soft"
                       : highlightAvailability
-                        ? `border-${highlightColor}/40 bg-${highlightColor}-soft/70 shadow-sm hover:border-${highlightColor}`
+                        ? limited
+                          ? "border-limited/50 bg-limited-soft/70 shadow-sm hover:border-limited"
+                          : "border-protected/40 bg-protected-soft/70 shadow-sm hover:border-protected"
                         : "border-border bg-card hover:border-signal/50"
                 }`}
               >
