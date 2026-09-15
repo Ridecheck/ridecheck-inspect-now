@@ -522,6 +522,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .availability-reveal,
+  .availability-envelope.is-checking,
+  .availability-envelope.is-checking .availability-envelope-front,
   .availability-reveal.is-bursting .availability-envelope-back::before,
   .availability-reveal.is-bursting .availability-result-slip,
   .availability-reveal.is-bursting .availability-result-slip svg,
