@@ -173,6 +173,9 @@ export function StepTiming({
               asapMode && (day.iso === days[0]?.iso || day.iso === days[1]?.iso);
             const active = day.iso === activeIso || (asapMode && day.iso === days[0]?.iso);
             const open = isDayAvailable(day.iso, opts) || asapDay;
+            const limited =
+              highlightAvailability && open && !asapDay && day.capacity > 0 && day.remaining <= 2;
+            const highlightColor = limited ? "limited" : "protected";
             return (
               <button
                 key={day.iso}
@@ -185,15 +188,19 @@ export function StepTiming({
                     ? "cursor-not-allowed border-border bg-secondary/50 opacity-50"
                     : active
                       ? highlightAvailability
-                        ? "border-protected bg-protected-soft shadow-[0_8px_22px_color-mix(in_oklab,var(--protected)_28%,transparent)] ring-1 ring-protected/25"
+                        ? `border-${highlightColor} bg-${highlightColor}-soft shadow-[0_8px_22px_color-mix(in_oklab,var(--${highlightColor})_28%,transparent)] ring-1 ring-${highlightColor}/25`
                         : "border-signal bg-accent/40 shadow-soft"
                       : highlightAvailability
-                        ? "border-protected/40 bg-protected-soft/70 shadow-sm hover:border-protected"
+                        ? `border-${highlightColor}/40 bg-${highlightColor}-soft/70 shadow-sm hover:border-${highlightColor}`
                         : "border-border bg-card hover:border-signal/50"
                 }`}
               >
                 {highlightAvailability && active && open && (
-                  <span className="absolute right-1.5 top-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-protected text-protected-foreground">
+                  <span
+                    className={`absolute right-1.5 top-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full ${
+                      limited ? "bg-limited text-limited-foreground" : "bg-protected text-protected-foreground"
+                    }`}
+                  >
                     <Check className="h-2.5 w-2.5" aria-hidden />
                   </span>
                 )}
