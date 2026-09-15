@@ -34,6 +34,9 @@ type BookSearch = {
   phone?: string;
   email?: string;
   paid?: string;
+  timingMode?: "asap" | "day";
+  timingDay?: string;
+  timingPart?: "am" | "pm";
 };
 
 const str = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : undefined);
@@ -50,6 +53,15 @@ export const Route = createFileRoute("/book")({
     phone: str(search.phone),
     email: str(search.email),
     paid: str(search.paid),
+    timingMode:
+      search.timingMode === "asap" || search.timingMode === "day"
+        ? search.timingMode
+        : undefined,
+    timingDay: str(search.timingDay),
+    timingPart:
+      search.timingPart === "am" || search.timingPart === "pm"
+        ? search.timingPart
+        : undefined,
   }),
   head: () => ({
     meta: [
@@ -106,7 +118,17 @@ function BookPage() {
     setTiming(null);
   };
 
-  const [timing, setTiming] = useState<Timing>(null);
+  const [timing, setTiming] = useState<Timing>(() => {
+    if (prefill.timingMode === "asap") return { mode: "asap" };
+    if (prefill.timingMode === "day" && prefill.timingDay && prefill.timingPart) {
+      return {
+        mode: "day",
+        iso: prefill.timingDay,
+        part: prefill.timingPart,
+      };
+    }
+    return null;
+  });
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [contact, setContact] = useState<ContactDetails>({
     name: prefill.name ?? "",

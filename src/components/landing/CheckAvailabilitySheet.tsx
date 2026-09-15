@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -101,6 +101,7 @@ export function CheckAvailabilitySheet({
   onClose: () => void;
 }) {
   const navigate = useNavigate();
+  const sheetRef = useRef<HTMLDivElement>(null);
   const [screen, setScreen] = useState(0);
   const [location, setLocation] = useState("");
   const [contact, setContact] = useState("");
@@ -118,6 +119,10 @@ export function CheckAvailabilitySheet({
       setRevealPhase("checking");
     }
   }, [open]);
+
+  useEffect(() => {
+    sheetRef.current?.scrollTo({ top: 0 });
+  }, [screen]);
 
   // Run the fake coverage check.
   useEffect(() => {
@@ -171,6 +176,9 @@ export function CheckAvailabilitySheet({
         pkg: selected.name,
         email: contactDetails.email,
         phone: contactDetails.phone,
+        timingMode: timing?.mode,
+        timingDay: timing?.mode === "day" ? timing.iso : undefined,
+        timingPart: timing?.mode === "day" ? timing.part : undefined,
       },
     });
   };
@@ -192,6 +200,7 @@ export function CheckAvailabilitySheet({
       />
 
       <div
+        ref={sheetRef}
         role="dialog"
         aria-modal="true"
         aria-label="Check availability"
