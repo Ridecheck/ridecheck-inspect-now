@@ -33,7 +33,7 @@ function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
     >
       <span className="availability-glow" />
       <div className="availability-confetti">
-        {Array.from({ length: 10 }, (_, index) => (
+        {Array.from({ length: 14 }, (_, index) => (
           <span key={index} className={`availability-confetti-piece piece-${index + 1}`} />
         ))}
       </div>
@@ -42,6 +42,8 @@ function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
           <Check strokeWidth={3.6} />
         </div>
         <div className="availability-envelope-back" />
+        <span className="availability-envelope-side availability-envelope-side-left" />
+        <span className="availability-envelope-side availability-envelope-side-right" />
         <div className="availability-envelope-front">
           <span className="availability-brand-badge inline-flex items-center justify-center rounded-full bg-background text-signal">
             <CarFront strokeWidth={2.8} />
