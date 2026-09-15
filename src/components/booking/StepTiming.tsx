@@ -36,6 +36,7 @@ export function StepTiming({
   region,
   regionLabel,
   showAsap = true,
+  hidePrices = false,
 }: {
   days: Day[];
   basePrice: number;
@@ -45,6 +46,7 @@ export function StepTiming({
   region?: Region | null;
   regionLabel?: string;
   showAsap?: boolean;
+  hidePrices?: boolean;
 }) {
   const [week, setWeek] = useState(0);
   const isEv = serviceType === "ev";
@@ -191,12 +193,14 @@ export function StepTiming({
                 <p className="text-[10px] font-semibold text-muted-foreground">
                   {day.monthLabel}
                 </p>
-                <p
-                  className={`mt-1 inline-flex items-center justify-center gap-0.5 text-xs font-bold ${open ? "text-signal" : "text-muted-foreground line-through"}`}
-                >
-                  {asapDay && <Flame className="h-3 w-3" aria-hidden />}
-                  ${asapDay ? basePrice + ASAP_SURCHARGE : dayPrice(basePrice, day)}
-                </p>
+                {!hidePrices && (
+                  <p
+                    className={`mt-1 inline-flex items-center justify-center gap-0.5 text-xs font-bold ${open ? "text-signal" : "text-muted-foreground line-through"}`}
+                  >
+                    {asapDay && <Flame className="h-3 w-3" aria-hidden />}
+                    ${asapDay ? basePrice + ASAP_SURCHARGE : dayPrice(basePrice, day)}
+                  </p>
+                )}
                 {!open && (
                   <p className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
                     {isEv ? "No EV" : "Full"}
