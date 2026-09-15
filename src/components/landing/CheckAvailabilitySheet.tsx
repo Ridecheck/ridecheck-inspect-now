@@ -385,13 +385,16 @@ export function CheckAvailabilitySheet({
                 We can inspect your area.
               </p>
 
-              <div className="mt-5 rounded-2xl border border-border bg-haze p-4 text-left">
+              <div className="availability-success-card mt-5 rounded-2xl border border-protected/30 bg-protected-soft p-4 text-left">
                 <p className="flex items-center gap-2 text-sm font-bold text-ink">
                   <MapPin className="h-4 w-4 text-signal" aria-hidden />
                   {suburb}
                 </p>
-                <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-                  <Check className="h-4 w-4 text-signal" aria-hidden />
+                <p className="mt-1 flex items-center gap-2 text-sm font-semibold text-protected">
+                  <Check
+                    className="availability-success-check h-4 w-4 text-protected"
+                    aria-hidden
+                  />
                   Mobile inspection available
                 </p>
               </div>
