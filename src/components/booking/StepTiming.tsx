@@ -47,7 +47,8 @@ export function StepTiming({
   const [week, setWeek] = useState(0);
   const isEv = serviceType === "ev";
   const opts = { serviceType, region };
-  const selectableDays = days.slice(1);
+  const asapMode = value?.mode === "asap";
+  const selectableDays = asapMode ? days : days.slice(1);
   const visibleDays = selectableDays.slice(week * 7, week * 7 + 7);
 
   const activeIso = value?.mode === "day" ? value.iso : "";
