@@ -357,13 +357,17 @@ export function CheckAvailabilitySheet({
               <div className={`availability-reveal text-center ${revealPhase === "burst" ? "is-bursting" : ""}`}>
                 <AvailabilityResultCard checking={revealPhase === "checking"} />
                 <h2 className="mt-1 text-xl font-extrabold text-ink">
-                  {revealPhase === "checking" ? "Checking your area…" : revealPhase === "complete" ? "Checking complete" : "Great news!"}
+                  {revealPhase === "checking"
+                    ? `${checkingSteps[Math.min(checkStep, checkingSteps.length - 1)]}…`
+                    : revealPhase === "complete"
+                      ? "Just a moment…"
+                      : "Great news!"}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {revealPhase === "checking"
                     ? "Making sure we can get to you."
                     : revealPhase === "complete"
-                      ? "Your result is ready."
+                      ? "We're finalising your result."
                       : "We can inspect your area."}
                 </p>
                 <ul className="mt-5 space-y-3 text-left">
