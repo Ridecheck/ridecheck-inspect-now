@@ -548,7 +548,7 @@ export function CheckAvailabilitySheet({
 
               <Button
                 size="lg"
-                onClick={() => setScreen(4)}
+                onClick={() => setScreen(5)}
                 className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
               >
                 Continue
