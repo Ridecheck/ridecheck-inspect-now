@@ -138,7 +138,9 @@ export function CheckAvailabilitySheet({
   }, [screen]);
 
   const { suburb, postcode } = splitLocation(location);
-  const covered = regionFromLocation(suburb, postcode) !== null;
+  // "test" as the suburb forces the outside-coverage flow for easy testing.
+  const isTestTrigger = location.trim().toLowerCase() === "test";
+  const covered = isTestTrigger ? false : regionFromLocation(suburb, postcode) !== null;
 
   // Run the fake coverage check.
   useEffect(() => {
