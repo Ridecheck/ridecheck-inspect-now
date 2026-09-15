@@ -228,7 +228,7 @@ export function StepTiming({
                       limited ? "text-limited" : "text-protected"
                     }`}
                   >
-                    {limited ? "Limited" : "Available"}
+                    {limited ? "Limited spots" : "Available"}
                   </p>
                 )}
                 {!open && (
