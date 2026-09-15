@@ -37,6 +37,7 @@ export function StepTiming({
   regionLabel,
   showAsap = true,
   hidePrices = false,
+  highlightAvailability = false,
 }: {
   days: Day[];
   basePrice: number;
@@ -47,6 +48,7 @@ export function StepTiming({
   regionLabel?: string;
   showAsap?: boolean;
   hidePrices?: boolean;
+  highlightAvailability?: boolean;
 }) {
   const [week, setWeek] = useState(0);
   const isEv = serviceType === "ev";
@@ -178,14 +180,23 @@ export function StepTiming({
                 disabled={!open}
                 onClick={() => (asapDay ? onChange({ mode: "asap" }) : selectDay(day.iso))}
                 aria-pressed={active}
-                className={`w-[74px] shrink-0 snap-start rounded-xl border p-2.5 text-center transition sm:w-[86px] sm:p-3 ${
+                className={`relative w-[74px] min-h-[92px] shrink-0 snap-start rounded-xl border p-2.5 text-center transition sm:w-[86px] sm:p-3 ${
                   !open
                     ? "cursor-not-allowed border-border bg-secondary/50 opacity-50"
                     : active
-                      ? "border-signal bg-accent/40 shadow-soft"
-                      : "border-border bg-card hover:border-signal/50"
+                      ? highlightAvailability
+                        ? "border-protected bg-protected-soft shadow-[0_8px_22px_color-mix(in_oklab,var(--protected)_28%,transparent)] ring-1 ring-protected/25"
+                        : "border-signal bg-accent/40 shadow-soft"
+                      : highlightAvailability
+                        ? "border-protected/40 bg-protected-soft/70 shadow-sm hover:border-protected"
+                        : "border-border bg-card hover:border-signal/50"
                 }`}
               >
+                {highlightAvailability && active && open && (
+                  <span className="absolute right-1.5 top-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-protected text-protected-foreground">
+                    <Check className="h-2.5 w-2.5" aria-hidden />
+                  </span>
+                )}
                 <p className="text-[9px] font-bold uppercase tracking-tight text-muted-foreground sm:text-[10px] sm:tracking-wider">
                   {day.weekdayLabel}
                 </p>
@@ -199,6 +210,11 @@ export function StepTiming({
                   >
                     {asapDay && <Flame className="h-3 w-3" aria-hidden />}
                     ${asapDay ? basePrice + ASAP_SURCHARGE : dayPrice(basePrice, day)}
+                  </p>
+                )}
+                {hidePrices && highlightAvailability && open && (
+                  <p className="mt-1 text-[9px] font-extrabold uppercase tracking-wider text-protected">
+                    Available
                   </p>
                 )}
                 {!open && (
