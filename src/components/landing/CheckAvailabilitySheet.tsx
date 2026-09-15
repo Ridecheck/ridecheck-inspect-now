@@ -59,7 +59,7 @@ function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
         <span className="availability-envelope-side availability-envelope-side-left" />
         <span className="availability-envelope-side availability-envelope-side-right" />
         <div className="availability-envelope-front">
-          <span className="availability-brand-badge inline-flex items-center justify-center rounded-full bg-background text-signal">
+          <span className="availability-brand-badge text-background">
             <RideCheckCarMark />
           </span>
         </div>

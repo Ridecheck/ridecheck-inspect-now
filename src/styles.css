@@ -358,16 +358,17 @@
 }
 
 .availability-envelope-front > span {
-  width: 2.85rem;
-  height: 2.85rem;
-  border: 1px solid color-mix(in oklab, var(--signal) 9%, var(--border));
-  box-shadow: 0 7px 14px -6px color-mix(in oklab, var(--ink) 45%, transparent), inset 0 1px 0 var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
 }
 
 .availability-brand-badge svg {
   display: block;
-  width: 1.95rem;
-  height: 1.95rem;
+  width: 2.2rem;
+  height: 2.2rem;
   transform: translateY(-1px);
 }
 
