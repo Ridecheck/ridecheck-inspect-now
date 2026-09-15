@@ -35,6 +35,7 @@ export function StepTiming({
   serviceType = "standard",
   region,
   regionLabel,
+  showAsap = true,
 }: {
   days: Day[];
   basePrice: number;
@@ -43,11 +44,12 @@ export function StepTiming({
   serviceType?: ServiceType;
   region?: Region | null;
   regionLabel?: string;
+  showAsap?: boolean;
 }) {
   const [week, setWeek] = useState(0);
   const isEv = serviceType === "ev";
   const opts = { serviceType, region };
-  const asapMode = value?.mode === "asap";
+  const asapMode = showAsap && value?.mode === "asap";
   const selectableDays = asapMode ? days : days.slice(1);
   const visibleDays = selectableDays.slice(week * 7, week * 7 + 7);
 
@@ -105,7 +107,7 @@ export function StepTiming({
           Pick a day and rough time — we'll confirm your exact slot by SMS within 2 hours.
         </p>
 
-        {!isEv && <button
+        {!isEv && showAsap && <button
           type="button"
           onClick={() => onChange({ mode: "asap" })}
           aria-pressed={value?.mode === "asap"}
