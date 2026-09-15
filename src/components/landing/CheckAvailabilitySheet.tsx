@@ -557,7 +557,7 @@ export function CheckAvailabilitySheet({
             </>
           )}
 
-          {screen === 4 && (
+          {screen === 5 && (
             <>
               <h2 className="text-xl font-extrabold text-ink">
                 Taking you to booking
