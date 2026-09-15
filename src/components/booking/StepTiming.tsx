@@ -175,7 +175,6 @@ export function StepTiming({
             const open = isDayAvailable(day.iso, opts) || asapDay;
             const limited =
               highlightAvailability && open && !asapDay && day.capacity > 0 && day.remaining <= 2;
-            const highlightColor = limited ? "limited" : "protected";
             return (
               <button
                 key={day.iso}
