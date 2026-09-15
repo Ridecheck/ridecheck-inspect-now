@@ -4,8 +4,12 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  Clock,
+  DollarSign,
   Loader2,
+  Mail,
   MapPin,
+  MessageCircle,
   ShieldCheck,
   X,
 } from "lucide-react";
