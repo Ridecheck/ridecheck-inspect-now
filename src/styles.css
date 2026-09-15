@@ -365,8 +365,10 @@
 }
 
 .availability-brand-badge svg {
+  display: block;
   width: 1.95rem;
   height: 1.95rem;
+  transform: translateY(-1px);
 }
 
 .availability-glow {
