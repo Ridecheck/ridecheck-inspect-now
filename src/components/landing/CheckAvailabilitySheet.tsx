@@ -407,13 +407,80 @@ export function CheckAvailabilitySheet({
                 onClick={() => setScreen(3)}
                 className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
               >
-                Continue
+                Show available dates
                 <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
               </Button>
             </div>
           )}
 
           {screen === 3 && (
+            <>
+              <h2 className="text-xl font-extrabold text-ink">
+                When would you like us to inspect it?
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Select a day that works for you.
+              </p>
+
+              <div className="mt-5 space-y-2.5">
+                {days.map((d) => {
+                  const active = day === d.key;
+                  return (
+                    <button
+                      key={d.key}
+                      type="button"
+                      onClick={() => setDay(d.key)}
+                      aria-pressed={active}
+                      className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition ${
+                        active
+                          ? "border-signal bg-accent/40 shadow-soft"
+                          : "border-border bg-background"
+                      }`}
+                    >
+                      <span
+                        className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                          active
+                            ? "border-signal bg-signal text-signal-foreground"
+                            : "border-border"
+                        }`}
+                        aria-hidden
+                      >
+                        {active && <Check className="h-3 w-3" />}
+                      </span>
+                      <span className="flex-1">
+                        <span className="block text-sm font-bold text-ink">
+                          {d.label}
+                        </span>
+                        <span className="block text-xs text-muted-foreground">
+                          {d.sub}
+                        </span>
+                      </span>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                          d.status === "Available"
+                            ? "bg-accent text-ink"
+                            : "bg-secondary text-muted-foreground"
+                        }`}
+                      >
+                        {d.status}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <Button
+                size="lg"
+                onClick={() => setScreen(4)}
+                className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
+              >
+                Continue
+                <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+              </Button>
+            </>
+          )}
+
+          {screen === 4 && (
             <>
               <h2 className="text-xl font-extrabold text-ink">
                 Choose your inspection
