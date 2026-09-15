@@ -397,7 +397,6 @@ export function CheckAvailabilitySheet({
                 <dl className="mt-3 space-y-2 text-sm">
                   {[
                     ["Location", suburb],
-                    ["Vehicle type", vehicleType],
                     ["Inspection", `${selected.name} — $${selected.price}`],
                   ].map(([label, value]) => (
                     <div key={label} className="flex justify-between gap-4">
