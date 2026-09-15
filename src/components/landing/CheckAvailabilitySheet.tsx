@@ -268,7 +268,7 @@ export function CheckAvailabilitySheet({
         aria-modal="true"
         aria-label="Check availability"
         style={{ willChange: "transform", backfaceVisibility: "hidden" }}
-        className={`absolute inset-x-0 bottom-0 h-[85vh] transform-gpu rounded-t-3xl bg-background shadow-lift transition-transform duration-300 ease-out ${
+        className={`absolute inset-x-0 bottom-0 max-h-[85dvh] transform-gpu rounded-t-3xl bg-background shadow-lift transition-transform duration-300 ease-out ${
           open ? "translate-y-0 overflow-y-auto" : "translate-y-full overflow-hidden"
         }`}
 
