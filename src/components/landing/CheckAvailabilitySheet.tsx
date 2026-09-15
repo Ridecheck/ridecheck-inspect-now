@@ -164,14 +164,12 @@ export function CheckAvailabilitySheet({
         }
         setRevealPhase("complete");
       }, 2200),
-      ...(covered && !reduceMotion
-        ? [
+      ...(reduceMotion
+        ? []
+        : [
             setTimeout(() => setRevealPhase("burst"), 2720),
             setTimeout(finish, 4070),
-          ]
-        : covered
-          ? []
-          : [setTimeout(finish, 3300)]),
+          ]),
     ];
     return () => timers.forEach(clearTimeout);
   }, [screen, covered]);
