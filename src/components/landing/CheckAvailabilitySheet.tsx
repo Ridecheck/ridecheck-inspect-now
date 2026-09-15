@@ -85,10 +85,9 @@ export function CheckAvailabilitySheet({
     navigate({
       to: "/book",
       search: {
-        type: vehicleType === "Electric" ? "ev" : "standard",
+        type: "standard",
         suburb,
         postcode,
-        vehicle: vehicleType,
         pkg: selected.name,
         email: contactDetails.email,
         phone: contactDetails.phone,
