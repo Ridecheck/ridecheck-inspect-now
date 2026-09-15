@@ -192,31 +192,6 @@ export function CheckAvailabilitySheet({
 
               <label
                 className="mt-5 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
-                htmlFor="ca-vehicle-type"
-              >
-                Vehicle type
-              </label>
-              <Select
-                value={vehicleType}
-                onValueChange={(value) => setVehicleType(value as VehicleType)}
-              >
-                <SelectTrigger
-                  id="ca-vehicle-type"
-                  className="mt-2 h-12 rounded-xl bg-background"
-                >
-                  <SelectValue placeholder="Select vehicle type" />
-                </SelectTrigger>
-                <SelectContent>
-                {vehicleTypes.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t}
-                  </SelectItem>
-                ))}
-                </SelectContent>
-              </Select>
-
-              <label
-                className="mt-5 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
                 htmlFor="ca-contact"
               >
                 Email or mobile number
