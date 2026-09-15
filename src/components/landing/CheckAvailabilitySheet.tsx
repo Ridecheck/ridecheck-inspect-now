@@ -16,8 +16,10 @@ import {
   timingLabel,
   type Timing,
 } from "@/components/booking/StepTiming";
+import { Textarea } from "@/components/ui/textarea";
 import { buildAvailability } from "@/lib/booking";
 import { packages } from "@/lib/ridecheck";
+import { regionFromLocation } from "@/lib/schedule.mock";
 
 const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
 
@@ -117,6 +119,8 @@ export function CheckAvailabilitySheet({
   const [timing, setTiming] = useState<Timing>(null);
   const [checkStep, setCheckStep] = useState(0);
   const [revealPhase, setRevealPhase] = useState<RevealPhase>("checking");
+  const [leadSent, setLeadSent] = useState(false);
+  const [leadNote, setLeadNote] = useState("");
 
   // Reset the funnel each time the sheet is opened.
   useEffect(() => {
@@ -124,6 +128,8 @@ export function CheckAvailabilitySheet({
       setScreen(0);
       setCheckStep(0);
       setRevealPhase("checking");
+      setLeadSent(false);
+      setLeadNote("");
     }
   }, [open]);
 
@@ -131,32 +137,38 @@ export function CheckAvailabilitySheet({
     sheetRef.current?.scrollTo({ top: 0 });
   }, [screen]);
 
+  const { suburb, postcode } = splitLocation(location);
+  const covered = regionFromLocation(suburb, postcode) !== null;
+
   // Run the fake coverage check.
   useEffect(() => {
     if (screen !== 1) return;
     setCheckStep(0);
     setRevealPhase("checking");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finish = () => setScreen(2);
     const timers = [
       setTimeout(() => setCheckStep(1), 650),
       setTimeout(() => setCheckStep(2), 1300),
       setTimeout(() => setCheckStep(3), 1900),
       setTimeout(() => {
         if (reduceMotion) {
-          setScreen(2);
+          finish();
           return;
         }
         setRevealPhase("complete");
       }, 2200),
-      ...(!reduceMotion
+      ...(covered && !reduceMotion
         ? [
             setTimeout(() => setRevealPhase("burst"), 2720),
-            setTimeout(() => setScreen(2), 4070),
+            setTimeout(finish, 4070),
           ]
-        : []),
+        : covered
+          ? []
+          : [setTimeout(finish, 3300)]),
     ];
     return () => timers.forEach(clearTimeout);
-  }, [screen]);
+  }, [screen, covered]);
 
   const { suburb, postcode } = splitLocation(location);
   const selected = packages.find((p) => p.name === pkg) ?? packages[0];
