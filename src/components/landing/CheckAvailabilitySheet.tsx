@@ -170,7 +170,6 @@ export function CheckAvailabilitySheet({
     return () => timers.forEach(clearTimeout);
   }, [screen, covered]);
 
-  const { suburb, postcode } = splitLocation(location);
   const selected = packages.find((p) => p.name === pkg) ?? packages[0];
   const contactDetails = parseContact(contact);
   const availability = useMemo(
