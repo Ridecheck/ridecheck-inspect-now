@@ -55,24 +55,53 @@ function RideCheckCarMark() {
 function AvailabilityResultCard({
   settled = false,
   checking = false,
+  variant = "check",
 }: {
   settled?: boolean;
   checking?: boolean;
+  variant?: "check" | "car";
 }) {
+  const isCar = variant === "car";
   return (
     <div
-      className={`availability-result ${settled ? "is-settled" : ""}`}
+      className={`availability-result ${settled ? "is-settled" : ""} ${isCar ? "is-car-variant" : ""}`}
       aria-hidden
     >
       <span className="availability-glow" />
+      {isCar && settled && (
+        <svg className="availability-pin-trail" viewBox="0 0 240 120">
+          <path
+            d="M74 88 C 108 96, 160 76, 178 44"
+            fill="none"
+            stroke="var(--signal)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeDasharray="6 9"
+          />
+          <g className="availability-pin">
+            <path
+              d="M186 8c-9.4 0-17 7.6-17 17 0 12.3 17 27 17 27s17-14.7 17-27c0-9.4-7.6-17-17-17Z"
+              fill="var(--signal)"
+            />
+            <circle cx="186" cy="25" r="6" fill="var(--background)" />
+          </g>
+        </svg>
+      )}
       <div className="availability-confetti">
         {Array.from({ length: 14 }, (_, index) => (
           <span key={index} className={`availability-confetti-piece piece-${index + 1}`} />
         ))}
       </div>
       <div className={`availability-envelope ${checking ? "is-checking" : ""}`}>
-        <div className="availability-result-slip">
-          <Check strokeWidth={3.6} />
+        <div className={`availability-result-slip ${isCar ? "is-car" : ""}`}>
+          {isCar ? (
+            <>
+              <span className="availability-car-rays" />
+              <RideCheckCarMark />
+            </>
+          ) : (
+            <Check strokeWidth={3.6} />
+          )}
         </div>
         <div className="availability-envelope-back" />
         <span className="availability-envelope-side availability-envelope-side-left" />
@@ -164,14 +193,12 @@ export function CheckAvailabilitySheet({
         }
         setRevealPhase("complete");
       }, 2200),
-      ...(covered && !reduceMotion
-        ? [
+      ...(reduceMotion
+        ? []
+        : [
             setTimeout(() => setRevealPhase("burst"), 2720),
             setTimeout(finish, 4070),
-          ]
-        : covered
-          ? []
-          : [setTimeout(finish, 3300)]),
+          ]),
     ];
     return () => timers.forEach(clearTimeout);
   }, [screen, covered]);
@@ -355,7 +382,10 @@ export function CheckAvailabilitySheet({
           {screen === 1 && (
             <div className="min-h-[21rem] py-6">
               <div className={`availability-reveal text-center ${revealPhase === "burst" ? "is-bursting" : ""}`}>
-                <AvailabilityResultCard checking={revealPhase === "checking"} />
+                <AvailabilityResultCard
+                  checking={revealPhase === "checking"}
+                  variant={covered ? "check" : "car"}
+                />
                 <h2 className="mt-1 text-xl font-extrabold text-ink">
                   {revealPhase === "checking"
                     ? `${checkingSteps[Math.min(checkStep, checkingSteps.length - 1)]}…`
@@ -500,7 +530,7 @@ export function CheckAvailabilitySheet({
 
           {screen === 2 && !covered && !leadSent && (
             <div className="py-4 text-center">
-              <AvailabilityResultCard />
+              <AvailabilityResultCard settled variant="car" />
               <h2 className="mt-4 text-xl font-extrabold text-ink">
                 We might be able to help.
               </h2>
