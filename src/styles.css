@@ -46,6 +46,9 @@
   --color-protected: var(--protected);
   --color-protected-foreground: var(--protected-foreground);
   --color-protected-soft: var(--protected-soft);
+  --color-limited: var(--limited);
+  --color-limited-foreground: var(--limited-foreground);
+  --color-limited-soft: var(--limited-soft);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -95,6 +98,9 @@
   --protected: oklch(0.55 0.16 155);
   --protected-foreground: oklch(1 0 0);
   --protected-soft: oklch(0.97 0.025 155);
+  --limited: oklch(0.68 0.15 65);
+  --limited-foreground: oklch(1 0 0);
+  --limited-soft: oklch(0.97 0.03 80);
   --chart-1: oklch(0.57 0.235 28);
   --chart-2: oklch(0.17 0.004 260);
   --chart-3: oklch(0.6 0.118 184.704);
@@ -127,6 +133,9 @@
   --protected: oklch(0.72 0.16 155);
   --protected-foreground: oklch(0.16 0.03 155);
   --protected-soft: oklch(0.25 0.035 155);
+  --limited: oklch(0.78 0.14 75);
+  --limited-foreground: oklch(0.24 0.04 70);
+  --limited-soft: oklch(0.28 0.035 75);
   --accent: oklch(0.3 0.05 28);
   --accent-foreground: oklch(0.96 0.02 28);
   --destructive: oklch(0.62 0.225 28);
