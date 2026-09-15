@@ -425,6 +425,7 @@ export function CheckAvailabilitySheet({
                 region={availability.region}
                 regionLabel={availability.regionLabel}
                 showAsap={false}
+                hidePrices
               />
 
               <Button
