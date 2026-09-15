@@ -174,7 +174,11 @@ export function StepTiming({
             const active = day.iso === activeIso || (asapMode && day.iso === days[0]?.iso);
             const open = isDayAvailable(day.iso, opts) || asapDay;
             const limited =
-              highlightAvailability && open && !asapDay && day.capacity > 0 && day.remaining <= 2;
+              highlightAvailability &&
+              open &&
+              !asapDay &&
+              day.capacity > 0 &&
+              day.remaining / day.capacity <= 0.6;
             return (
               <button
                 key={day.iso}
