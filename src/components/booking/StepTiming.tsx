@@ -163,14 +163,16 @@ export function StepTiming({
 
         <div className="mt-3 -mx-5 flex snap-x snap-mandatory gap-2 overflow-x-auto px-5 pb-2 sm:-mx-1 sm:px-1">
           {visibleDays.map((day) => {
-            const active = day.iso === activeIso;
-            const open = isDayAvailable(day.iso, opts);
+            const asapDay =
+              asapMode && (day.iso === days[0]?.iso || day.iso === days[1]?.iso);
+            const active = day.iso === activeIso || (asapMode && day.iso === days[0]?.iso);
+            const open = isDayAvailable(day.iso, opts) || asapDay;
             return (
               <button
                 key={day.iso}
                 type="button"
                 disabled={!open}
-                onClick={() => selectDay(day.iso)}
+                onClick={() => (asapDay ? onChange({ mode: "asap" }) : selectDay(day.iso))}
                 aria-pressed={active}
                 className={`w-[74px] shrink-0 snap-start rounded-xl border p-2.5 text-center transition sm:w-[86px] sm:p-3 ${
                   !open
