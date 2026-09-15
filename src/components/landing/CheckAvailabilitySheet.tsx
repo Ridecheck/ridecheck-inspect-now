@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -155,20 +155,23 @@ export function CheckAvailabilitySheet({
   const [leadSent, setLeadSent] = useState(false);
   const [leadNote, setLeadNote] = useState("");
 
-  // Reset the funnel each time the sheet is opened.
-  useEffect(() => {
+  // Reset the funnel each time the sheet is opened. Layout effect so the first
+  // screen is in place before the panel is painted sliding up.
+  useLayoutEffect(() => {
     if (open) {
       setScreen(0);
       setCheckStep(0);
       setRevealPhase("checking");
       setLeadSent(false);
       setLeadNote("");
+      sheetRef.current?.scrollTo({ top: 0 });
     }
   }, [open]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     sheetRef.current?.scrollTo({ top: 0 });
   }, [screen]);
+
 
   const { suburb, postcode } = splitLocation(location);
   // "test" as the suburb forces the outside-coverage flow for easy testing.
@@ -254,7 +257,7 @@ export function CheckAvailabilitySheet({
         type="button"
         aria-label="Close availability check"
         onClick={onClose}
-        className={`absolute inset-0 bg-ink/50 transition-opacity duration-200 ${
+        className={`absolute inset-0 bg-ink/50 transition-opacity duration-300 ease-out ${
           open ? "opacity-100" : "opacity-0"
         }`}
       />
@@ -264,9 +267,11 @@ export function CheckAvailabilitySheet({
         role="dialog"
         aria-modal="true"
         aria-label="Check availability"
-        className={`absolute inset-x-0 bottom-0 max-h-[90vh] overflow-y-auto rounded-t-3xl bg-background shadow-lift transition-transform duration-300 ease-out ${
-          open ? "translate-y-0" : "translate-y-full"
+        style={{ willChange: "transform", backfaceVisibility: "hidden" }}
+        className={`absolute inset-x-0 bottom-0 max-h-[90vh] transform-gpu rounded-t-3xl bg-background shadow-lift transition-transform duration-300 ease-out ${
+          open ? "translate-y-0 overflow-y-auto" : "translate-y-full overflow-hidden"
         }`}
+
       >
         <div className="sticky top-0 z-10 bg-background px-5 pb-3 pt-3">
           <span
