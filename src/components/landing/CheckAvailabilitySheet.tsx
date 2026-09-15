@@ -50,7 +50,6 @@ export function CheckAvailabilitySheet({
   const navigate = useNavigate();
   const [screen, setScreen] = useState(0);
   const [location, setLocation] = useState("");
-  const [vehicleType, setVehicleType] = useState<VehicleType>("Car");
   const [contact, setContact] = useState("");
   const [contactTouched, setContactTouched] = useState(false);
   const [pkg, setPkg] = useState(defaultPkg);
