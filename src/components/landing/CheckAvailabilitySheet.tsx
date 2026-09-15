@@ -130,6 +130,8 @@ export function CheckAvailabilitySheet({
   const [contact, setContact] = useState("");
   const [contactTouched, setContactTouched] = useState(false);
   const [pkg, setPkg] = useState(defaultPkg);
+  const [days] = useState(buildDays);
+  const [day, setDay] = useState(() => buildDays()[0]?.key ?? "");
   const [checkStep, setCheckStep] = useState(0);
   const [revealPhase, setRevealPhase] = useState<RevealPhase>("checking");
 
