@@ -22,6 +22,36 @@ const checkingSteps = [
 
 const defaultPkg = packages.find((p) => p.popular)?.name ?? packages[0].name;
 
+type DayOption = {
+  key: string;
+  label: string;
+  sub: string;
+  status: "Available" | "Limited";
+};
+
+function buildDays(): DayOption[] {
+  const out: DayOption[] = [];
+  const now = new Date();
+  for (let i = 0; out.length < 5; i += 1) {
+    const d = new Date(now);
+    d.setDate(now.getDate() + i);
+    if (d.getDay() === 0) continue; // no Sunday inspections
+    const weekday = d.toLocaleDateString("en-AU", { weekday: "long" });
+    const short = d.toLocaleDateString("en-AU", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+    out.push({
+      key: d.toISOString().slice(0, 10),
+      label: i === 0 ? "Today" : i === 1 ? "Tomorrow" : weekday,
+      sub: short,
+      status: out.length % 3 === 2 ? "Limited" : "Available",
+    });
+  }
+  return out;
+}
+
 type RevealPhase = "checking" | "complete" | "burst";
 
 function RideCheckCarMark() {
