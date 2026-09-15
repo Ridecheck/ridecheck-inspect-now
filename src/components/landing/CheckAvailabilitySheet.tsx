@@ -45,7 +45,13 @@ function RideCheckCarMark() {
   );
 }
 
-function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
+function AvailabilityResultCard({
+  settled = false,
+  checking = false,
+}: {
+  settled?: boolean;
+  checking?: boolean;
+}) {
   return (
     <div
       className={`availability-result ${settled ? "is-settled" : ""}`}
@@ -57,7 +63,7 @@ function AvailabilityResultCard({ settled = false }: { settled?: boolean }) {
           <span key={index} className={`availability-confetti-piece piece-${index + 1}`} />
         ))}
       </div>
-      <div className="availability-envelope">
+      <div className={`availability-envelope ${checking ? "is-checking" : ""}`}>
         <div className="availability-result-slip">
           <Check strokeWidth={3.6} />
         </div>
@@ -325,7 +331,7 @@ export function CheckAvailabilitySheet({
           {screen === 1 && (
             <div className="min-h-[21rem] py-6">
               <div className={`availability-reveal text-center ${revealPhase === "burst" ? "is-bursting" : ""}`}>
-                <AvailabilityResultCard />
+                <AvailabilityResultCard checking={revealPhase === "checking"} />
                 <h2 className="mt-1 text-xl font-extrabold text-ink">
                   {revealPhase === "checking" ? "Checking your area…" : revealPhase === "complete" ? "Checking complete" : "Great news!"}
                 </h2>
