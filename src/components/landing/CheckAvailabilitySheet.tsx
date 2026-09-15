@@ -23,7 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { buildAvailability } from "@/lib/booking";
 import { packages } from "@/lib/ridecheck";
-import { regionFromLocation } from "@/lib/schedule.mock";
+
 
 const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
 
