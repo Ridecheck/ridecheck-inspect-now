@@ -47,7 +47,8 @@ export function StepTiming({
   const [week, setWeek] = useState(0);
   const isEv = serviceType === "ev";
   const opts = { serviceType, region };
-  const selectableDays = days.slice(1);
+  const asapMode = value?.mode === "asap";
+  const selectableDays = asapMode ? days : days.slice(1);
   const visibleDays = selectableDays.slice(week * 7, week * 7 + 7);
 
   const activeIso = value?.mode === "day" ? value.iso : "";
@@ -162,14 +163,16 @@ export function StepTiming({
 
         <div className="mt-3 -mx-5 flex snap-x snap-mandatory gap-2 overflow-x-auto px-5 pb-2 sm:-mx-1 sm:px-1">
           {visibleDays.map((day) => {
-            const active = day.iso === activeIso;
-            const open = isDayAvailable(day.iso, opts);
+            const asapDay =
+              asapMode && (day.iso === days[0]?.iso || day.iso === days[1]?.iso);
+            const active = day.iso === activeIso || (asapMode && day.iso === days[0]?.iso);
+            const open = isDayAvailable(day.iso, opts) || asapDay;
             return (
               <button
                 key={day.iso}
                 type="button"
                 disabled={!open}
-                onClick={() => selectDay(day.iso)}
+                onClick={() => (asapDay ? onChange({ mode: "asap" }) : selectDay(day.iso))}
                 aria-pressed={active}
                 className={`w-[74px] shrink-0 snap-start rounded-xl border p-2.5 text-center transition sm:w-[86px] sm:p-3 ${
                   !open
@@ -187,9 +190,10 @@ export function StepTiming({
                   {day.monthLabel}
                 </p>
                 <p
-                  className={`mt-1 text-xs font-bold ${open ? "text-signal" : "text-muted-foreground line-through"}`}
+                  className={`mt-1 inline-flex items-center justify-center gap-0.5 text-xs font-bold ${open ? "text-signal" : "text-muted-foreground line-through"}`}
                 >
-                  ${dayPrice(basePrice, day)}
+                  {asapDay && <Flame className="h-3 w-3" aria-hidden />}
+                  ${asapDay ? basePrice + ASAP_SURCHARGE : dayPrice(basePrice, day)}
                 </p>
                 {!open && (
                   <p className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
