@@ -23,8 +23,8 @@ const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
 
 const checkingSteps = [
   "Checking service coverage",
-  "Finding nearby inspectors",
-  "Checking availability",
+  "Checking available inspection days",
+  "Preparing your booking options",
 ];
 
 const defaultPkg = packages.find((p) => p.popular)?.name ?? packages[0].name;
