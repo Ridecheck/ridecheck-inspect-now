@@ -380,7 +380,11 @@ function BookPage() {
                 />
               )}
 
-              <div className={`mt-8 gap-3 ${paying ? "hidden" : "hidden sm:flex"}`}>
+              <div
+                className={`mt-8 gap-3 ${
+                  paying || (step === 0 && outOfArea) ? "hidden" : "hidden sm:flex"
+                }`}
+              >
                 {step > 0 && (
                   <Button
                     variant="outline"
@@ -396,7 +400,7 @@ function BookPage() {
                   size="lg"
                   disabled={!canContinue}
                   className="h-12 flex-1 rounded-xl text-base font-semibold shadow-soft"
-                  onClick={() => (step === 2 ? setPaying(true) : setStep((s) => s + 1))}
+                  onClick={goNext}
                 >
                   {step === 2 ? `Pay $${total}` : "Continue"}
                   <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
@@ -409,7 +413,7 @@ function BookPage() {
         </main>
       )}
 
-      {!done && !paying && (
+      {!done && !paying && !(step === 0 && outOfArea) && (
         <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 p-3 backdrop-blur sm:hidden">
           <div className="flex gap-2">
             {step > 0 && (
@@ -427,7 +431,7 @@ function BookPage() {
               size="lg"
               disabled={!canContinue}
               className="h-12 flex-1 rounded-xl text-base font-semibold"
-              onClick={() => (step === 2 ? setPaying(true) : setStep((s) => s + 1))}
+              onClick={goNext}
             >
               {step === 2 ? `Pay $${total}` : "Continue"}
             </Button>
