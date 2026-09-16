@@ -20,16 +20,23 @@ import {
   timingLabel,
   type Timing,
 } from "@/components/booking/StepTiming";
-import { OutOfAreaPanel, parseContact } from "@/components/landing/OutOfAreaPanel";
+import {
+  AvailabilityResultCard,
+  OutOfAreaPanel,
+  parseContact,
+} from "@/components/landing/OutOfAreaPanel";
 import { buildAvailability, formatDayLong } from "@/lib/booking";
 import { isAreaCovered } from "@/lib/coverage";
 import { GOOGLE_REVIEWS_URL, packages } from "@/lib/ridecheck";
 
+// Same labels and reveal timing as the Check Availability popup.
 const checkingSteps = [
-  "Checking inspection coverage",
-  "Finding available inspectors",
-  "Checking upcoming availability",
+  "Checking service coverage",
+  "Checking available inspection days",
+  "Preparing your booking options",
 ];
+
+type RevealPhase = "checking" | "complete" | "burst";
 
 const benefits = [
   { icon: ScanSearch, title: "Local, qualified", sub: "mechanics" },
