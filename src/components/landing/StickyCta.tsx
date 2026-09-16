@@ -99,7 +99,11 @@ export function StickyCta() {
           <div
             className={`mx-auto mb-1.5 w-[84%] ${nudgeClosing ? "animate-nudge-out" : "animate-nudge-in"}`}
           >
-            <div className="relative rounded-2xl border border-signal/20 bg-signal/5 px-4 py-3 pr-9 shadow-soft backdrop-blur">
+            <div className="relative rounded-2xl border border-signal/20 bg-background px-4 py-3 pr-9 shadow-soft">
+              <span
+                className="pointer-events-none absolute inset-0 rounded-2xl bg-signal/5"
+                aria-hidden
+              />
               <p className="text-sm font-bold text-ink">Not sure if we cover your area?</p>
               <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 Check availability below
