@@ -248,14 +248,34 @@ export function AvailabilityFirstHero() {
             {step === "checking" && (
               <div className="min-h-[16rem] py-6">
                 <div
-                  className={`availability-reveal flex justify-center ${
+                  className={`availability-reveal text-center ${
                     revealPhase === "burst" ? "is-bursting" : ""
                   }`}
                 >
-                  <AvailabilityResultCard
-                    checking={revealPhase === "checking"}
-                    variant={covered ? "check" : "car"}
-                  />
+                  <div className="flex justify-center">
+                    <AvailabilityResultCard
+                      checking={revealPhase === "checking"}
+                      variant={covered ? "check" : "car"}
+                    />
+                  </div>
+                  <h2 className="mt-3 text-xl font-extrabold text-ink">
+                    {revealPhase === "checking"
+                      ? "Checking your area\u2026"
+                      : revealPhase === "complete"
+                        ? "Just a moment\u2026"
+                        : covered
+                          ? "Great news!"
+                          : "Got your answer."}
+                  </h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {revealPhase === "checking"
+                      ? "Making sure we can get to you."
+                      : revealPhase === "complete"
+                        ? "We're finalising your result."
+                        : covered
+                          ? "We can inspect your area."
+                          : "Here's what we found."}
+                  </p>
                 </div>
               </div>
             )}
