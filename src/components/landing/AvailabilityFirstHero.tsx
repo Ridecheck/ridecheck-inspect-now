@@ -94,29 +94,26 @@ export function AvailabilityFirstHero() {
       : undefined;
   const handoffPrice = selected.price + (chosenDay?.surcharge ?? 0);
 
-  // Same staged reveal the Check Availability popup uses.
+  // Same staged reveal the Check Availability popup uses, trimmed:
+  // card only, no checklist, and a faster overall sequence.
   useEffect(() => {
     if (step !== "checking") return;
-    setCheckStep(0);
     setRevealPhase("checking");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const finish = () => setStep("confirmed");
     const timers = [
-      setTimeout(() => setCheckStep(1), 650),
-      setTimeout(() => setCheckStep(2), 1300),
-      setTimeout(() => setCheckStep(3), 1900),
       setTimeout(() => {
         if (reduceMotion) {
           finish();
           return;
         }
         setRevealPhase("complete");
-      }, 2200),
+      }, 1200),
       ...(reduceMotion
         ? []
         : [
-            setTimeout(() => setRevealPhase("burst"), 2720),
-            setTimeout(finish, 4070),
+            setTimeout(() => setRevealPhase("burst"), 1550),
+            setTimeout(finish, 2500),
           ]),
     ];
     return () => timers.forEach(clearTimeout);
@@ -258,9 +255,9 @@ export function AvailabilityFirstHero() {
             )}
 
             {step === "checking" && (
-              <div className="min-h-[21rem] py-4">
+              <div className="min-h-[16rem] py-6">
                 <div
-                  className={`availability-reveal text-center ${
+                  className={`availability-reveal flex justify-center ${
                     revealPhase === "burst" ? "is-bursting" : ""
                   }`}
                 >
@@ -268,52 +265,6 @@ export function AvailabilityFirstHero() {
                     checking={revealPhase === "checking"}
                     variant={covered ? "check" : "car"}
                   />
-                  <h2 className="mt-1 text-xl font-extrabold text-ink">
-                    {revealPhase === "checking"
-                      ? `${checkingSteps[Math.min(checkStep, checkingSteps.length - 1)]}…`
-                      : revealPhase === "complete"
-                        ? "Just a moment…"
-                        : covered
-                          ? "Great news!"
-                          : "Got your answer."}
-                  </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {revealPhase === "checking"
-                      ? "Making sure we can get to you."
-                      : revealPhase === "complete"
-                        ? "We're finalising your result."
-                        : covered
-                          ? "We can inspect your area."
-                          : "Here's what we found."}
-                  </p>
-                  <ul className="mx-auto mt-5 max-w-sm space-y-3 text-left">
-                    {checkingSteps.map((label, i) => {
-                      const done = checkStep > i;
-                      const active = checkStep === i;
-                      return (
-                        <li
-                          key={label}
-                          className={`flex items-center gap-3 rounded-xl border border-border px-4 py-3 text-sm ${
-                            done || active ? "text-ink" : "text-muted-foreground"
-                          }`}
-                        >
-                          {done ? (
-                            <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-signal text-signal-foreground">
-                              <Check className="h-3 w-3" aria-hidden />
-                            </span>
-                          ) : (
-                            <Loader2
-                              className={`h-5 w-5 shrink-0 ${
-                                active ? "animate-spin text-signal" : "text-border"
-                              }`}
-                              aria-hidden
-                            />
-                          )}
-                          {label}
-                        </li>
-                      );
-                    })}
-                  </ul>
                 </div>
               </div>
             )}
