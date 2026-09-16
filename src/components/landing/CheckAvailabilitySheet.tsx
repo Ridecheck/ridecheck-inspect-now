@@ -10,6 +10,7 @@ import {
   Mail,
   MapPin,
   MessageCircle,
+  Phone,
   ShieldCheck,
   X,
 } from "lucide-react";
@@ -22,10 +23,12 @@ import {
 } from "@/components/booking/StepTiming";
 import { Textarea } from "@/components/ui/textarea";
 import { buildAvailability } from "@/lib/booking";
-import { packages } from "@/lib/ridecheck";
+import { packages, PHONE_HREF } from "@/lib/ridecheck";
 
 
 const BOOKING_DOMAIN = "book.vehicleinspect.com.au";
+const AVAILABILITY_HELP_KEY = "ridecheck-availability-help-shown";
+const INACTIVITY_DELAY_MS = 12000;
 
 const checkingSteps = [
   "Checking service coverage",
@@ -154,6 +157,9 @@ export function CheckAvailabilitySheet({
   const [revealPhase, setRevealPhase] = useState<RevealPhase>("checking");
   const [leadSent, setLeadSent] = useState(false);
   const [leadNote, setLeadNote] = useState("");
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [activityVersion, setActivityVersion] = useState(0);
 
   // Reset the funnel each time the sheet is opened. Layout effect so the first
   // screen is in place before the panel is painted sliding up.
@@ -164,13 +170,40 @@ export function CheckAvailabilitySheet({
       setRevealPhase("checking");
       setLeadSent(false);
       setLeadNote("");
+      setHasInteracted(false);
+      setHelpOpen(false);
+      setActivityVersion(0);
       sheetRef.current?.scrollTo({ top: 0 });
+    } else {
+      setHelpOpen(false);
     }
   }, [open]);
 
   useLayoutEffect(() => {
     sheetRef.current?.scrollTo({ top: 0 });
   }, [screen]);
+
+  const markActivity = () => {
+    setHasInteracted(true);
+    setHelpOpen(false);
+    setActivityVersion((value) => value + 1);
+  };
+
+  useEffect(() => {
+    if (
+      !open ||
+      !hasInteracted ||
+      screen === 1 ||
+      leadSent ||
+      sessionStorage.getItem(AVAILABILITY_HELP_KEY)
+    ) return;
+
+    const timer = setTimeout(() => {
+      sessionStorage.setItem(AVAILABILITY_HELP_KEY, "1");
+      setHelpOpen(true);
+    }, INACTIVITY_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [activityVersion, hasInteracted, leadSent, open, screen]);
 
 
   const { suburb, postcode } = splitLocation(location);
@@ -271,6 +304,8 @@ export function CheckAvailabilitySheet({
         className={`absolute inset-x-0 bottom-0 max-h-[85dvh] transform-gpu rounded-t-3xl bg-background shadow-lift transition-transform duration-300 ease-out ${
           open ? "translate-y-0 overflow-y-auto" : "translate-y-full overflow-hidden"
         }`}
+        onPointerDownCapture={markActivity}
+        onKeyDownCapture={markActivity}
 
       >
         <div className="sticky top-0 z-10 bg-background px-5 pb-3 pt-3">
@@ -338,7 +373,10 @@ export function CheckAvailabilitySheet({
                 <Input
                   id="ca-location"
                   value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  onChange={(e) => {
+                    setLocation(e.target.value);
+                    markActivity();
+                  }}
                   placeholder="Suburb or postcode"
                   className="h-12 rounded-xl pl-10"
                 />
@@ -354,7 +392,10 @@ export function CheckAvailabilitySheet({
                 id="ca-contact"
                 name="contact"
                 value={contact}
-                onChange={(e) => setContact(e.target.value.slice(0, 254))}
+                onChange={(e) => {
+                  setContact(e.target.value.slice(0, 254));
+                  markActivity();
+                }}
                 onBlur={() => setContactTouched(true)}
                 placeholder="you@example.com or 04xx xxx xxx"
                 maxLength={254}
@@ -793,6 +834,31 @@ export function CheckAvailabilitySheet({
           )}
         </div>
       </div>
+
+      {helpOpen && open && (
+        <div className="animate-nudge-in fixed inset-x-4 bottom-4 z-[70] rounded-2xl border border-signal/20 bg-background p-4 pr-10 shadow-lift">
+          <span className="pointer-events-none absolute inset-0 rounded-2xl bg-signal/5" aria-hidden />
+          <p className="relative text-sm font-bold text-ink">Need a hand?</p>
+          <p className="relative mt-0.5 text-xs text-muted-foreground">
+            We can help you get your inspection booked.
+          </p>
+          <a
+            href={PHONE_HREF}
+            className="relative mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-signal"
+          >
+            <Phone className="h-3.5 w-3.5" aria-hidden />
+            Give us a call
+          </a>
+          <button
+            type="button"
+            onClick={() => setHelpOpen(false)}
+            aria-label="Dismiss booking help"
+            className="absolute right-2 top-2 rounded-full p-1 text-muted-foreground transition hover:text-ink"
+          >
+            <X className="h-3.5 w-3.5" aria-hidden />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
