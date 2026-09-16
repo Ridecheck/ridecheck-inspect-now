@@ -183,6 +183,17 @@ function BookPage() {
           contact.email.trim() !== "" &&
           contact.agreed;
 
+  // Uncovered areas swap step 1 for the shared out-of-area enquiry instead
+  // of advancing to availability.
+  const goNext = () => {
+    if (step === 0 && !covered) {
+      setOutOfArea(true);
+      return;
+    }
+    if (step === 2) setPaying(true);
+    else setStep((s) => s + 1);
+  };
+
   const summary = (
     <BookingSummary
       rows={[
@@ -301,15 +312,26 @@ function BookPage() {
           <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
             <div className="min-w-0 rounded-3xl border border-border bg-card p-5 shadow-soft sm:p-8">
 
-              {step === 0 && (
+              {step === 0 && !outOfArea && (
                 <StepBooking
                   value={details}
                   onChange={(patch) => setDetails((d) => ({ ...d, ...patch }))}
                   serviceType={serviceType}
                   onSwitchService={switchService}
                 />
-
-
+              )}
+              {step === 0 && outOfArea && (
+                <OutOfAreaPanel
+                  suburb={details.suburb}
+                  contact={leadContact}
+                  onContactChange={setLeadContact}
+                  note={leadNote}
+                  onNoteChange={setLeadNote}
+                  sent={leadSent}
+                  onSend={() => setLeadSent(true)}
+                  onEdit={() => setOutOfArea(false)}
+                  onDone={() => navigate({ to: "/" })}
+                />
               )}
               {step === 1 && (
                 <StepTiming
