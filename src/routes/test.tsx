@@ -1,3 +1,4 @@
+// Availability-first layout preview (noindex).
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/landing/SiteHeader";
 import { AvailabilityFirstHero } from "@/components/landing/AvailabilityFirstHero";
