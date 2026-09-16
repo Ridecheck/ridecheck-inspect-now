@@ -68,7 +68,7 @@ export function StickyCta() {
       const hero = document.querySelector("main section, section");
       if (hero) {
         const heroBottom = hero.getBoundingClientRect().bottom;
-        if (heroBottom > window.innerHeight * 0.4) return;
+        if (heroBottom > window.innerHeight * 0.75) return;
       } else {
         const scrollable = document.documentElement.scrollHeight - window.innerHeight;
         if (scrollable <= 0 || window.scrollY / scrollable < 0.15) return;
