@@ -60,7 +60,9 @@ export function AvailabilityFirstHero() {
   const [step, setStep] = useState<Step>("location");
   const [location, setLocation] = useState("");
   const [contact, setContact] = useState("");
+  const [contactTouched, setContactTouched] = useState(false);
   const [checkStep, setCheckStep] = useState(0);
+  const [revealPhase, setRevealPhase] = useState<RevealPhase>("checking");
   const [timing, setTiming] = useState<Timing>(null);
   const [pkg, setPkg] = useState(defaultPkg);
   const [leadNote, setLeadNote] = useState("");
@@ -89,14 +91,30 @@ export function AvailabilityFirstHero() {
       : undefined;
   const handoffPrice = selected.price + (chosenDay?.surcharge ?? 0);
 
+  // Same staged reveal the Check Availability popup uses.
   useEffect(() => {
     if (step !== "checking") return;
     setCheckStep(0);
+    setRevealPhase("checking");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finish = () => setStep("confirmed");
     const timers = [
-      setTimeout(() => setCheckStep(1), 500),
-      setTimeout(() => setCheckStep(2), 1000),
-      setTimeout(() => setCheckStep(3), 1500),
-      setTimeout(() => setStep("confirmed"), 1900),
+      setTimeout(() => setCheckStep(1), 650),
+      setTimeout(() => setCheckStep(2), 1300),
+      setTimeout(() => setCheckStep(3), 1900),
+      setTimeout(() => {
+        if (reduceMotion) {
+          finish();
+          return;
+        }
+        setRevealPhase("complete");
+      }, 2200),
+      ...(reduceMotion
+        ? []
+        : [
+            setTimeout(() => setRevealPhase("burst"), 2720),
+            setTimeout(finish, 4070),
+          ]),
     ];
     return () => timers.forEach(clearTimeout);
   }, [step]);
@@ -174,24 +192,54 @@ export function AvailabilityFirstHero() {
                   <MapPin className="h-4 w-4 text-signal" aria-hidden />
                   Where&rsquo;s the car?
                 </label>
-                <div className="mt-3 flex flex-col gap-3 sm:flex-row">
-                  <Input
-                    id="af-location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Enter suburb or postcode"
-                    className="h-12 flex-1 rounded-xl"
-                  />
-                  <Button
-                    size="lg"
-                    disabled={location.trim() === ""}
-                    onClick={() => setStep("checking")}
-                    className="h-12 rounded-xl px-6 text-base font-semibold"
-                  >
-                    Check Availability
-                    <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
-                  </Button>
-                </div>
+                <Input
+                  id="af-location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="Enter suburb or postcode"
+                  className="mt-3 h-12 rounded-xl"
+                />
+
+                <label
+                  htmlFor="af-contact"
+                  className="mt-4 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
+                  Email or mobile number
+                </label>
+                <Input
+                  id="af-contact"
+                  name="contact"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value.slice(0, 254))}
+                  onBlur={() => setContactTouched(true)}
+                  placeholder="you@example.com or 04xx xxx xxx"
+                  maxLength={254}
+                  aria-invalid={contactTouched && !contactDetails.isValid}
+                  aria-describedby="af-contact-help"
+                  className="mt-2 h-12 rounded-xl"
+                />
+                <p
+                  id="af-contact-help"
+                  className={`mt-1.5 text-xs ${
+                    contactTouched && !contactDetails.isValid
+                      ? "font-semibold text-signal"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {contactTouched && !contactDetails.isValid
+                    ? "Enter a valid email address or mobile number."
+                    : "We'll use this to follow up on availability."}
+                </p>
+
+                <Button
+                  size="lg"
+                  disabled={location.trim() === "" || !contactDetails.isValid}
+                  onClick={() => setStep("checking")}
+                  className="mt-5 h-12 w-full rounded-xl text-base font-semibold sm:w-auto sm:px-8"
+                >
+                  Check Availability
+                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+                </Button>
                 <p className="mt-3 text-xs text-muted-foreground">
                   No payment required at this stage.
                 </p>
@@ -199,48 +247,63 @@ export function AvailabilityFirstHero() {
             )}
 
             {step === "checking" && (
-              <div className="py-2 text-center">
-                <Loader2
-                  className="mx-auto h-10 w-10 animate-spin text-signal"
-                  aria-hidden
-                />
-                <h2 className="mt-4 text-lg font-extrabold text-ink">
-                  Checking your area&hellip;
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  We&rsquo;re checking if we can inspect in your area and finding the
-                  next available times.
-                </p>
-                <ul className="mx-auto mt-5 max-w-sm space-y-2 text-left">
-                  {checkingSteps.map((label, i) => {
-                    const done = checkStep > i;
-                    return (
-                      <li
-                        key={label}
-                        className={`flex items-center gap-3 text-sm ${
-                          done ? "text-ink" : "text-muted-foreground"
-                        }`}
-                      >
-                        {done ? (
-                          <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-signal text-signal-foreground">
-                            <Check className="h-3 w-3" aria-hidden />
-                          </span>
-                        ) : (
-                          <Loader2
-                            className={`h-5 w-5 shrink-0 ${
-                              checkStep === i ? "animate-spin text-signal" : "text-border"
-                            }`}
-                            aria-hidden
-                          />
-                        )}
-                        {label}
-                      </li>
-                    );
-                  })}
-                </ul>
-                <p className="mt-5 text-xs text-muted-foreground">
-                  This only takes a few seconds.
-                </p>
+              <div className="min-h-[21rem] py-4">
+                <div
+                  className={`availability-reveal text-center ${
+                    revealPhase === "burst" ? "is-bursting" : ""
+                  }`}
+                >
+                  <AvailabilityResultCard
+                    checking={revealPhase === "checking"}
+                    variant={covered ? "check" : "car"}
+                  />
+                  <h2 className="mt-1 text-xl font-extrabold text-ink">
+                    {revealPhase === "checking"
+                      ? `${checkingSteps[Math.min(checkStep, checkingSteps.length - 1)]}…`
+                      : revealPhase === "complete"
+                        ? "Just a moment…"
+                        : covered
+                          ? "Great news!"
+                          : "Got your answer."}
+                  </h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {revealPhase === "checking"
+                      ? "Making sure we can get to you."
+                      : revealPhase === "complete"
+                        ? "We're finalising your result."
+                        : covered
+                          ? "We can inspect your area."
+                          : "Here's what we found."}
+                  </p>
+                  <ul className="mx-auto mt-5 max-w-sm space-y-3 text-left">
+                    {checkingSteps.map((label, i) => {
+                      const done = checkStep > i;
+                      const active = checkStep === i;
+                      return (
+                        <li
+                          key={label}
+                          className={`flex items-center gap-3 rounded-xl border border-border px-4 py-3 text-sm ${
+                            done || active ? "text-ink" : "text-muted-foreground"
+                          }`}
+                        >
+                          {done ? (
+                            <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-signal text-signal-foreground">
+                              <Check className="h-3 w-3" aria-hidden />
+                            </span>
+                          ) : (
+                            <Loader2
+                              className={`h-5 w-5 shrink-0 ${
+                                active ? "animate-spin text-signal" : "text-border"
+                              }`}
+                              aria-hidden
+                            />
+                          )}
+                          {label}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
               </div>
             )}
 
@@ -261,10 +324,14 @@ export function AvailabilityFirstHero() {
 
             {step === "confirmed" && covered && (
               <>
-                <div className="rounded-xl border border-protected/30 bg-protected-soft p-4">
+                <div className="availability-success-card rounded-xl border border-protected/30 bg-protected-soft p-4">
                   <div className="flex items-start gap-3">
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-protected text-protected-foreground">
-                      <Check className="h-4 w-4" strokeWidth={3} aria-hidden />
+                      <Check
+                        className="availability-success-check h-4 w-4"
+                        strokeWidth={3}
+                        aria-hidden
+                      />
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="font-bold text-ink">
@@ -452,10 +519,20 @@ export function AvailabilityFirstHero() {
                               </span>
                             )}
                             <p className="mt-1 font-bold text-ink">{p.name}</p>
+                            <p className="text-2xl font-extrabold text-signal">
+                              ${p.price}
+                            </p>
                           </div>
-                          <p className="text-2xl font-extrabold text-signal">
-                            ${p.price}
-                          </p>
+                          <span
+                            className={`mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                              active
+                                ? "border-signal bg-signal text-signal-foreground"
+                                : "border-border"
+                            }`}
+                            aria-hidden
+                          >
+                            {active && <Check className="h-3 w-3" />}
+                          </span>
                         </div>
                         <ul className="mt-3 space-y-1">
                           {p.inclusions.slice(0, 4).map((inc) => (
@@ -515,6 +592,35 @@ export function AvailabilityFirstHero() {
                     </div>
                   ))}
                 </dl>
+                <div className="mt-4 rounded-2xl border border-protected/25 bg-protected-soft p-4">
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-protected/10 text-protected">
+                      <ShieldCheck className="h-7 w-7" strokeWidth={2.5} aria-hidden />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-extrabold text-protected">You&rsquo;re protected</h3>
+                      <ul className="mt-2 space-y-2">
+                        {[
+                          "Full refund if you cancel 24+ hours before",
+                          "Secure payment with Stripe",
+                          "5.0★ from 350+ customers",
+                          "No hidden fees — what you see is what you pay",
+                        ].map((item) => (
+                          <li
+                            key={item}
+                            className="flex items-start gap-2 text-xs font-medium text-ink"
+                          >
+                            <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-protected text-protected-foreground">
+                              <Check className="h-2.5 w-2.5" strokeWidth={3.5} aria-hidden />
+                            </span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
                 <Button
                   size="lg"
                   onClick={goToBooking}
