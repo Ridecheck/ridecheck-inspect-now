@@ -35,16 +35,12 @@ export function StickyCta() {
     );
   };
 
-  // Step 2/3/4: show once per session after ~30% scroll, pulse, then auto-dismiss.
+  // Step 2/3/4: show once per session just past the hero, pulse, then auto-dismiss.
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem(NUDGE_KEY)) return;
 
-    const onScroll = () => {
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollable <= 0) return;
-      if (window.scrollY / scrollable < 0.3) return;
-
+    const showNudge = () => {
       window.removeEventListener("scroll", onScroll);
       sessionStorage.setItem(NUDGE_KEY, "1");
       timers.current.push(
@@ -65,6 +61,19 @@ export function StickyCta() {
           );
         }, 400),
       );
+    };
+
+    const onScroll = () => {
+      // Trigger once the hero is roughly two-thirds scrolled out of view.
+      const hero = document.querySelector("main section, section");
+      if (hero) {
+        const heroBottom = hero.getBoundingClientRect().bottom;
+        if (heroBottom > window.innerHeight * 0.8) return;
+      } else {
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        if (scrollable <= 0 || window.scrollY / scrollable < 0.15) return;
+      }
+      showNudge();
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
