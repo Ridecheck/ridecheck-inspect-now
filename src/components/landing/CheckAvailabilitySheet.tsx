@@ -10,6 +10,7 @@ import {
   Mail,
   MapPin,
   MessageCircle,
+  Phone,
   ShieldCheck,
   X,
 } from "lucide-react";
