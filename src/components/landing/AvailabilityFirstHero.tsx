@@ -53,7 +53,6 @@ export function AvailabilityFirstHero() {
   const [location, setLocation] = useState("");
   const [contact, setContact] = useState("");
   const [contactTouched, setContactTouched] = useState(false);
-  const [checkStep, setCheckStep] = useState(0);
   const [revealPhase, setRevealPhase] = useState<RevealPhase>("checking");
   const [timing, setTiming] = useState<Timing>(null);
   const [pkg, setPkg] = useState(defaultPkg);
