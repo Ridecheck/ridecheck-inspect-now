@@ -1,0 +1,548 @@
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ClipboardList,
+  Loader2,
+  MapPin,
+  ScanSearch,
+  ShieldCheck,
+  Star,
+  Wallet,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import heroCar from "@/assets/hero-inspection-diagram.png.asset.json";
+import {
+  StepTiming,
+  timingLabel,
+  type Timing,
+} from "@/components/booking/StepTiming";
+import { OutOfAreaPanel, parseContact } from "@/components/landing/OutOfAreaPanel";
+import { buildAvailability, formatDayLong } from "@/lib/booking";
+import { isAreaCovered } from "@/lib/coverage";
+import { GOOGLE_REVIEWS_URL, packages } from "@/lib/ridecheck";
+
+const checkingSteps = [
+  "Checking inspection coverage",
+  "Finding available inspectors",
+  "Checking upcoming availability",
+];
+
+const benefits = [
+  { icon: ScanSearch, title: "Local, qualified", sub: "mechanics" },
+  { icon: ClipboardList, title: "Same-day", sub: "detailed reports" },
+  { icon: Wallet, title: "Fast & easy", sub: "booking" },
+];
+
+type Step = "location" | "checking" | "confirmed" | "time" | "package" | "handoff";
+
+function splitLocation(value: string) {
+  const parts = value.split(",").map((x) => x.trim()).filter(Boolean);
+  const postcode = parts.find((x) => /^\d{4}$/.test(x));
+  const suburb = parts.filter((x) => !/^\d{4}$/.test(x)).join(", ");
+  return { suburb: suburb || value.trim(), postcode };
+}
+
+const defaultPkg = packages.find((p) => p.popular)?.name ?? packages[0].name;
+
+export function AvailabilityFirstHero() {
+  const navigate = useNavigate();
+  const [step, setStep] = useState<Step>("location");
+  const [location, setLocation] = useState("");
+  const [contact, setContact] = useState("");
+  const [checkStep, setCheckStep] = useState(0);
+  const [timing, setTiming] = useState<Timing>(null);
+  const [pkg, setPkg] = useState(defaultPkg);
+  const [leadNote, setLeadNote] = useState("");
+  const [leadSent, setLeadSent] = useState(false);
+
+  const { suburb, postcode } = splitLocation(location);
+  const covered = isAreaCovered(suburb, postcode);
+  const selected = packages.find((p) => p.name === pkg) ?? packages[0];
+  const contactDetails = parseContact(contact);
+
+  const availability = useMemo(
+    () =>
+      buildAvailability({
+        basePrice: selected.price,
+        suburb,
+        postcode,
+        premiumRequired: Boolean(selected.popular),
+      }),
+    [selected.price, selected.popular, suburb, postcode],
+  );
+
+  const nextDays = availability.days.slice(1, 5);
+  const chosenDay =
+    timing?.mode === "day"
+      ? availability.days.find((d) => d.iso === timing.iso)
+      : undefined;
+  const handoffPrice = selected.price + (chosenDay?.surcharge ?? 0);
+
+  useEffect(() => {
+    if (step !== "checking") return;
+    setCheckStep(0);
+    const timers = [
+      setTimeout(() => setCheckStep(1), 500),
+      setTimeout(() => setCheckStep(2), 1000),
+      setTimeout(() => setCheckStep(3), 1500),
+      setTimeout(() => setStep("confirmed"), 1900),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [step]);
+
+  const goToBooking = () => {
+    navigate({
+      to: "/book",
+      search: {
+        type: "standard",
+        suburb,
+        postcode,
+        pkg: selected.name,
+        email: contactDetails.email,
+        phone: contactDetails.phone,
+        timingMode: timing?.mode,
+        timingDay: timing?.mode === "day" ? timing.iso : undefined,
+        timingPart: timing?.mode === "day" ? timing.part : undefined,
+      },
+    });
+  };
+
+  const restart = () => {
+    setStep("location");
+    setTiming(null);
+    setLeadSent(false);
+    setLeadNote("");
+  };
+
+  return (
+    <section className="relative overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] items-center lg:flex">
+        <img
+          src={heroCar.url}
+          alt="Red BMW M3 sedan with RideCheck inspection damage callouts"
+          width={1408}
+          height={1008}
+          className="h-auto max-h-full w-full object-contain object-right"
+        />
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background to-transparent" />
+      </div>
+
+      <div className="relative mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16">
+        <a
+          href={GOOGLE_REVIEWS_URL}
+          target="_blank"
+          rel="noopener"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-ink"
+        >
+          <span className="flex" aria-hidden>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} className="h-4 w-4 fill-signal text-signal" />
+            ))}
+          </span>
+          5.0
+          <span className="font-normal text-muted-foreground">(350+ Google reviews)</span>
+        </a>
+
+        <div className="mt-5 max-w-xl lg:max-w-[52%]">
+          <h1 className="text-[2.35rem] font-extrabold leading-[1.05] text-ink sm:text-5xl">
+            Let&rsquo;s check if this car is{" "}
+            <span className="text-signal">worth buying.</span>
+          </h1>
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+            Enter the suburb where the car is located and we&rsquo;ll check if we can
+            inspect it, show you available days and get you booked in &mdash; fast.
+          </p>
+
+          <div className="mt-6 rounded-2xl border border-border bg-card p-4 shadow-lift sm:p-5">
+            {step === "location" && (
+              <>
+                <label
+                  htmlFor="af-location"
+                  className="flex items-center gap-2 text-sm font-bold text-ink"
+                >
+                  <MapPin className="h-4 w-4 text-signal" aria-hidden />
+                  Where&rsquo;s the car?
+                </label>
+                <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+                  <Input
+                    id="af-location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="Enter suburb or postcode"
+                    className="h-12 flex-1 rounded-xl"
+                  />
+                  <Button
+                    size="lg"
+                    disabled={location.trim() === ""}
+                    onClick={() => setStep("checking")}
+                    className="h-12 rounded-xl px-6 text-base font-semibold"
+                  >
+                    Check Availability
+                    <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+                  </Button>
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  No payment required at this stage.
+                </p>
+              </>
+            )}
+
+            {step === "checking" && (
+              <div className="py-2 text-center">
+                <Loader2
+                  className="mx-auto h-10 w-10 animate-spin text-signal"
+                  aria-hidden
+                />
+                <h2 className="mt-4 text-lg font-extrabold text-ink">
+                  Checking your area&hellip;
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  We&rsquo;re checking if we can inspect in your area and finding the
+                  next available times.
+                </p>
+                <ul className="mx-auto mt-5 max-w-sm space-y-2 text-left">
+                  {checkingSteps.map((label, i) => {
+                    const done = checkStep > i;
+                    return (
+                      <li
+                        key={label}
+                        className={`flex items-center gap-3 text-sm ${
+                          done ? "text-ink" : "text-muted-foreground"
+                        }`}
+                      >
+                        {done ? (
+                          <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-signal text-signal-foreground">
+                            <Check className="h-3 w-3" aria-hidden />
+                          </span>
+                        ) : (
+                          <Loader2
+                            className={`h-5 w-5 shrink-0 ${
+                              checkStep === i ? "animate-spin text-signal" : "text-border"
+                            }`}
+                            aria-hidden
+                          />
+                        )}
+                        {label}
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="mt-5 text-xs text-muted-foreground">
+                  This only takes a few seconds.
+                </p>
+              </div>
+            )}
+
+            {step === "confirmed" && !covered && (
+              <OutOfAreaPanel
+                suburb={suburb}
+                contact={contact}
+                onContactChange={setContact}
+                note={leadNote}
+                onNoteChange={setLeadNote}
+                sent={leadSent}
+                onSend={() => setLeadSent(true)}
+                onEdit={restart}
+                onDone={restart}
+                doneLabel="Try a different suburb"
+              />
+            )}
+
+            {step === "confirmed" && covered && (
+              <>
+                <div className="rounded-xl border border-protected/30 bg-protected-soft p-4">
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-protected text-protected-foreground">
+                      <Check className="h-4 w-4" strokeWidth={3} aria-hidden />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-ink">
+                        Yes, we inspect in {suburb}
+                        {postcode ? `, ${postcode}` : ""}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        No travel fee for this area.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={restart}
+                      className="shrink-0 text-xs font-semibold text-signal underline-offset-4 hover:underline"
+                    >
+                      Change
+                    </button>
+                  </div>
+                </div>
+
+                <p className="mt-5 text-sm font-bold text-ink">
+                  Next available inspection
+                </p>
+                <div className="mt-3 grid grid-cols-4 gap-2">
+                  {nextDays.map((day, i) => {
+                    const active = timing?.mode === "day" && timing.iso === day.iso;
+                    const first = i === 0 && !timing;
+                    return (
+                      <button
+                        key={day.iso}
+                        type="button"
+                        onClick={() => setTiming({ mode: "day", iso: day.iso, part: "am" })}
+                        aria-pressed={active}
+                        className={`rounded-xl border px-2 py-3 text-center transition ${
+                          active || first
+                            ? "border-signal bg-signal text-signal-foreground"
+                            : "border-border bg-background text-ink"
+                        }`}
+                      >
+                        <span className="block text-[11px] font-semibold uppercase tracking-wide">
+                          {day.weekdayLabel}
+                        </span>
+                        <span className="block text-xl font-extrabold leading-tight">
+                          {day.dayNumber}
+                        </span>
+                        <span className="block text-[11px]">{day.monthLabel}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <p className="mt-5 text-sm font-bold text-ink">Choose a time of day</p>
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  {(["am", "pm"] as const).map((part) => {
+                    const day = chosenDay ?? nextDays[0];
+                    const active = timing?.mode === "day" && timing.part === part;
+                    const spots = day
+                      ? day.slots
+                          .filter((s) => (part === "am" ? s.period === "morning" : s.period === "afternoon"))
+                          .reduce((n, s) => n + s.remaining, 0)
+                      : 0;
+                    return (
+                      <button
+                        key={part}
+                        type="button"
+                        disabled={!day}
+                        onClick={() =>
+                          day && setTiming({ mode: "day", iso: day.iso, part })
+                        }
+                        aria-pressed={active}
+                        className={`rounded-xl border p-3 text-left transition ${
+                          active
+                            ? "border-signal bg-accent/40"
+                            : "border-border bg-background"
+                        }`}
+                      >
+                        <span className="block text-sm font-bold text-ink">
+                          {part === "am" ? "Morning" : "Afternoon"}
+                        </span>
+                        <span className="block text-xs text-muted-foreground">
+                          {part === "am" ? "8am \u2013 12pm" : "12pm \u2013 5pm"}
+                        </span>
+                        <span className="mt-1 block text-xs font-semibold text-signal">
+                          {spots} spots left
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <Button
+                  size="lg"
+                  onClick={() => {
+                    if (!timing && nextDays[0])
+                      setTiming({ mode: "day", iso: nextDays[0].iso, part: "am" });
+                    setStep("package");
+                  }}
+                  className="mt-5 h-12 w-full rounded-xl text-base font-semibold"
+                >
+                  {chosenDay
+                    ? `Book ${formatDayLong(chosenDay)}, ${timing?.mode === "day" && timing.part === "pm" ? "Afternoon" : "Morning"}`
+                    : "Continue"}
+                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+                </Button>
+
+                <button
+                  type="button"
+                  onClick={() => setStep("time")}
+                  className="mt-3 w-full text-center text-sm font-semibold text-ink underline-offset-4 hover:text-signal hover:underline"
+                >
+                  Pick a specific time instead
+                </button>
+              </>
+            )}
+
+            {step === "time" && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setStep("confirmed")}
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground"
+                >
+                  <ArrowLeft className="h-4 w-4" aria-hidden />
+                  Back
+                </button>
+                <div className="mt-4">
+                  <StepTiming
+                    days={availability.days}
+                    basePrice={selected.price}
+                    value={timing}
+                    onChange={setTiming}
+                    serviceType="standard"
+                    region={availability.region}
+                    regionLabel={availability.regionLabel}
+                    showAsap={false}
+                    hidePrices
+                    highlightAvailability
+                  />
+                </div>
+                <Button
+                  size="lg"
+                  disabled={timing === null}
+                  onClick={() => setStep("package")}
+                  className="mt-5 h-12 w-full rounded-xl text-base font-semibold"
+                >
+                  Continue
+                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+                </Button>
+              </>
+            )}
+
+            {step === "package" && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setStep("confirmed")}
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground"
+                >
+                  <ArrowLeft className="h-4 w-4" aria-hidden />
+                  Back
+                </button>
+                <h2 className="mt-3 text-lg font-extrabold text-ink">
+                  Choose your inspection
+                </h2>
+                <div className="mt-4 space-y-3">
+                  {packages.map((p) => {
+                    const active = pkg === p.name;
+                    return (
+                      <button
+                        key={p.name}
+                        type="button"
+                        onClick={() => setPkg(p.name)}
+                        aria-pressed={active}
+                        className={`w-full rounded-2xl border p-4 text-left transition ${
+                          active
+                            ? "border-signal bg-accent/40 shadow-soft"
+                            : "border-border bg-background"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            {p.popular && (
+                              <span className="inline-block rounded-full bg-signal px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-signal-foreground">
+                                Most popular
+                              </span>
+                            )}
+                            <p className="mt-1 font-bold text-ink">{p.name}</p>
+                          </div>
+                          <p className="text-2xl font-extrabold text-signal">
+                            ${p.price}
+                          </p>
+                        </div>
+                        <ul className="mt-3 space-y-1">
+                          {p.inclusions.slice(0, 4).map((inc) => (
+                            <li
+                              key={inc}
+                              className="flex items-start gap-2 text-xs text-muted-foreground"
+                            >
+                              <Check className="mt-0.5 h-3 w-3 shrink-0 text-signal" aria-hidden />
+                              {inc}
+                            </li>
+                          ))}
+                        </ul>
+                      </button>
+                    );
+                  })}
+                </div>
+                <Button
+                  size="lg"
+                  onClick={() => setStep("handoff")}
+                  className="mt-5 h-12 w-full rounded-xl text-base font-semibold"
+                >
+                  Continue
+                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+                </Button>
+                <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                  <ShieldCheck className="h-3.5 w-3.5 text-signal" aria-hidden />
+                  No payment required at this stage.
+                </p>
+              </>
+            )}
+
+            {step === "handoff" && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setStep("package")}
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground"
+                >
+                  <ArrowLeft className="h-4 w-4" aria-hidden />
+                  Back
+                </button>
+                <h2 className="mt-3 text-lg font-extrabold text-ink">
+                  Tell us about the vehicle
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  We&rsquo;ll carry everything across &mdash; no need to enter it again.
+                </p>
+                <dl className="mt-4 space-y-2 rounded-xl border border-border bg-haze p-4 text-sm">
+                  {[
+                    ["Location", suburb || "Not set yet"],
+                    ["Preferred time", timingLabel(timing, availability.days)],
+                    ["Inspection", `${selected.name} — $${handoffPrice}`],
+                  ].map(([label, value]) => (
+                    <div key={label} className="flex justify-between gap-4">
+                      <dt className="text-muted-foreground">{label}</dt>
+                      <dd className="text-right font-semibold text-ink">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <Button
+                  size="lg"
+                  onClick={goToBooking}
+                  className="mt-5 h-12 w-full rounded-xl text-base font-semibold"
+                >
+                  Continue to booking
+                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+                </Button>
+              </>
+            )}
+          </div>
+
+          <div className="mt-5 grid grid-cols-3 gap-3">
+            {benefits.map(({ icon: Icon, title, sub }) => (
+              <div key={title} className="flex items-start gap-2">
+                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-ink" aria-hidden />
+                <p className="text-xs font-semibold leading-tight text-ink">
+                  {title}
+                  <span className="block font-normal text-muted-foreground">{sub}</span>
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-8 overflow-hidden rounded-2xl lg:hidden">
+          <img
+            src={heroCar.url}
+            alt="Red BMW M3 sedan with RideCheck inspection damage callouts"
+            width={1408}
+            height={1008}
+            className="h-52 w-full object-cover sm:h-72"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
