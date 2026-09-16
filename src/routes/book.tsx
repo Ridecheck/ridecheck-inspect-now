@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Check, Clock, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BookingSummary } from "@/components/booking/BookingSummary";
@@ -13,6 +13,8 @@ import {
 } from "@/components/booking/StepTiming";
 import { StepReview, type ContactDetails } from "@/components/booking/StepReview";
 import { addOns, buildAvailability, REGION_LABEL } from "@/lib/booking";
+import { isAreaCovered } from "@/lib/coverage";
+import { OutOfAreaPanel } from "@/components/landing/OutOfAreaPanel";
 import { packages, evPackages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
 import type { ServiceType } from "@/lib/availability";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -80,6 +82,7 @@ const stepLabels = ["Your booking", "Availability", "Confirm"];
 
 function BookPage() {
   const prefill = Route.useSearch();
+  const navigate = useNavigate();
   const [serviceType, setServiceType] = useState<ServiceType>(
     prefill.type === "ev" ? "ev" : "standard",
   );
@@ -94,6 +97,13 @@ function BookPage() {
   );
   const [paying, setPaying] = useState(false);
   const [done, setDone] = useState(prefill.paid === "1");
+  // Outside-coverage enquiry state (prototype only — nothing is stored).
+  const [outOfArea, setOutOfArea] = useState(false);
+  const [leadContact, setLeadContact] = useState(
+    prefill.email ?? prefill.phone ?? "",
+  );
+  const [leadNote, setLeadNote] = useState("");
+  const [leadSent, setLeadSent] = useState(false);
 
   const [details, setDetails] = useState<BookingDetails>({
     suburb: prefill.suburb ?? "",
@@ -140,6 +150,8 @@ function BookPage() {
 
 
   const pkg = catalogue.find((p) => p.name === details.pkg) ?? catalogue[0];
+  // Same coverage rule as the Check Availability popup.
+  const covered = isAreaCovered(details.suburb, details.postcode);
   const availability = useMemo(
     () =>
       buildAvailability({
@@ -170,6 +182,17 @@ function BookPage() {
           contact.phone.trim() !== "" &&
           contact.email.trim() !== "" &&
           contact.agreed;
+
+  // Uncovered areas swap step 1 for the shared out-of-area enquiry instead
+  // of advancing to availability.
+  const goNext = () => {
+    if (step === 0 && !covered) {
+      setOutOfArea(true);
+      return;
+    }
+    if (step === 2) setPaying(true);
+    else setStep((s) => s + 1);
+  };
 
   const summary = (
     <BookingSummary
@@ -289,15 +312,26 @@ function BookPage() {
           <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
             <div className="min-w-0 rounded-3xl border border-border bg-card p-5 shadow-soft sm:p-8">
 
-              {step === 0 && (
+              {step === 0 && !outOfArea && (
                 <StepBooking
                   value={details}
                   onChange={(patch) => setDetails((d) => ({ ...d, ...patch }))}
                   serviceType={serviceType}
                   onSwitchService={switchService}
                 />
-
-
+              )}
+              {step === 0 && outOfArea && (
+                <OutOfAreaPanel
+                  suburb={details.suburb}
+                  contact={leadContact}
+                  onContactChange={setLeadContact}
+                  note={leadNote}
+                  onNoteChange={setLeadNote}
+                  sent={leadSent}
+                  onSend={() => setLeadSent(true)}
+                  onEdit={() => setOutOfArea(false)}
+                  onDone={() => navigate({ to: "/" })}
+                />
               )}
               {step === 1 && (
                 <StepTiming
@@ -346,7 +380,11 @@ function BookPage() {
                 />
               )}
 
-              <div className={`mt-8 gap-3 ${paying ? "hidden" : "hidden sm:flex"}`}>
+              <div
+                className={`mt-8 gap-3 ${
+                  paying || (step === 0 && outOfArea) ? "hidden" : "hidden sm:flex"
+                }`}
+              >
                 {step > 0 && (
                   <Button
                     variant="outline"
@@ -362,7 +400,7 @@ function BookPage() {
                   size="lg"
                   disabled={!canContinue}
                   className="h-12 flex-1 rounded-xl text-base font-semibold shadow-soft"
-                  onClick={() => (step === 2 ? setPaying(true) : setStep((s) => s + 1))}
+                  onClick={goNext}
                 >
                   {step === 2 ? `Pay $${total}` : "Continue"}
                   <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
@@ -375,7 +413,7 @@ function BookPage() {
         </main>
       )}
 
-      {!done && !paying && (
+      {!done && !paying && !(step === 0 && outOfArea) && (
         <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 p-3 backdrop-blur sm:hidden">
           <div className="flex gap-2">
             {step > 0 && (
@@ -393,7 +431,7 @@ function BookPage() {
               size="lg"
               disabled={!canContinue}
               className="h-12 flex-1 rounded-xl text-base font-semibold"
-              onClick={() => (step === 2 ? setPaying(true) : setStep((s) => s + 1))}
+              onClick={goNext}
             >
               {step === 2 ? `Pay $${total}` : "Continue"}
             </Button>
