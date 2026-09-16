@@ -103,7 +103,7 @@ export function AvailabilityFirstHero() {
         ? []
         : [
             setTimeout(() => setRevealPhase("burst"), 1550),
-            setTimeout(finish, 2500),
+            setTimeout(finish, 2750),
           ]),
     ];
     return () => timers.forEach(clearTimeout);
