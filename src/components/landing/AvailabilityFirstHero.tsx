@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Car,
   Check,
+  ClipboardList,
   MapPin,
   ScanSearch,
   ShieldCheck,
