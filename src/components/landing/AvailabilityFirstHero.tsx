@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
+  Car,
   Check,
   ClipboardList,
   Loader2,
@@ -25,7 +26,7 @@ import {
   OutOfAreaPanel,
   parseContact,
 } from "@/components/landing/OutOfAreaPanel";
-import { buildAvailability, formatDayLong } from "@/lib/booking";
+import { buildAvailability } from "@/lib/booking";
 import { isAreaCovered } from "@/lib/coverage";
 import { GOOGLE_REVIEWS_URL, packages } from "@/lib/ridecheck";
 
@@ -44,7 +45,7 @@ const benefits = [
   { icon: Wallet, title: "Fast & easy", sub: "booking" },
 ];
 
-type Step = "location" | "checking" | "confirmed" | "time" | "package" | "handoff";
+type Step = "location" | "checking" | "confirmed" | "package" | "vehicle" | "handoff";
 
 function splitLocation(value: string) {
   const parts = value.split(",").map((x) => x.trim()).filter(Boolean);
@@ -65,6 +66,9 @@ export function AvailabilityFirstHero() {
   const [revealPhase, setRevealPhase] = useState<RevealPhase>("checking");
   const [timing, setTiming] = useState<Timing>(null);
   const [pkg, setPkg] = useState(defaultPkg);
+  const [make, setMake] = useState("");
+  const [model, setModel] = useState("");
+  const [year, setYear] = useState("");
   const [leadNote, setLeadNote] = useState("");
   const [leadSent, setLeadSent] = useState(false);
 
@@ -84,7 +88,6 @@ export function AvailabilityFirstHero() {
     [selected.price, selected.popular, suburb, postcode],
   );
 
-  const nextDays = availability.days.slice(1, 5);
   const chosenDay =
     timing?.mode === "day"
       ? availability.days.find((d) => d.iso === timing.iso)
@@ -127,6 +130,7 @@ export function AvailabilityFirstHero() {
         suburb,
         postcode,
         pkg: selected.name,
+        vehicle: [year, make, model].filter(Boolean).join(" "),
         email: contactDetails.email,
         phone: contactDetails.phone,
         timingMode: timing?.mode,
@@ -157,20 +161,27 @@ export function AvailabilityFirstHero() {
       </div>
 
       <div className="relative mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16">
-        <a
-          href={GOOGLE_REVIEWS_URL}
-          target="_blank"
-          rel="noopener"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-ink"
-        >
-          <span className="flex" aria-hidden>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="h-4 w-4 fill-signal text-signal" />
-            ))}
-          </span>
-          5.0
-          <span className="font-normal text-muted-foreground">(350+ Google reviews)</span>
-        </a>
+        <div className="flex justify-center sm:justify-end">
+          <a
+            href={GOOGLE_REVIEWS_URL}
+            target="_blank"
+            rel="noopener"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-soft transition-colors hover:bg-secondary sm:w-auto sm:py-2"
+          >
+            <span className="font-display text-xl font-extrabold text-ink sm:text-lg">G</span>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-base font-bold text-ink sm:text-sm">5.0</span>
+                <span className="flex" aria-hidden>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-signal text-signal sm:h-3.5 sm:w-3.5" />
+                  ))}
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground sm:text-xs">350+ Google reviews</p>
+            </div>
+          </a>
+        </div>
 
         <div className="mt-5 max-w-xl lg:max-w-[52%]">
           <h1 className="text-[2.35rem] font-extrabold leading-[1.05] text-ink sm:text-5xl">
@@ -352,112 +363,7 @@ export function AvailabilityFirstHero() {
                   </div>
                 </div>
 
-                <p className="mt-5 text-sm font-bold text-ink">
-                  Next available inspection
-                </p>
-                <div className="mt-3 grid grid-cols-4 gap-2">
-                  {nextDays.map((day, i) => {
-                    const active = timing?.mode === "day" && timing.iso === day.iso;
-                    const first = i === 0 && !timing;
-                    return (
-                      <button
-                        key={day.iso}
-                        type="button"
-                        onClick={() => setTiming({ mode: "day", iso: day.iso, part: "am" })}
-                        aria-pressed={active}
-                        className={`rounded-xl border px-2 py-3 text-center transition ${
-                          active || first
-                            ? "border-signal bg-signal text-signal-foreground"
-                            : "border-border bg-background text-ink"
-                        }`}
-                      >
-                        <span className="block text-[11px] font-semibold uppercase tracking-wide">
-                          {day.date.toLocaleDateString("en-AU", { weekday: "short" })}
-                        </span>
-                        <span className="block text-xl font-extrabold leading-tight">
-                          {day.dayNumber}
-                        </span>
-                        <span className="block text-[11px]">{day.monthLabel}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <p className="mt-5 text-sm font-bold text-ink">Choose a time of day</p>
-                <div className="mt-3 grid grid-cols-2 gap-3">
-                  {(["am", "pm"] as const).map((part) => {
-                    const day = chosenDay ?? nextDays[0];
-                    const active = timing?.mode === "day" && timing.part === part;
-                    const spots = day
-                      ? day.slots
-                          .filter((s) => (part === "am" ? s.period === "morning" : s.period === "afternoon"))
-                          .reduce((n, s) => n + s.remaining, 0)
-                      : 0;
-                    return (
-                      <button
-                        key={part}
-                        type="button"
-                        disabled={!day}
-                        onClick={() =>
-                          day && setTiming({ mode: "day", iso: day.iso, part })
-                        }
-                        aria-pressed={active}
-                        className={`rounded-xl border p-3 text-left transition ${
-                          active
-                            ? "border-signal bg-accent/40"
-                            : "border-border bg-background"
-                        }`}
-                      >
-                        <span className="block text-sm font-bold text-ink">
-                          {part === "am" ? "Morning" : "Afternoon"}
-                        </span>
-                        <span className="block text-xs text-muted-foreground">
-                          {part === "am" ? "8am \u2013 12pm" : "12pm \u2013 5pm"}
-                        </span>
-                        <span className="mt-1 block text-xs font-semibold text-signal">
-                          {spots} spots left
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <Button
-                  size="lg"
-                  onClick={() => {
-                    if (!timing && nextDays[0])
-                      setTiming({ mode: "day", iso: nextDays[0].iso, part: "am" });
-                    setStep("package");
-                  }}
-                  className="mt-5 h-12 w-full rounded-xl text-base font-semibold"
-                >
-                  {chosenDay
-                    ? `Book ${formatDayLong(chosenDay)}, ${timing?.mode === "day" && timing.part === "pm" ? "Afternoon" : "Morning"}`
-                    : "Continue"}
-                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
-                </Button>
-
-                <button
-                  type="button"
-                  onClick={() => setStep("time")}
-                  className="mt-3 w-full text-center text-sm font-semibold text-ink underline-offset-4 hover:text-signal hover:underline"
-                >
-                  Pick a specific time instead
-                </button>
-              </>
-            )}
-
-            {step === "time" && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setStep("confirmed")}
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground"
-                >
-                  <ArrowLeft className="h-4 w-4" aria-hidden />
-                  Back
-                </button>
-                <div className="mt-4">
+                <div className="mt-5">
                   <StepTiming
                     days={availability.days}
                     basePrice={selected.price}
@@ -471,6 +377,7 @@ export function AvailabilityFirstHero() {
                     highlightAvailability
                   />
                 </div>
+
                 <Button
                   size="lg"
                   disabled={timing === null}
@@ -551,7 +458,7 @@ export function AvailabilityFirstHero() {
                 </div>
                 <Button
                   size="lg"
-                  onClick={() => setStep("handoff")}
+                  onClick={() => setStep("vehicle")}
                   className="mt-5 h-12 w-full rounded-xl text-base font-semibold"
                 >
                   Continue
@@ -564,7 +471,7 @@ export function AvailabilityFirstHero() {
               </>
             )}
 
-            {step === "handoff" && (
+            {step === "vehicle" && (
               <>
                 <button
                   type="button"
@@ -574,8 +481,62 @@ export function AvailabilityFirstHero() {
                   <ArrowLeft className="h-4 w-4" aria-hidden />
                   Back
                 </button>
+                <div className="mt-3 flex items-center gap-2">
+                  <Car className="h-5 w-5 text-signal" aria-hidden />
+                  <h2 className="text-lg font-extrabold text-ink">Tell us about the car</h2>
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Add the vehicle details so we can prepare the right checks.
+                </p>
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  <Input
+                    value={make}
+                    onChange={(event) => setMake(event.target.value)}
+                    placeholder="Make"
+                    aria-label="Vehicle make"
+                    className="h-12 rounded-xl"
+                  />
+                  <Input
+                    value={model}
+                    onChange={(event) => setModel(event.target.value)}
+                    placeholder="Model"
+                    aria-label="Vehicle model"
+                    className="h-12 rounded-xl"
+                  />
+                  <Input
+                    value={year}
+                    onChange={(event) => setYear(event.target.value.replace(/\D/g, "").slice(0, 4))}
+                    placeholder="Year"
+                    aria-label="Vehicle year"
+                    inputMode="numeric"
+                    maxLength={4}
+                    className="col-span-2 h-12 rounded-xl"
+                  />
+                </div>
+                <Button
+                  size="lg"
+                  disabled={!make.trim() || !model.trim() || year.length !== 4}
+                  onClick={() => setStep("handoff")}
+                  className="mt-5 h-12 w-full rounded-xl text-base font-semibold"
+                >
+                  Continue
+                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+                </Button>
+              </>
+            )}
+
+            {step === "handoff" && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setStep("vehicle")}
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground"
+                >
+                  <ArrowLeft className="h-4 w-4" aria-hidden />
+                  Back
+                </button>
                 <h2 className="mt-3 text-lg font-extrabold text-ink">
-                  Tell us about the vehicle
+                  Ready to complete your booking
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
                   We&rsquo;ll carry everything across &mdash; no need to enter it again.
@@ -583,6 +544,7 @@ export function AvailabilityFirstHero() {
                 <dl className="mt-4 space-y-2 rounded-xl border border-border bg-haze p-4 text-sm">
                   {[
                     ["Location", suburb || "Not set yet"],
+                    ["Vehicle", [year, make, model].filter(Boolean).join(" ")],
                     ["Preferred time", timingLabel(timing, availability.days)],
                     ["Inspection", `${selected.name} — $${handoffPrice}`],
                   ].map(([label, value]) => (
