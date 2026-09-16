@@ -636,3 +636,39 @@
     animation: none;
   }
 }
+
+/* Sticky-bar nudge + phone helper bubble */
+@keyframes nudge-in {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nudge-out {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(6px); }
+}
+
+@keyframes tab-attention {
+  0%, 100% { box-shadow: 0 -4px 20px color-mix(in oklab, var(--signal) 18%, transparent); }
+  50% { box-shadow: 0 -8px 28px color-mix(in oklab, var(--signal) 45%, transparent); }
+}
+
+.animate-nudge-in {
+  animation: nudge-in 260ms ease-out both;
+}
+
+.animate-nudge-out {
+  animation: nudge-out 220ms ease-in both;
+}
+
+.animate-tab-attention {
+  animation: tab-attention 1.2s ease-in-out 4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-nudge-in,
+  .animate-nudge-out,
+  .animate-tab-attention {
+    animation: none;
+  }
+}
