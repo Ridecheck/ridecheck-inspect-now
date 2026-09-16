@@ -5,8 +5,6 @@ import {
   ArrowRight,
   Car,
   Check,
-  ClipboardList,
-  Loader2,
   MapPin,
   ScanSearch,
   ShieldCheck,
@@ -29,13 +27,6 @@ import {
 import { buildAvailability } from "@/lib/booking";
 import { isAreaCovered } from "@/lib/coverage";
 import { GOOGLE_REVIEWS_URL, packages } from "@/lib/ridecheck";
-
-// Same labels and reveal timing as the Check Availability popup.
-const checkingSteps = [
-  "Checking service coverage",
-  "Checking available inspection days",
-  "Preparing your booking options",
-];
 
 type RevealPhase = "checking" | "complete" | "burst";
 
