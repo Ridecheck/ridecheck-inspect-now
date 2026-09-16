@@ -117,12 +117,9 @@ export function CheckAvailabilitySheet({
 
 
   const { suburb, postcode } = splitLocation(location);
-  // "test" as the suburb forces the outside-coverage flow for easy testing.
-  const isTestTrigger = location.trim().toLowerCase() === "test";
-  // Prototype: only the literal word "test" (or a clearly interstate postcode)
-  // falls outside coverage. Any other suburb is treated as serviceable.
-  const outOfAreaPostcode = /\b[0146789]\d{3}\b/.test(`${suburb} ${postcode ?? ""}`);
-  const covered = isTestTrigger ? false : !outOfAreaPostcode;
+  // Shared with the booking flow: covered by default; only the literal word
+  // "test" or a clearly interstate postcode falls outside coverage.
+  const covered = isAreaCovered(suburb, postcode);
 
   // Run the fake coverage check.
   useEffect(() => {
@@ -434,138 +431,17 @@ export function CheckAvailabilitySheet({
             </div>
           )}
 
-          {screen === 2 && !covered && leadSent && (
-            <div className="py-6 text-center">
-              <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-protected-soft">
-                <Check
-                  className="availability-success-check h-10 w-10 text-protected"
-                  strokeWidth={3}
-                  aria-hidden
-                />
-              </span>
-              <h2 className="mt-5 text-2xl font-extrabold text-ink">Thanks!</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                We've received your enquiry.
-              </p>
-
-              <div className="mt-6 flex items-start gap-3 rounded-2xl border border-border bg-haze p-4 text-left">
-                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-protected-soft text-protected">
-                  <Mail className="h-4 w-4" aria-hidden />
-                </span>
-                <div>
-                  <p className="text-sm font-bold text-ink">
-                    We'll be in touch soon
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Our team will review your request and get back to you with
-                    availability and any applicable travel fees.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-3 gap-3 border-t border-border pt-5">
-                {[
-                  { icon: MessageCircle, label: "Usually within a few hours" },
-                  { icon: Clock, label: "We'll confirm availability" },
-                  { icon: DollarSign, label: "Transparent pricing" },
-                ].map(({ icon: Icon, label }) => (
-                  <div key={label} className="flex flex-col items-center gap-2">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-haze text-ink">
-                      <Icon className="h-4 w-4" aria-hidden />
-                    </span>
-                    <p className="text-[11px] leading-tight text-muted-foreground">
-                      {label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <Button
-                size="lg"
-                variant="secondary"
-                onClick={onClose}
-                className="mt-7 h-12 w-full rounded-xl text-base font-semibold"
-              >
-                Back to home
-              </Button>
-            </div>
-          )}
-
-          {screen === 2 && !covered && !leadSent && (
-            <div className="py-4 text-center">
-              <AvailabilityResultCard settled variant="car" />
-              <h2 className="mt-4 text-xl font-extrabold text-ink">
-                We might be able to help.
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                We don't currently have a local inspector in{" "}
-                {suburb || "your area"}, but we may still be able to assist.
-                This area may require a travel fee depending on the location.
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Leave your details below and we'll get in touch with options and
-                a quote.
-              </p>
-
-              <div className="mt-5 rounded-2xl border border-border bg-haze p-4 text-left">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="flex min-w-0 items-center gap-2 text-sm font-semibold text-ink">
-                    <MapPin className="h-4 w-4 shrink-0 text-signal" aria-hidden />
-                    <span className="truncate">{suburb}</span>
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setScreen(0)}
-                    className="shrink-0 text-xs font-bold uppercase tracking-wider text-signal"
-                  >
-                    Edit
-                  </button>
-                </div>
-                <div className="mt-2 flex items-center justify-between gap-3 border-t border-border pt-2">
-                  <p className="flex min-w-0 items-center gap-2 text-sm text-ink">
-                    <Mail className="h-4 w-4 shrink-0 text-signal" aria-hidden />
-                    <span className="truncate">{contact}</span>
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setScreen(0)}
-                    className="shrink-0 text-xs font-bold uppercase tracking-wider text-signal"
-                  >
-                    Edit
-                  </button>
-                </div>
-                <label
-                  htmlFor="ca-lead-note"
-                  className="mt-4 block text-xs font-bold uppercase tracking-wider text-muted-foreground"
-                >
-                  Anything we should know? (optional)
-                </label>
-                <Textarea
-                  id="ca-lead-note"
-                  value={leadNote}
-                  onChange={(e) => setLeadNote(e.target.value.slice(0, 500))}
-                  placeholder="e.g. where the car is, when you need it, or any other details…"
-                  maxLength={500}
-                  className="mt-2 min-h-[76px] rounded-xl"
-                />
-              </div>
-
-              <Button
-                size="lg"
-                onClick={() => setLeadSent(true)}
-                className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
-              >
-                Send enquiry
-                <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
-              </Button>
-              <button
-                type="button"
-                onClick={() => setScreen(0)}
-                className="mt-3 w-full text-sm font-semibold text-muted-foreground"
-              >
-                Try a different suburb
-              </button>
-            </div>
+          {screen === 2 && !covered && (
+            <OutOfAreaPanel
+              suburb={suburb}
+              contact={contact}
+              note={leadNote}
+              onNoteChange={setLeadNote}
+              sent={leadSent}
+              onSend={() => setLeadSent(true)}
+              onEdit={() => setScreen(0)}
+              onDone={onClose}
+            />
           )}
 
           {screen === 3 && (
