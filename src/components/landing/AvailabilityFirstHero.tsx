@@ -298,7 +298,7 @@ export function AvailabilityFirstHero() {
                         }`}
                       >
                         <span className="block text-[11px] font-semibold uppercase tracking-wide">
-                          {day.weekdayLabel}
+                          {day.date.toLocaleDateString("en-AU", { weekday: "short" })}
                         </span>
                         <span className="block text-xl font-extrabold leading-tight">
                           {day.dayNumber}
