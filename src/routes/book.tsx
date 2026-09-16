@@ -315,17 +315,35 @@ function BookPage() {
                 />
               )}
               {step === 0 && outOfArea && (
-                <OutOfAreaPanel
-                  suburb={details.suburb}
-                  contact={leadContact}
-                  onContactChange={setLeadContact}
-                  note={leadNote}
-                  onNoteChange={setLeadNote}
-                  sent={leadSent}
-                  onSend={() => setLeadSent(true)}
-                  onEdit={() => setOutOfArea(false)}
-                  onDone={() => navigate({ to: "/" })}
-                />
+                <div className="py-8 text-center">
+                  <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-signal/10 text-signal">
+                    <Phone className="h-6 w-6" aria-hidden />
+                  </span>
+                  <h2 className="mt-5 text-2xl font-extrabold text-ink">
+                    We might be able to help.
+                  </h2>
+                  <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+                    We don't currently have a local inspector in{" "}
+                    {details.suburb || "your area"}, but give us a call and
+                    we'll see what we can do.
+                  </p>
+
+                  <a
+                    href={PHONE_HREF}
+                    className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-soft sm:inline-flex sm:w-auto sm:px-8"
+                  >
+                    <Phone className="mr-2 h-4 w-4" aria-hidden />
+                    Call {PHONE_DISPLAY}
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => setOutOfArea(false)}
+                    className="mt-4 block w-full text-sm font-semibold text-muted-foreground"
+                  >
+                    Try a different suburb
+                  </button>
+                </div>
               )}
               {step === 1 && (
                 <StepTiming
