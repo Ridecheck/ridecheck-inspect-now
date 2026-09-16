@@ -107,6 +107,21 @@ export function StickyCta() {
     };
   }, []);
 
+  // Any booking link on the page counts as starting the booking journey.
+  useEffect(() => {
+    const onBookingClick = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest<HTMLAnchorElement>('a[href^="/book"]');
+      if (!link) return;
+      sessionStorage.setItem(BOOKING_STARTED_KEY, "1");
+      if (hesitationTimer.current) clearTimeout(hesitationTimer.current);
+    };
+
+    document.addEventListener("click", onBookingClick, true);
+    return () => document.removeEventListener("click", onBookingClick, true);
+  }, []);
+
   const markBookingStarted = () => {
     sessionStorage.setItem(BOOKING_STARTED_KEY, "1");
     if (hesitationTimer.current) clearTimeout(hesitationTimer.current);
