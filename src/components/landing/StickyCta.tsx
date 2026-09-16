@@ -104,8 +104,10 @@ export function StickyCta() {
                 className="pointer-events-none absolute inset-0 rounded-2xl bg-signal/5"
                 aria-hidden
               />
-              <p className="text-sm font-bold text-ink">Not sure if we cover your area?</p>
-              <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-muted-foreground">
+              <p className="relative text-sm font-bold text-ink">
+                Not sure if we cover your area?
+              </p>
+              <p className="relative mt-0.5 flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 Check availability below
                 <ArrowDown className="h-3.5 w-3.5 text-signal" aria-hidden />
               </p>
