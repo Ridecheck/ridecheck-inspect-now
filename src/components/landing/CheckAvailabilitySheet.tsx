@@ -41,102 +41,11 @@ const defaultPkg = packages.find((p) => p.popular)?.name ?? packages[0].name;
 
 type RevealPhase = "checking" | "complete" | "burst";
 
-function RideCheckCarMark() {
-  return (
-    <svg viewBox="0 0 64 64" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M18.5 20.3c.9-3.2 3.8-5.4 7.1-5.4h12.8c3.3 0 6.2 2.2 7.1 5.4l2.4 8.1c3.5.9 6.1 4 6.1 7.8v9.3c0 2.8-2.2 5-5 5h-1.2v2.4a3.8 3.8 0 0 1-3.8 3.8h-2.2a3.8 3.8 0 0 1-3.8-3.8v-2.4H26v2.4a3.8 3.8 0 0 1-3.8 3.8H20a3.8 3.8 0 0 1-3.8-3.8v-2.4H15c-2.8 0-5-2.2-5-5v-9.3c0-3.8 2.6-6.9 6.1-7.8l2.4-8.1Z"
-      />
-      <path fill="var(--background)" d="M24.1 20.1h15.8c.7 0 1.3.5 1.5 1.1l1.9 6.4H20.7l1.9-6.4c.2-.6.8-1.1 1.5-1.1Z" />
-      <circle cx="19.1" cy="38.6" r="4.1" fill="var(--background)" />
-      <circle cx="44.9" cy="38.6" r="4.1" fill="var(--background)" />
-      <rect x="25.2" y="37.2" width="13.6" height="3.5" rx="1.75" fill="var(--background)" />
-    </svg>
-  );
-}
-
-function AvailabilityResultCard({
-  settled = false,
-  checking = false,
-  variant = "check",
-}: {
-  settled?: boolean;
-  checking?: boolean;
-  variant?: "check" | "car";
-}) {
-  const isCar = variant === "car";
-  return (
-    <div
-      className={`availability-result ${settled ? "is-settled" : ""} ${isCar ? "is-car-variant" : ""}`}
-      aria-hidden
-    >
-      <span className="availability-glow" />
-      {isCar && settled && (
-        <svg className="availability-pin-trail" viewBox="0 0 240 120">
-          <path
-            d="M74 88 C 108 96, 160 76, 178 44"
-            fill="none"
-            stroke="var(--signal)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeDasharray="6 9"
-          />
-          <g className="availability-pin">
-            <path
-              d="M186 8c-9.4 0-17 7.6-17 17 0 12.3 17 27 17 27s17-14.7 17-27c0-9.4-7.6-17-17-17Z"
-              fill="var(--signal)"
-            />
-            <circle cx="186" cy="25" r="6" fill="var(--background)" />
-          </g>
-        </svg>
-      )}
-      <div className="availability-confetti">
-        {Array.from({ length: 14 }, (_, index) => (
-          <span key={index} className={`availability-confetti-piece piece-${index + 1}`} />
-        ))}
-      </div>
-      <div className={`availability-envelope ${checking ? "is-checking" : ""}`}>
-        <div className={`availability-result-slip ${isCar ? "is-car" : ""}`}>
-          {isCar ? (
-            <>
-              <span className="availability-car-rays" />
-              <RideCheckCarMark />
-            </>
-          ) : (
-            <Check strokeWidth={3.6} />
-          )}
-        </div>
-        <div className="availability-envelope-back" />
-        <span className="availability-envelope-side availability-envelope-side-left" />
-        <span className="availability-envelope-side availability-envelope-side-right" />
-        <div className="availability-envelope-front">
-          <span className="availability-brand-badge bg-background rounded-full shadow-lg">
-            <RideCheckCarMark />
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function splitLocation(value: string) {
   const parts = value.split(",").map((x) => x.trim()).filter(Boolean);
   const postcode = parts.find((x) => /^\d{4}$/.test(x));
   const suburb = parts.filter((x) => !/^\d{4}$/.test(x)).join(", ");
   return { suburb: suburb || value.trim(), postcode };
-}
-
-function parseContact(value: string) {
-  const contact = value.trim();
-  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
-  const digits = contact.replace(/\D/g, "");
-  const isPhone = /^[+()\d\s-]+$/.test(contact) && digits.length >= 8 && digits.length <= 15;
-  return {
-    isValid: contact.length <= 254 && (isEmail || isPhone),
-    email: isEmail ? contact : undefined,
-    phone: isPhone ? contact : undefined,
-  };
 }
 
 export function CheckAvailabilitySheet({
