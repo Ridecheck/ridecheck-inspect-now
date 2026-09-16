@@ -14,7 +14,6 @@ import {
 import { StepReview, type ContactDetails } from "@/components/booking/StepReview";
 import { addOns, buildAvailability, REGION_LABEL } from "@/lib/booking";
 import { isAreaCovered } from "@/lib/coverage";
-import { OutOfAreaPanel } from "@/components/landing/OutOfAreaPanel";
 import { packages, evPackages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
 import type { ServiceType } from "@/lib/availability";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -97,13 +96,8 @@ function BookPage() {
   );
   const [paying, setPaying] = useState(false);
   const [done, setDone] = useState(prefill.paid === "1");
-  // Outside-coverage enquiry state (prototype only — nothing is stored).
+  // Outside coverage: simple call card (prototype only — nothing is stored).
   const [outOfArea, setOutOfArea] = useState(false);
-  const [leadContact, setLeadContact] = useState(
-    prefill.email ?? prefill.phone ?? "",
-  );
-  const [leadNote, setLeadNote] = useState("");
-  const [leadSent, setLeadSent] = useState(false);
 
   const [details, setDetails] = useState<BookingDetails>({
     suburb: prefill.suburb ?? "",
@@ -321,17 +315,35 @@ function BookPage() {
                 />
               )}
               {step === 0 && outOfArea && (
-                <OutOfAreaPanel
-                  suburb={details.suburb}
-                  contact={leadContact}
-                  onContactChange={setLeadContact}
-                  note={leadNote}
-                  onNoteChange={setLeadNote}
-                  sent={leadSent}
-                  onSend={() => setLeadSent(true)}
-                  onEdit={() => setOutOfArea(false)}
-                  onDone={() => navigate({ to: "/" })}
-                />
+                <div className="py-8 text-center">
+                  <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-signal/10 text-signal">
+                    <Phone className="h-6 w-6" aria-hidden />
+                  </span>
+                  <h2 className="mt-5 text-2xl font-extrabold text-ink">
+                    We might be able to help.
+                  </h2>
+                  <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+                    We don't currently have a local inspector in{" "}
+                    {details.suburb || "your area"}, but give us a call and
+                    we'll see what we can do.
+                  </p>
+
+                  <a
+                    href={PHONE_HREF}
+                    className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-soft sm:inline-flex sm:w-auto sm:px-8"
+                  >
+                    <Phone className="mr-2 h-4 w-4" aria-hidden />
+                    Call {PHONE_DISPLAY}
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => setOutOfArea(false)}
+                    className="mt-4 block w-full text-sm font-semibold text-muted-foreground"
+                  >
+                    Try a different suburb
+                  </button>
+                </div>
               )}
               {step === 1 && (
                 <StepTiming
