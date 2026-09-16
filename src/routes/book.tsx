@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Check, Clock, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BookingSummary } from "@/components/booking/BookingSummary";
@@ -13,6 +13,8 @@ import {
 } from "@/components/booking/StepTiming";
 import { StepReview, type ContactDetails } from "@/components/booking/StepReview";
 import { addOns, buildAvailability, REGION_LABEL } from "@/lib/booking";
+import { isAreaCovered } from "@/lib/coverage";
+import { OutOfAreaPanel } from "@/components/landing/OutOfAreaPanel";
 import { packages, evPackages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
 import type { ServiceType } from "@/lib/availability";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -80,6 +82,7 @@ const stepLabels = ["Your booking", "Availability", "Confirm"];
 
 function BookPage() {
   const prefill = Route.useSearch();
+  const navigate = useNavigate();
   const [serviceType, setServiceType] = useState<ServiceType>(
     prefill.type === "ev" ? "ev" : "standard",
   );
