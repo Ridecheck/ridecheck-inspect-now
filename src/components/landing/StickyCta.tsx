@@ -83,17 +83,17 @@ export function StickyCta() {
     };
   }, []);
 
-  // Step 6: tapping outside closes the nudge and the phone bubble.
+  // Step 6: tapping outside closes the phone bubble. The nudge stays up
+  // until it auto-dismisses (scrolling must not dismiss it).
   useEffect(() => {
-    if (!nudge && !phoneOpen) return;
+    if (!phoneOpen) return;
     const onPointerDown = (e: PointerEvent) => {
       if (barRef.current?.contains(e.target as Node)) return;
       setPhoneOpen(false);
-      closeNudge();
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
-  });
+  }, [phoneOpen]);
 
   const openSheet = () => {
     closeNudge();
