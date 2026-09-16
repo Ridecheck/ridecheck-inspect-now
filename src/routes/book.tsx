@@ -14,7 +14,6 @@ import {
 import { StepReview, type ContactDetails } from "@/components/booking/StepReview";
 import { addOns, buildAvailability, REGION_LABEL } from "@/lib/booking";
 import { isAreaCovered } from "@/lib/coverage";
-import { OutOfAreaPanel } from "@/components/landing/OutOfAreaPanel";
 import { packages, evPackages, PHONE_DISPLAY, PHONE_HREF } from "@/lib/ridecheck";
 import type { ServiceType } from "@/lib/availability";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -97,13 +96,7 @@ function BookPage() {
   );
   const [paying, setPaying] = useState(false);
   const [done, setDone] = useState(prefill.paid === "1");
-  // Outside-coverage enquiry state (prototype only — nothing is stored).
-  const [outOfArea, setOutOfArea] = useState(false);
-  const [leadContact, setLeadContact] = useState(
-    prefill.email ?? prefill.phone ?? "",
-  );
-  const [leadNote, setLeadNote] = useState("");
-  const [leadSent, setLeadSent] = useState(false);
+  // Outside coverage: simple call card (prototype only — nothing is stored).
 
   const [details, setDetails] = useState<BookingDetails>({
     suburb: prefill.suburb ?? "",
