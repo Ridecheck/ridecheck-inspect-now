@@ -14,6 +14,7 @@ const navLinks = [
   { to: "/locations", label: "Locations" },
   { to: "/faqs", label: "FAQs" },
   { to: "/contact", label: "Contact" },
+  { to: "/test", label: "Test" },
 ] as const;
 
 export function SiteHeader() {
