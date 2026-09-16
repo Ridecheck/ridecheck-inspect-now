@@ -4,12 +4,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
-  Clock,
-  DollarSign,
   Loader2,
-  Mail,
   MapPin,
-  MessageCircle,
   Phone,
   ShieldCheck,
   X,
@@ -21,8 +17,13 @@ import {
   timingLabel,
   type Timing,
 } from "@/components/booking/StepTiming";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  AvailabilityResultCard,
+  OutOfAreaPanel,
+  parseContact,
+} from "@/components/landing/OutOfAreaPanel";
 import { buildAvailability } from "@/lib/booking";
+import { isAreaCovered } from "@/lib/coverage";
 import { packages, PHONE_HREF } from "@/lib/ridecheck";
 
 
