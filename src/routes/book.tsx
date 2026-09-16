@@ -97,6 +97,7 @@ function BookPage() {
   const [paying, setPaying] = useState(false);
   const [done, setDone] = useState(prefill.paid === "1");
   // Outside coverage: simple call card (prototype only — nothing is stored).
+  const [outOfArea, setOutOfArea] = useState(false);
 
   const [details, setDetails] = useState<BookingDetails>({
     suburb: prefill.suburb ?? "",
