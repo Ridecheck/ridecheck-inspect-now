@@ -45,14 +45,15 @@ export function StickyCta() {
     );
   };
 
-  // Discovery cue: show once per session after roughly 30% page progress.
+  // Discovery cue: show once per session just after the visitor scrolls past the header.
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem(DISCOVERY_KEY)) return;
 
     const onScroll = () => {
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollable <= 0 || window.scrollY / scrollable < 0.3) return;
+      const header = document.querySelector("header");
+      const headerHeight = header?.offsetHeight ?? 72;
+      if (window.scrollY <= headerHeight + 40) return;
 
       window.removeEventListener("scroll", onScroll);
       sessionStorage.setItem(DISCOVERY_KEY, "1");
