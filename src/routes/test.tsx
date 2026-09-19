@@ -14,6 +14,7 @@ import { Reviews } from "@/components/landing/Reviews";
 import { Faq } from "@/components/landing/Faq";
 import { SiteFooter } from "@/components/landing/SiteFooter";
 import { StickyCta } from "@/components/landing/StickyCta";
+import { TrustStatsStrip } from "@/components/landing/TrustStatsStrip";
 
 const TITLE = "RideCheck Availability-First Layout Test";
 const DESCRIPTION =
@@ -40,6 +41,7 @@ function TestLanding() {
       <SiteHeader />
       <main>
         <AvailabilityFirstHero />
+        <TrustStatsStrip />
         <Packages />
         <div id="how-it-works">
           <HowItWorks />
