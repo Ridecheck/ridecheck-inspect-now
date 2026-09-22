@@ -11,6 +11,7 @@ import { ServiceArea } from "@/components/landing/ServiceArea";
 import { RecentlyInspected } from "@/components/landing/RecentlyInspected";
 import { InspectionVideos } from "@/components/landing/InspectionVideos";
 import { Reviews } from "@/components/landing/Reviews";
+import { EnquirySection } from "@/components/landing/EnquirySection";
 import { Faq } from "@/components/landing/Faq";
 import { SiteFooter } from "@/components/landing/SiteFooter";
 import { StickyCta } from "@/components/landing/StickyCta";
@@ -95,6 +96,7 @@ function Index() {
         <div id="reviews">
           <Reviews />
         </div>
+        <EnquirySection />
         <div id="faq">
           <Faq />
         </div>
