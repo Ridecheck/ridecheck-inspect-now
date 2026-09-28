@@ -37,6 +37,13 @@ const benefits = [
   { icon: Wallet, title: "Fast & easy", sub: "booking" },
 ];
 
+const referenceBenefits = [
+  "Mechanical inspection",
+  "Diagnostic scan and road test",
+  "Free PPSR history check",
+  "Same-day digital report",
+];
+
 type Step = "location" | "checking" | "confirmed" | "package" | "vehicle" | "handoff";
 
 function splitLocation(value: string) {
@@ -48,7 +55,7 @@ function splitLocation(value: string) {
 
 const defaultPkg = packages.find((p) => p.popular)?.name ?? packages[0].name;
 
-export function AvailabilityFirstHero() {
+export function AvailabilityFirstHero({ layout = "default" }: { layout?: "default" | "reference" }) {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>("location");
   const [location, setLocation] = useState("");
@@ -136,7 +143,7 @@ export function AvailabilityFirstHero() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-background">
+    <section className={`relative overflow-hidden bg-background ${layout === "reference" ? "border-b border-border" : ""}`}>
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] items-center lg:flex">
         <img
           src={heroCar.url}
@@ -148,7 +155,7 @@ export function AvailabilityFirstHero() {
         <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background to-transparent" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16">
+      <div className={`relative mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16 ${layout === "reference" ? "lg:min-h-[690px]" : ""}`}>
         <div className="flex justify-center sm:justify-end">
           <a
             href={GOOGLE_REVIEWS_URL}
@@ -171,17 +178,43 @@ export function AvailabilityFirstHero() {
           </a>
         </div>
 
-        <div className="mt-5 max-w-xl lg:max-w-[52%]">
+        <div className={`mt-5 max-w-xl ${layout === "reference" ? "lg:max-w-[48%]" : "lg:max-w-[52%]"}`}>
           <h1 className="text-[2.35rem] font-extrabold leading-[1.05] text-ink sm:text-5xl">
-            Let&rsquo;s check if this car is{" "}
-            <span className="text-signal">worth buying.</span>
+            {layout === "reference" ? (
+              <>
+                Buying a used car? <span className="text-signal">Check it before you buy it.</span>
+              </>
+            ) : (
+              <>
+                Let&rsquo;s check if this car is <span className="text-signal">worth buying.</span>
+              </>
+            )}
           </h1>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            Enter the suburb where the car is located and we&rsquo;ll check if we can
-            inspect it, show you available days and get you booked in &mdash; fast.
+            {layout === "reference"
+              ? "We send an independent mobile inspector to the vehicle, wherever it is in Melbourne or Sydney."
+              : "Enter the suburb where the car is located and we’ll check if we can inspect it, show you available days and get you booked in — fast."}
           </p>
 
-          <div className="mt-6 rounded-2xl border border-border bg-card p-4 shadow-lift sm:p-5">
+          {layout === "reference" && (
+            <>
+              <ul className="mt-5 grid gap-2 sm:grid-cols-2">
+                {referenceBenefits.map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm font-semibold text-ink">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-signal text-signal-foreground">
+                      <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-7 text-sm font-bold text-ink">
+                From <span className="ml-1 text-5xl font-extrabold leading-none text-signal">$299</span>
+              </p>
+            </>
+          )}
+
+          <div className={`mt-6 rounded-2xl border border-border bg-card p-4 shadow-lift sm:p-5 ${layout === "reference" ? "lg:absolute lg:right-8 lg:top-28 lg:mt-0 lg:w-[min(43%,31rem)]" : ""}`}>
             {step === "location" && (
               <>
                 <label
@@ -557,7 +590,7 @@ export function AvailabilityFirstHero() {
             )}
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-3">
+          <div className={`mt-5 grid grid-cols-3 gap-3 ${layout === "reference" ? "lg:mt-8" : ""}`}>
             {benefits.map(({ icon: Icon, title, sub }) => (
               <div key={title} className="flex items-start gap-2">
                 <Icon className="mt-0.5 h-5 w-5 shrink-0 text-ink" aria-hidden />
@@ -570,7 +603,7 @@ export function AvailabilityFirstHero() {
           </div>
         </div>
 
-        <div className="mt-8 overflow-hidden rounded-2xl lg:hidden">
+        <div className={`mt-8 overflow-hidden rounded-2xl lg:hidden ${layout === "reference" ? "hidden" : ""}`}>
           <img
             src={heroCar.url}
             alt="Red BMW M3 sedan with RideCheck inspection damage callouts"
