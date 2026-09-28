@@ -15,10 +15,22 @@ const navLinks = [
   { to: "/faqs", label: "FAQs" },
   { to: "/contact", label: "Contact" },
   { to: "/test", label: "Test" },
+  { to: "/test-2", label: "Test 2" },
 ] as const;
 
-export function SiteHeader() {
+const compactNavLinks = [
+  { to: "/how-it-works", label: "How It Works" },
+  { to: "/pricing", label: "Pricing" },
+  { to: "/sydney", label: "Sydney" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
+  { to: "/test", label: "Test" },
+  { to: "/test-2", label: "Test 2" },
+] as const;
+
+export function SiteHeader({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = useState(false);
+  const links = compact ? compactNavLinks : navLinks;
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
@@ -34,7 +46,7 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-semibold text-ink lg:flex">
-          {navLinks.map((link) => (
+          {links.map((link) => (
             <Link
               key={link.to}
               to={link.to}
@@ -75,7 +87,7 @@ export function SiteHeader() {
       {open ? (
         <div className="border-t border-border bg-background lg:hidden">
           <nav className="mx-auto max-w-6xl space-y-2 px-5 py-4 sm:px-8">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
