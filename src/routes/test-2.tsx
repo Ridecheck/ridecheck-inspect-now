@@ -34,7 +34,7 @@ export const Route = createFileRoute("/test-2")({
 function TestTwoLanding() {
   return (
     <div id="top" className="pb-20 sm:pb-0">
-      <SiteHeader />
+      <SiteHeader compact />
       <main>
         <AvailabilityFirstHero layout="reference" />
         <TestTwoProcess />
