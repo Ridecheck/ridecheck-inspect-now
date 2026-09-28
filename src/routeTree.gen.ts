@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as Test2RouteImport } from './routes/test-2'
 import { Route as TestRouteImport } from './routes/test'
 import { Route as SydneyRouteImport } from './routes/sydney'
 import { Route as PricingRouteImport } from './routes/pricing'
@@ -22,6 +23,11 @@ import { Route as BookRouteImport } from './routes/book'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const Test2Route = Test2RouteImport.update({
+  id: '/test-2',
+  path: '/test-2',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TestRoute = TestRouteImport.update({
   id: '/test',
   path: '/test',
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/sydney': typeof SydneyRoute
   '/test': typeof TestRoute
+  '/test-2': typeof Test2Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/sydney': typeof SydneyRoute
   '/test': typeof TestRoute
+  '/test-2': typeof Test2Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/sydney': typeof SydneyRoute
   '/test': typeof TestRoute
+  '/test-2': typeof Test2Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/sydney'
     | '/test'
+    | '/test-2'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/sydney'
     | '/test'
+    | '/test-2'
   id:
     | '__root__'
     | '/'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/sydney'
     | '/test'
+    | '/test-2'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,10 +196,18 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   SydneyRoute: typeof SydneyRoute
   TestRoute: typeof TestRoute
+  Test2Route: typeof Test2Route
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/test-2': {
+      id: '/test-2'
+      path: '/test-2'
+      fullPath: '/test-2'
+      preLoaderRoute: typeof Test2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/test': {
       id: '/test'
       path: '/test'
@@ -288,6 +308,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   SydneyRoute: SydneyRoute,
   TestRoute: TestRoute,
+  Test2Route: Test2Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
